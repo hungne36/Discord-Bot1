@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils.data_manager import read_json, write_json
 
 HISTORY_FILE = "data/lichsu.json"
@@ -30,12 +30,12 @@ def get_user_today_spent(user_id: int) -> int:
     today = get_today_str()
     return sum(h["amount"] for h in hist if h["user_id"] == user_id and h["timestamp"].startswith(today) and h["action"] != "nap")
 
-def get_top_spenders():
+def get_top_spenders(target_date=None):
     hist = read_json(HISTORY_FILE)
-    today = get_today_str()
+    date_str = target_date or get_today_str()
     spent_map = {}
     for h in hist:
-        if h["timestamp"].startswith(today) and h["action"] != "nap":
+        if h["timestamp"].startswith(date_str) and h["action"] != "nap":
             uid = h["user_id"]
             spent_map[uid] = spent_map.get(uid, 0) + h["amount"]
     top_users = sorted(spent_map.items(), key=lambda x: x[1], reverse=True)
@@ -71,34 +71,35 @@ class TopXu(commands.Cog):
     @app_commands.command(name="nhantop", description="🎁 Nhận thưởng đua top")
     async def nhantop(self, interaction: discord.Interaction):
         user_id = str(interaction.user.id)
-        today = get_today_str()
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+        # Chỉ cho nhận nếu đạt top hôm qua
+        top_yesterday, _ = get_top_spenders(target_date=yesterday)
         reward_data = read_json(REWARD_FILE)
 
         # Kiểm tra đã nhận chưa
-        if reward_data.get(today, {}).get(user_id):
-            await interaction.response.send_message("❌ Bạn đã nhận thưởng hôm nay rồi!", ephemeral=True)
+        if reward_data.get(yesterday, {}).get(user_id):
+            await interaction.response.send_message("❌ Bạn đã nhận thưởng hôm qua rồi!", ephemeral=True)
             return
 
-        top10, _ = get_top_spenders()
-        for rank, (uid, _) in enumerate(top10, start=1):
+        # Tìm trong top hôm qua
+        for rank, (uid, _) in enumerate(top_yesterday, start=1):
             if str(uid) == user_id:
                 reward = TOP_REWARDS.get(rank)
                 if not reward:
                     break
 
-                # Cộng xu
                 balances = read_json(BALANCE_FILE)
                 balances[user_id] = balances.get(user_id, 0) + reward
                 write_json(BALANCE_FILE, balances)
 
-                # Ghi nhận đã nhận
-                reward_data.setdefault(today, {})[user_id] = True
+                reward_data.setdefault(yesterday, {})[user_id] = True
                 write_json(REWARD_FILE, reward_data)
 
-                await interaction.response.send_message(f"🎉 Bạn nhận được **{reward:,} xu** cho **Top {rank}** hôm nay!", ephemeral=True)
+                await interaction.response.send_message(f"🎉 Bạn nhận được **{reward:,} xu** cho Top {rank} hôm qua!", ephemeral=True)
                 return
 
-        await interaction.response.send_message("❌ Bạn không nằm trong Top 10 hôm nay!", ephemeral=True)
+        await interaction.response.send_message("❌ Bạn không nằm trong Top 10 hôm qua!", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(TopXu(bot))
