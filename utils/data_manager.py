@@ -58,13 +58,16 @@ def get_user_history(uid, limit=None):
             user_hist = [h for h in hist if h["user_id"] == uid]
             return user_hist[-limit:] if limit else user_hist
 
-def add_history(uid, action, amount, balance):
+def add_history(uid, action, amount, balance, username=None):
             hist = read_json(HISTORY_FILE)
-            hist.append({
+            entry = {
                 "user_id": uid,
                 "action": action,
                 "amount": amount,
                 "balance_after": balance,
                 "timestamp": datetime.utcnow().isoformat() + "Z"
-            })
+            }
+            if username:
+                entry["username"] = username
+            hist.append(entry)
             write_json(HISTORY_FILE, hist)
