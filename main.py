@@ -70,10 +70,10 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         await interaction.response.send_message("🎲 **Đang lắc xúc xắc...**")
         await asyncio.sleep(1)
 
-        await interaction.edit_original_response(content="🎲 **Mời bạn đến với bàn chơi...** 🎯")
-        await asyncio.sleep(5)
+        await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
+        await asyncio.sleep(4)
 
-        await interaction.edit_original_response(content="🎲 **Hết xu thì mời bạn đi về...** ⏳")
+        await interaction.edit_original_response(content="🎲 **Quên nữa, 1 4 ra 6...** ⏳")
         await asyncio.sleep(2)
 
         dice = [random.randint(1, 6) for _ in range(3)]
@@ -121,7 +121,7 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
         add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
 
         msg = f"🕓 Kết quả: {giay} → {so1}+{so2}={tong} → **{kq.upper()}**\n"
-        msg += "🎉 Ôi bạn giỏi thế!\n" if win else "💸 Bạn đần vãi lợn!\n"
+        msg += "🎉 Ôi bạn thắng gớm!\n" if win else "💸 Eo bạn đần vãi lợn!\n"
         msg += f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
 
         await interaction.edit_original_response(content=msg)

@@ -33,7 +33,7 @@ class Info(commands.Cog):
             f"👤 **Thông tin của bạn**\n"
             f"💰 Số xu hiện có: {bal:,}\n"
             f"📉 Xu đã tiêu hôm nay: {spent_today:,}\n"
-            f"🎁 Xu chờ nhận (dựa trên tiêu hôm nay): {pending:,}\n"
+            f"🎁 Xu chờ nhận (Hẹn bạn 0h nhé): {pending:,}\n"
             f"🏆 Thắng: {wins} trận\n"
             f"💥 Thua: {losses} trận"
         )

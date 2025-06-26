@@ -19,5 +19,33 @@
     "amount": 100000000000,
     "balance_after": 100000000000,
     "timestamp": "2025-06-26T19:21:17.916977Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_thua",
+    "amount": -10000000000,
+    "balance_after": 190000000000,
+    "timestamp": "2025-06-26T19:27:05.954555Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "nap",
+    "amount": 999999999999999,
+    "balance_after": 1000189999999999,
+    "timestamp": "2025-06-26T19:27:39.816529Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_thua",
+    "amount": -9999999999999,
+    "balance_after": 990290000000000,
+    "timestamp": "2025-06-26T19:28:55.572704Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_th\u1eafng",
+    "amount": 1949999999998,
+    "balance_after": 992239999999998,
+    "timestamp": "2025-06-26T19:30:09.809291Z"
   }
 ]
