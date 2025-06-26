@@ -27,6 +27,12 @@ class BetModal(discord.ui.Modal):
             await play_taixiu(interaction, amt, self.choice)
         else:
             await play_chanle(interaction, amt, self.choice)
+        
+        # Delete the original menu message
+        try:
+            await interaction.message.delete()
+        except:
+            pass  # Ignore if message is already deleted or can't be deleted
 
 class MenuView(discord.ui.View):
     def __init__(self, bot):
