@@ -53,9 +53,9 @@ class DailyView(discord.ui.View):
         if has_claimed_daily(int(self.user_id)):
             await interaction.response.send_message("❌ Bạn đã nhận quà khởi đầu rồi!", ephemeral=True)
         else:
-            new_balance = update_balance(int(self.user_id), 100_000_000_000)
+            new_balance = update_balance(int(self.user_id), 1_000_000_000)
             mark_daily_claimed(int(self.user_id))
-            await interaction.response.send_message(f"✅ Bạn đã nhận **100 tỷ xu khởi đầu**!\n💰 Số dư mới: {new_balance:,} xu", ephemeral=True)
+            await interaction.response.send_message(f"✅ Bạn đã nhận **1 tỷ xu khởi đầu**!\n💰 Số dư mới: {new_balance:,} xu", ephemeral=True)
 
 class Daily(commands.Cog):
     def __init__(self, bot):
@@ -65,7 +65,7 @@ class Daily(commands.Cog):
     async def daily(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title="🎉 Quà Khởi Đầu!",
-            description="Chào mừng bạn đến với bot! Hãy nhận **100 tỷ xu** để bắt đầu chơi.\n\nẤn nút bên dưới để nhận.",
+            description="Chào mừng bạn đến với bot! Hãy nhận **1 tỷ xu** để bắt đầu chơi.\n\nẤn nút bên dưới để nhận.",
             color=discord.Color.green()
         )
         await interaction.response.send_message(embed=embed, view=DailyView(interaction.user.id), ephemeral=True)
