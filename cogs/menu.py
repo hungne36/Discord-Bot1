@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from main import play_taixiu, play_chanle  # Dùng lại logic từ main
-from cogs.xocdia import CuocView  # Import View chọn cửa từ Xóc Đĩa
+from utils.xocdia_ui import CuocView  # Import View chọn cửa từ Xóc Đĩa
 
 class BetModal(discord.ui.Modal):
     def __init__(self, game: str, choice: str):
