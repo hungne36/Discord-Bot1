@@ -12,5 +12,12 @@
     "amount": -50000,
     "balance_after": 450000,
     "timestamp": "2025-06-26T19:07:36.197597Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "daily",
+    "amount": 100000000000,
+    "balance_after": 100000000000,
+    "timestamp": "2025-06-26T19:21:17.916977Z"
   }
 ]
