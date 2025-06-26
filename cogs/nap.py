@@ -16,7 +16,7 @@ class Nap(commands.Cog):
             await interaction.response.send_message("❌ Không có quyền!", ephemeral=True)
             return
         bal = update_balance(nguoidung.id, soluong)
-        add_history(nguoidung.id, "nap", soluong, bal)
+        add_history(nguoidung.id, "nap", soluong, bal, nguoidung.name)
         await interaction.response.send_message(
             f"✅ Đã nạp {soluong:,} xu cho {nguoidung.mention}. Số dư: {bal:,} xu"
         )
