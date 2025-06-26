@@ -50,10 +50,34 @@ class MenuView(discord.ui.View):
 
     @discord.ui.button(label="🎲 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
     async def btn_xocdia(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Get the xocdia cog and call its command
+        from utils.data_manager import read_json
+        
+        # Check if user has balance
+        sodu = read_json("data/sodu.json")
+        user_id = str(interaction.user.id)
+
+        if user_id not in sodu or sodu[user_id] <= 0:
+            await interaction.response.send_message("❌ Bạn không có đủ xu để chơi.", ephemeral=True)
+            return
+
+        # Import CuocView from xocdia cog
         xocdia_cog = self.bot.get_cog('XocDia')
         if xocdia_cog:
-            await xocdia_cog.xocdia(interaction)
+            # Create CuocView directly
+            from cogs.xocdia import CuocView
+            view = CuocView()
+            await interaction.response.send_message("🔘 Chọn các cửa muốn cược:", view=view, ephemeral=True)
+            await view.wait()
+
+            if not view.selected:
+                await interaction.followup.send("❌ Bạn chưa chọn cửa nào!", ephemeral=True)
+                return
+
+            # Import and use TienCuocModal
+            from cogs.xocdia import TienCuocModal
+            await interaction.followup.send_modal(
+                TienCuocModal(view.selected, xocdia_cog.process_game)
+            )
         else:
             await interaction.response.send_message("❌ Xóc Đĩa hiện không khả dụng!", ephemeral=True)
 
