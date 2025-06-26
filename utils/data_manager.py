@@ -46,19 +46,19 @@ def get_balance(uid):
             return data.get(str(uid), 1000)
 
 def update_balance(uid, amount):
-            uid = str(uid)
-            data = read_json(DATA_FILE)
-    data[uid] = data.get(uid, 0) + amount
-write_json(DATA_FILE, data)
-return data[uid]
+    uid = str(uid)
+    data = read_json(DATA_FILE)
+    data[str(uid)] = data.get(str(uid), 0) + amount
+    write_json(DATA_FILE, data)
+    return data[str(uid)]
 
         # --- Lịch sử ---
-        def get_user_history(uid, limit=None):
+def get_user_history(uid, limit=None):
             hist = read_json(HISTORY_FILE)
             user_hist = [h for h in hist if h["user_id"] == uid]
             return user_hist[-limit:] if limit else user_hist
 
-        def add_history(uid, action, amount, balance):
+def add_history(uid, action, amount, balance):
             hist = read_json(HISTORY_FILE)
             hist.append({
                 "user_id": uid,
