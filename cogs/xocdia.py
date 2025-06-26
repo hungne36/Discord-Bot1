@@ -227,8 +227,12 @@ class XocDia(commands.Cog):
         write_json(SESSION_FILE, data)
         
         view = XocDiaView()
-        await interaction.response.send_message("🎮 Phiên Xóc Đĩa bắt đầu! Chọn cửa bên dưới để cược:", view=view)
-        view.msg = await interaction.original_response()
+        response = await interaction.response.send_message(
+            "🎮 Phiên Xóc Đĩa bắt đầu! Chọn cửa bên dưới để cược:",
+            view=view
+        )
+        message = await interaction.original_response()
+        view.msg = message  # view.msg sẽ dùng lại để kết thúc phiên
 
 async def setup(bot):
     await bot.add_cog(XocDia(bot))
