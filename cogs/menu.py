@@ -51,7 +51,7 @@ class MenuView(discord.ui.View):
 
     @discord.ui.button(label="🎲 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
     async def btn_xocdia(self, interaction: discord.Interaction, button: discord.ui.Button):
-        view = CuocView()
+        view = CuocView(interaction.user)
         await interaction.response.send_message("🔘 Chọn các cửa muốn cược:", view=view, ephemeral=True)
 
 class Menu(commands.Cog):

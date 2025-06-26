@@ -156,7 +156,9 @@ class XocDia(commands.Cog):
         add_history(user.id, user.name, "Xóc Đĩa", total_bet, sodu[user_id])
 
         # Gửi kết quả
-        desc = f"🎯 Kết quả: {' | '.join(result)} ({count_do} Đỏ - {count_trang} Trắng)\n"
+        emoji_map = {"Đỏ": "🔴", "Trắng": "⚪"}
+        ketqua_emoji = ' '.join(emoji_map[i] for i in result)
+        desc = f"🎯 Kết quả: {ketqua_emoji} ({count_do} Đỏ – {count_trang} Trắng)\n"
         desc += f"🧾 Bạn đã chọn: {', '.join(choices)}\n"
         desc += f"💸 Tổng cược: {total_bet:,} xu\n"
         desc += f"🏆 Thắng: {int(thuong):,} xu\n"

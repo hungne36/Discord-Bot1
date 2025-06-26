@@ -54,5 +54,37 @@
     "amount": 19499999999998,
     "balance_after": 1011739999999996,
     "timestamp": "2025-06-26T19:50:06.445410Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 5555577744666,
+    "balance_after": 1006184422255330,
+    "timestamp": "2025-06-26 20:14:03"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 555566666666655,
+    "balance_after": 450617755588675,
+    "timestamp": "2025-06-26 20:18:13"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 555555556665,
+    "balance_after": 450062200032010,
+    "timestamp": "2025-06-26 20:19:18"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 299999999997,
+    "balance_after": 449762200032013,
+    "timestamp": "2025-06-26 20:22:39"
   }
 ]
