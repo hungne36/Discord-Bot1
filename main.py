@@ -4,6 +4,9 @@ from discord import app_commands
 import os
 from utils import data_manager
 import random
+import asyncio
+from datetime import datetime
+from utils.data_manager import get_balance, update_balance, add_history
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
@@ -49,6 +52,10 @@ async def resetdaily(interaction: discord.Interaction, user: discord.User):
             await interaction.response.send_message(f"ℹ️ Người dùng này chưa từng nhận /daily", ephemeral=True)
 
     # Game functions
+def can_play(uid):
+    # Simple cooldown implementation - you can enhance this
+    return True, 0
+
 async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
         uid = interaction.user.id
         ok, wait = can_play(uid)
@@ -117,7 +124,7 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
         msg += "🎉 Ôi bạn giỏi thế!\n" if win else "💸 Bạn đần vãi lợn!\n"
         msg += f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
 
-        await interaction.edit_original_response(content=msg
+        await interaction.edit_original_response(content=msg)
 
     # Run bot
 if __name__ == "__main__":
