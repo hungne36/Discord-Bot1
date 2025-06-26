@@ -42,7 +42,7 @@ class PhucLoi(commands.Cog):
             return await interaction.response.send_message("❌ Bạn đã nhận phúc lợi hôm nay rồi!", ephemeral=True)
 
         newb = update_balance(uid, pending)
-        add_history(uid, "nhan_phucloi", pending, newb, interaction.user.name)ory(uid, "nhan_phucloi", pending, newb)
+        add_history(uid, "nhan_phucloi", pending, newb, interaction.user.name)
 
         await interaction.response.send_message(
             f"🎁 Bạn đã nhận **{pending:,} xu** từ xu chờ nhận hôm qua!\n"

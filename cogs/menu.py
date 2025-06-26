@@ -28,8 +28,9 @@ class BetModal(discord.ui.Modal):
             await play_chanle(interaction, amt, self.choice)
 
 class MenuView(discord.ui.View):
-    def __init__(self):
+    def __init__(self, bot):
         super().__init__(timeout=None)
+        self.bot = bot
 
     @discord.ui.button(label="🎲 Tài", style=discord.ButtonStyle.success, custom_id="menu_tai")
     async def btn_tai(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -47,13 +48,22 @@ class MenuView(discord.ui.View):
     async def btn_le(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(BetModal("chanle", "le"))
 
+    @discord.ui.button(label="🎲 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
+    async def btn_xocdia(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Get the xocdia cog and call its command
+        xocdia_cog = self.bot.get_cog('XocDia')
+        if xocdia_cog:
+            await xocdia_cog.xocdia(interaction)
+        else:
+            await interaction.response.send_message("❌ Xóc Đĩa hiện không khả dụng!", ephemeral=True)
+
 class Menu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @app_commands.command(name="menu", description="Hiển thị menu chọn trò chơi")
     async def menu(self, interaction: discord.Interaction):
-        await interaction.response.send_message("🎮 Chọn trò chơi:", view=MenuView(), ephemeral=True)
+        await interaction.response.send_message("🎮 Chọn trò chơi:", view=MenuView(self.bot), ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Menu(bot))
