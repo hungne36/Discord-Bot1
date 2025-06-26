@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "user_id": 878488497659453521,
+    "action": "daily",
+    "amount": 500000,
+    "balance_after": 500000,
+    "timestamp": "2025-06-26T19:06:55.675130Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "taixiu_thua_tai",
+    "amount": -50000,
+    "balance_after": 450000,
+    "timestamp": "2025-06-26T19:07:36.197597Z"
+  }
+]
