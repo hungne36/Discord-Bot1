@@ -19,7 +19,7 @@ tree = bot.tree
 
     # Load all cogs
 async def load_cogs():
-        for cog in ["menu", "info", "nap", "lichsu", "daily", "phucloi", "xocdia"]:
+        for cog in ["menu", "info", "nap", "lichsu", "daily", "phucloi", "xocdia", "top"]:
             await bot.load_extension(f"cogs.{cog}")
 
 @bot.event
