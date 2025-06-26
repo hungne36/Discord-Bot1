@@ -19,8 +19,9 @@ tree = bot.tree
 
     # Load all cogs
 async def load_cogs():
-        for cog in ["menu", "info", "nap", "lichsu", "daily", "phucloi", "xocdia", "top"]:
-            await bot.load_extension(f"cogs.{cog}")
+        for filename in os.listdir("./cogs"):
+            if filename.endswith(".py") and not filename.startswith("__"):
+                await bot.load_extension(f"cogs.{filename[:-3]}")
 
 @bot.event
 async def on_ready():
