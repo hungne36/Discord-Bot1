@@ -68,7 +68,7 @@ class TopXu(commands.Cog):
         embed.set_footer(text=rank_str)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @app_commands.command(name="nhantop", description="🎁 Nhận thưởng đua top nếu có trong top hôm nay")
+    @app_commands.command(name="nhantop", description="🎁 Nhận thưởng đua top")
     async def nhantop(self, interaction: discord.Interaction):
         user_id = str(interaction.user.id)
         today = get_today_str()
