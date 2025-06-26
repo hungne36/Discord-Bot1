@@ -32,7 +32,7 @@ def get_user_today_spent(user_id: int) -> int:
 
 def get_top_spenders(target_date=None):
     hist = read_json(HISTORY_FILE)
-    date_str = target_date or get_today_str()
+    date_str = target_date if target_date else get_today_str()
     spent_map = {}
     for h in hist:
         if h["timestamp"].startswith(date_str) and h["action"] != "nap":
