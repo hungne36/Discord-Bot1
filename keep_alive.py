@@ -22,7 +22,7 @@ def apple_touch_icon_precomposed():
     return '', 204
 
 def run():
-    waitress.serve(app, host='0.0.0.0', port=8080)
+    waitress.serve(app, host='0.0.0.0', port=5000)
 
 def keep_alive():
     t = Thread(target=run)
