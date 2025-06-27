@@ -53,15 +53,16 @@ async def ping(interaction: discord.Interaction):
 @app_commands.describe(user="Người dùng cần reset")
 async def resetdaily(interaction: discord.Interaction, user: discord.User):
     if interaction.user.id != ADMIN_ID:
-            return await interaction.response.send_message("❌ Bạn không có quyền!", ephemeral=True)
-data = data_manager.read_json("data/user_data.json")
-uid = str(user.id)
-if uid in data:
-            del data[uid]
-            data_manager.write_json("data/user_data.json", data)
-    await interaction.response.send_message(f"✅ Đã reset /daily cho {user.mention}", ephemeral=True)
-else:
-            await interaction.response.send_message("ℹ️ Người này chưa nhận /daily.", ephemeral=True)
+        return await interaction.response.send_message("❌ Bạn không có quyền!", ephemeral=True)
+    
+    data = data_manager.read_json("data/user_data.json")
+    uid = str(user.id)
+    if uid in data:
+        del data[uid]
+        data_manager.write_json("data/user_data.json", data)
+        await interaction.response.send_message(f"✅ Đã reset /daily cho {user.mention}", ephemeral=True)
+    else:
+        await interaction.response.send_message("ℹ️ Người này chưa nhận /daily.", ephemeral=True)
 
     # --- Cooldown stub ---
 def can_play(uid):
