@@ -15,14 +15,13 @@ class Info(commands.Cog):
             uid = interaction.user.id
             bal = get_balance(uid)
             hist = read_json(HISTORY_FILE)
-                today = datetime.utcnow().date()  # ✅ Dùng UTC thay vì local time
+        today = datetime.utcnow().date()  # ✅ Dùng UTC thay vì local time
 
-                spent_today = sum(
-                    abs(h["amount"]) for h in hist
-                    if h["user_id"] == uid and h["amount"] < 0 and
-                    datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
-                )
-            )
+        spent_today = sum(
+            abs(h["amount"]) for h in hist
+            if h["user_id"] == uid and h["amount"] < 0 and
+            datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
+        )
 
             reward_cap = min(spent_today, 50_000_000_000_000)
             pending = (reward_cap // 1_000_000_000_000) * 50_000_000_000
