@@ -3,7 +3,7 @@ import discord
 import random
 from discord.ext import commands
 from discord import app_commands
-from utils.data_manager import read_json, write_json
+from utils.data_manager import read_json, write_json, add_history
 from datetime import datetime
 
 BALANCE_FILE = "data/sodu.json"
@@ -11,8 +11,6 @@ HISTORY_FILE = "data/lichsu.json"
 SESSION_FILE = "data/xocdia_session.json"
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ", "Chẵn", "Lẻ"]
-
-    from utils.data_manager import add_history
 
 def tung_xoc_dia():
     return [random.choice(["Đỏ", "Trắng"]) for _ in range(4)]
