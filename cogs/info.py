@@ -15,14 +15,20 @@ class Info(commands.Cog):
             uid = interaction.user.id
             bal = get_balance(uid)
             hist = read_json(HISTORY_FILE)
-            today = datetime.utcnow().date()  # ✅ Dùng UTC thay vì local time
 
+            # Dùng ngày UTC để tính "hôm nay"
+            today = datetime.utcnow().date()
+
+            # Chỉ tính những giao dịch trừ xu (amount < 0), chuyển thành dương
             spent_today = sum(
-                abs(h["amount"]) for h in hist
-                if h["user_id"] == uid and h["amount"] < 0 and
-                datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
+                -h["amount"]
+                for h in hist
+                if h["user_id"] == uid
+                   and h["amount"] < 0
+                   and datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
             )
 
+            # Phần thưởng chờ nhận
             reward_cap = min(spent_today, 50_000_000_000_000)
             pending = (reward_cap // 1_000_000_000_000) * 50_000_000_000
 
@@ -33,7 +39,7 @@ class Info(commands.Cog):
                 f"👤 **Thông tin của bạn**\n"
                 f"💰 Số xu hiện có: {bal:,}\n"
                 f"📉 Xu đã tiêu hôm nay: {spent_today:,}\n"
-                f"🎁 Xu chờ nhận (Hẹn bạn 0h nhé): {pending:,}\n"
+                f"🎁 Xu chờ nhận (Hẹn bạn 7h sáng nhé): {pending:,}\n"
                 f"🏆 Thắng: {wins} trận\n"
                 f"💥 Thua: {losses} trận"
             )
