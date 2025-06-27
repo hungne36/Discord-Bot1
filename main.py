@@ -136,6 +136,7 @@ async def main():
         print("❌ Thiếu biến môi trường TOKEN")
 
 from utils import data_manager
+from utils.data_manager import get_balance, update_balance, add_history
 import random
 from datetime import datetime
 
