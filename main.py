@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 import asyncio
 import os
 
@@ -136,7 +137,6 @@ async def main():
 
 from utils import data_manager
 import random
-from discord import app_commands
 from datetime import datetime
 
 # Chạy bot
