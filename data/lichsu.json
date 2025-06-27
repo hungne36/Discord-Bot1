@@ -110,5 +110,20 @@
     "amount": 444444,
     "balance_after": 448344858380890,
     "timestamp": "2025-06-26 21:27:42"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 7884562551178,
+    "balance_after": 447187468490076,
+    "timestamp": "2025-06-26 21:43:29"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_thua",
+    "amount": -37372727262272,
+    "balance_after": 409814741227804,
+    "timestamp": "2025-06-26T21:44:08.349913Z"
   }
 ]
