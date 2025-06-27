@@ -120,9 +120,9 @@ class XocDiaView(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await ket_thuc_phien(self.msg.channel)
+            await ket_thuc_phien(self.msg.channel, self.msg)
 
-async def ket_thuc_phien(channel):
+async def ket_thuc_phien(channel, original_message=None):
     session_data = read_json(SESSION_FILE)
     if not session_data.get("active", False):
         return
@@ -133,6 +133,12 @@ async def ket_thuc_phien(channel):
 
     if not session_data.get("bets"):
         await channel.send("🎲 Phiên Xóc Đĩa kết thúc! Không có ai cược.")
+        # Delete original message if provided
+        if original_message:
+            try:
+                await original_message.delete()
+            except:
+                pass
         return
 
     # Random kết quả
@@ -206,6 +212,13 @@ async def ket_thuc_phien(channel):
         embed.add_field(name="📊 Kết quả", value="Không có ai thắng", inline=False)
 
     await channel.send(embed=embed)
+
+    # Delete original message if provided
+    if original_message:
+        try:
+            await original_message.delete()
+        except:
+            pass
 
     # Reset session
     write_json(SESSION_FILE, {"active": False, "bets": {}})
