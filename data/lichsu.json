@@ -188,5 +188,49 @@
     "amount": 457754455677,
     "balance_after": 342831829293587,
     "timestamp": "2025-06-27 06:32:30"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 243209874,
+    "balance_after": 342833072503461,
+    "timestamp": "2025-06-27T06:53:15.668488Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 19456790124,
+    "balance_after": 342852529293585,
+    "timestamp": "2025-06-27T06:53:29.633284Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_th\u1eafng",
+    "amount": 216865625956,
+    "balance_after": 343069394919541,
+    "timestamp": "2025-06-27T06:54:13.274488Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_th\u1eafng",
+    "amount": 33504744413835,
+    "balance_after": 376574139333376,
+    "timestamp": "2025-06-27T06:54:49.181420Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 1666666666665,
+    "balance_after": 374907472666711,
+    "timestamp": "2025-06-27 06:55:43"
+  },
+  {
+    "user_id": 730436357838602301,
+    "username": "hungnamvi",
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 29999999999997,
+    "balance_after": 370907472666711,
+    "timestamp": "2025-06-27 06:56:27"
   }
 ]
