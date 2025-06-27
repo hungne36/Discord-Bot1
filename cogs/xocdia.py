@@ -12,17 +12,7 @@ SESSION_FILE = "data/xocdia_session.json"
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ", "Chẵn", "Lẻ"]
 
-def add_history(user_id: int, username: str, action: str, amount: int, balance_after: int):
-    hist = read_json(HISTORY_FILE)
-    hist.append({
-        "user_id": user_id,
-        "username": username,
-        "action": action,
-        "amount": amount,
-        "balance_after": balance_after,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
-    write_json(HISTORY_FILE, hist)
+    from utils.data_manager import add_history
 
 def tung_xoc_dia():
     return [random.choice(["Đỏ", "Trắng"]) for _ in range(4)]
