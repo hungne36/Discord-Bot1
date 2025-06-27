@@ -153,7 +153,7 @@ async def ket_thuc_phien(channel, original_message=None):
                     tong_thuong += tien * 0.9
 
         balances[user_id] = balances.get(user_id, 0) + int(tong_thuong)
-        add_history(int(user_id), name, "Xóc Đĩa", tong_cuoc, balances[user_id])
+        add_history(int(user_id), "Xóc Đĩa", lai_lo, balances[user_id], name)
         tong_cuoc_map[name] = tong_cuoc
 
         lai_lo = int(tong_thuong) - tong_cuoc
