@@ -216,23 +216,24 @@ class XocDia(commands.Cog):
 
     @app_commands.command(name="xocdia", description="Bắt đầu phiên chơi Xóc Đĩa (chơi chung)")
     async def xocdia(self, interaction: discord.Interaction):
-        # Kiểm tra phiên hiện tại
-        session_data = read_json(SESSION_FILE)
-        if session_data.get("active", False):
-            await interaction.response.send_message("❌ Đã có phiên Xóc Đĩa đang diễn ra!", ephemeral=True)
-            return
+        # Reset phiên cũ nếu còn
+        old_data = read_json(SESSION_FILE)
+        if old_data.get("active", False):
+            old_data["active"] = False
+            old_data["bets"] = {}
+            write_json(SESSION_FILE, old_data)
 
         # Tạo phiên mới
         data = {"active": True, "bets": {}}
         write_json(SESSION_FILE, data)
-        
+
         view = XocDiaView()
         await interaction.response.send_message(
             "🎮 Phiên Xóc Đĩa bắt đầu! Chọn cửa bên dưới để cược:",
             view=view
         )
         message = await interaction.original_response()
-        view.msg = message  # view.msg sẽ dùng lại để kết thúc phiên
+        view.msg = message  # lưu lại để khi hết giờ thì end
 
 async def setup(bot):
     await bot.add_cog(XocDia(bot))
