@@ -14,7 +14,7 @@ def health():
 
 def run():
     # Replit mặc định chạy ở port 8080
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False)
 
 def keep_alive():
     t = Thread(target=run)

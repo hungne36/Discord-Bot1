@@ -152,6 +152,8 @@ async def safe_main():
                 print("🚨 Bot crashed, restarting in 5s...", file=sys.stderr)
                 traceback.print_exc()
                 await asyncio.sleep(5)
+                # Restart keep_alive in case it died with the bot
+                keep_alive()
 
     # --- Chạy bot ---
 if __name__ == "__main__":
