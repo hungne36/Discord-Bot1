@@ -25,7 +25,7 @@ class PhucLoi(commands.Cog):
             and datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == yesterday
         )
 
-        reward_cap = min(spent_yesterday, 500_000_000_000_000_000)
+        reward_cap = min(spent_yesterday, 50_000_000_000_000_000)
         pending = (reward_cap // 10_000_000_000_000_000) * 500_000_000_000_000
 
         if pending == 0:

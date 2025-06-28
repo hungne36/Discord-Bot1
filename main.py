@@ -42,7 +42,10 @@ async def load_extensions():
 async def on_ready():
     await load_extensions()
     await bot.tree.sync()
-print(f"✅ Bot đã online: {bot.user}")
+    if bot.user:
+        print(f"✅ Bot đã online: {bot.user} (ID: {bot.user.id})")
+    else:
+        print("⚠️ Bot đã online, nhưng không lấy được thông tin bot.user")
 
     # --- Sample commands ---
 @tree.command(name="ping", description="Kiểm tra trạng thái bot")
@@ -66,7 +69,7 @@ async def resetdaily(interaction: discord.Interaction, user: discord.User):
 
     # --- Cooldown stub ---
 def can_play(uid):
-        return True, 0
+        return True, 10
 
     # --- Game: Tài Xỉu ---
 async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
