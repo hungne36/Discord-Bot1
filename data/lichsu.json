@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 19700000,
+    "balance_after": 1019700000,
+    "timestamp": "2025-06-28T22:36:02.628746Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 197000000,
+    "balance_after": 1216700000,
+    "timestamp": "2025-06-28T22:36:28.688208Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": -99999999,
+    "balance_after": 1116700001,
+    "timestamp": "2025-06-28T22:37:03.275030Z",
+    "username": "<@730436357838602301>"
+  }
+]
