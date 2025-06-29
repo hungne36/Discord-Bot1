@@ -72,16 +72,17 @@ def can_play(uid):
         return True, 10
 
     # --- Game: Tài Xỉu ---
-async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
+    # --- Game: Tài Xỉu ---
+    async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
         uid = interaction.user.id
         ok, wait = can_play(uid)
         if not ok:
             return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+
         bal = get_balance(uid)
         if amount < 1000 or amount > bal:
             return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-        # Hiệu ứng hồi hộp
         await interaction.response.send_message("🎲 **Đang lắc số phận của bạn...**")
         await asyncio.sleep(1)
         await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
@@ -93,7 +94,13 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         tong = sum(dice)
         kq = "tai" if tong >= 11 else "xiu"
         win = (choice == kq)
-        thaydoi = round(amount * 1.97) if win else -amount
+
+        if win:
+            thuong = round(amount * 0.97)
+            thaydoi = amount + thuong  # hoàn gốc + lời
+        else:
+            thaydoi = -amount
+
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
 
@@ -104,17 +111,18 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         )
         await interaction.edit_original_response(content=txt)
 
+
     # --- Game: Chẵn Lẻ ---
-async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
+    async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
         uid = interaction.user.id
         ok, wait = can_play(uid)
         if not ok:
             return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+
         bal = get_balance(uid)
         if amount < 1000 or amount > bal:
             return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-        # Hiệu ứng chờ
         await interaction.response.send_message("🕓 **Đếm ngược thôi nào...**")
         await asyncio.sleep(5)
         await interaction.edit_original_response(content="🕓 **Ra liền đừng có hối...** ⏰")
@@ -127,7 +135,13 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
         tong = so1 + so2
         kq = "chan" if tong % 2 == 0 else "le"
         win = (choice == kq)
-        thaydoi = round(amount * 1.95) if win else -amount
+
+        if win:
+            thuong = round(amount * 0.95)
+            thaydoi = amount + thuong
+        else:
+            thaydoi = -amount
+
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
 
