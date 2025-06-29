@@ -73,83 +73,93 @@ def can_play(uid):
     return True, 10
 
 # --- Game: Tài Xỉu ---
-async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
-    uid = interaction.user.id
-    ok, wait = can_play(uid)
-    if not ok:
-        return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+    import discord
+    import asyncio
+    import random
+    from datetime import datetime
+    from utils.data_manager import get_balance, update_balance, add_history
+    from utils.cooldown import can_play
 
-    bal = get_balance(uid)
-    if amount < 1000 or amount > bal:
-        return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
+    # --- Game: Tài Xỉu ---
+    async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
+        uid = interaction.user.id
+        ok, wait = can_play(uid)
+        if not ok:
+            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
 
-    await interaction.response.send_message("🎲 **Đang lắc số phận của bạn...**")
-    await asyncio.sleep(1)
-    await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
-    await asyncio.sleep(4)
-    await interaction.edit_original_response(content="🎲 **Quên nữa, 1 4 ra 6...** ⏳")
-    await asyncio.sleep(2)
+        bal = get_balance(uid)
+        if amount < 1000 or amount > bal:
+            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-    dice = [random.randint(1, 6) for _ in range(3)]
-    tong = sum(dice)
-    kq = "tai" if tong >= 11 else "xiu"
-    win = (choice == kq)
+        # Hiệu ứng hồi hộp
+        await interaction.response.send_message("🎲 **Đang lắc số phận của bạn...**")
+        await asyncio.sleep(1)
+        await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
+        await asyncio.sleep(4)
+        await interaction.edit_original_response(content="🎲 **Quên nữa, 1 4 ra 6...** ⏳")
+        await asyncio.sleep(2)
 
-    if win:
-        thuong = round(amount * 0.97)
-        thaydoi = amount + thuong  # hoàn gốc + lời
-    else:
-        thaydoi = -amount
+        dice = [random.randint(1, 6) for _ in range(3)]
+        tong = sum(dice)
+        kq = "tai" if tong >= 11 else "xiu"
+        win = (choice == kq)
 
-    newb = update_balance(uid, thaydoi)
-    add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
+        if win:
+            profit = int(amount * 0.97)
+            thaydoi = amount + profit
+        else:
+            thaydoi = -amount
 
-    txt = (
-        f"🎲 Kết quả: {dice} → {tong} → **{kq.upper()}**\n"
-        + ("🎉 Húp thì xin tý!\n" if win else "💸 Đưa đít đây anh bơm thêm!\n")
-        + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
-    )
-    await interaction.edit_original_response(content=txt)
+        newb = update_balance(uid, thaydoi)
+        add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
 
-# --- Game: Chẵn Lẻ ---
-async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
-    uid = interaction.user.id
-    ok, wait = can_play(uid)
-    if not ok:
-        return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+        txt = (
+            f"🎲 Kết quả: {dice} → {tong} → **{kq.upper()}**\n"
+            + ("🎉 Húp thì xin tý!\n" if win else "💸 Đưa đít đây anh bơm thêm!\n")
+            + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
+        )
+        await interaction.edit_original_response(content=txt)
 
-    bal = get_balance(uid)
-    if amount < 1000 or amount > bal:
-        return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
+    # --- Game: Chẵn Lẻ ---
+    async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
+        uid = interaction.user.id
+        ok, wait = can_play(uid)
+        if not ok:
+            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
 
-    await interaction.response.send_message("🕓 **Đếm ngược thôi nào...**")
-    await asyncio.sleep(5)
-    await interaction.edit_original_response(content="🕓 **Ra liền đừng có hối...** ⏰")
-    await asyncio.sleep(3)
-    await interaction.edit_original_response(content="🕓 **Ra rồi nè...** ⏳")
-    await asyncio.sleep(1)
+        bal = get_balance(uid)
+        if amount < 1000 or amount > bal:
+            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-    giay = datetime.utcnow().second
-    so1, so2 = divmod(giay, 10)
-    tong = so1 + so2
-    kq = "chan" if tong % 2 == 0 else "le"
-    win = (choice == kq)
+        # Hiệu ứng chờ
+        await interaction.response.send_message("🕓 **Đếm ngược thôi nào...**")
+        await asyncio.sleep(5)
+        await interaction.edit_original_response(content="🕓 **Ra liền đừng có hối...** ⏰")
+        await asyncio.sleep(3)
+        await interaction.edit_original_response(content="🕓 **Ra rồi nè...** ⏳")
+        await asyncio.sleep(1)
 
-    if win:
-        thuong = round(amount * 0.95)
-        thaydoi = amount + thuong
-    else:
-        thaydoi = -amount
+        giay = datetime.utcnow().second
+        so1, so2 = divmod(giay, 10)
+        tong = so1 + so2
+        kq = "chan" if tong % 2 == 0 else "le"
+        win = (choice == kq)
 
-    newb = update_balance(uid, thaydoi)
-    add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
+        if win:
+            profit = int(amount * 0.95)
+            thaydoi = amount + profit
+        else:
+            thaydoi = -amount
 
-    msg = (
-        f"🕓 Kết quả: {giay} → {so1}+{so2}={tong} → **{kq.upper()}**\n"
-        + ("🎉 Ôi bạn thắng gớm!\n" if win else "💸 Eo bạn đần vãi lợn!\n")
-        + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
-    )
-    await interaction.edit_original_response(content=msg)
+        newb = update_balance(uid, thaydoi)
+        add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
+
+        msg = (
+            f"🕓 Kết quả: {giay} → {so1}+{so2}={tong} → **{kq.upper()}**\n"
+            + ("🎉 Ôi bạn thắng gớm!\n" if win else "💸 Eo bạn đần vãi lợn!\n")
+            + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
+        )
+        await interaction.edit_original_response(content=msg)
 
 # --- Safe main: tự restart khi crash ---
 async def safe_main():
