@@ -68,6 +68,12 @@ async def resetdaily(interaction: discord.Interaction, user: discord.User):
     else:
         await interaction.response.send_message("ℹ️ Người này chưa nhận /daily.", ephemeral=True)
 
+@tree.command(name="sync", description="Đồng bộ slash commands")
+@app_commands.checks.has_permissions(administrator=True)
+async def sync(interaction: discord.Interaction):
+    await bot.tree.sync()
+    await interaction.response.send_message("✅ Slash commands đã được đồng bộ!", ephemeral=True)
+
 # --- Cooldown stub ---
 def can_play(uid):
     return True, 10
