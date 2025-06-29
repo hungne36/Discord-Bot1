@@ -110,8 +110,7 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
     win = (choice == kq)
 
     if win:
-        profit = int(amount * 0.97)
-        thaydoi = amount + profit
+        thaydoi = amount + round(amount * 0.97)
     else:
         thaydoi = -amount
 
