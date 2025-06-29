@@ -10,51 +10,51 @@ REWARD_FILE = "data/top_rewards.json"
 
     # Phần thưởng theo thứ hạng
 TOP_REWARDS = {
-        1: 100_000_000_000,
-        2: 70_000_000_000,
-        3: 50_000_000_000,
-        4: 10_000_000_000,
-        5: 5_000_000_000,
-        6: 1_000_000_000,
-        7: 500_000_000,
-        8: 200_000_000,
-        9: 100_000_000,
-        10: 50_000_000
-    }
+    1: 100_000_000_000,
+    2: 70_000_000_000,
+    3: 50_000_000_000,
+    4: 10_000_000_000,
+    5: 5_000_000_000,
+    6: 1_000_000_000,
+    7: 500_000_000,
+    8: 200_000_000,
+    9: 100_000_000,
+    10: 50_000_000
+}
 
 def get_today_str():
-        # Dùng UTC để lấy ngày hôm nay
-     return datetime.utcnow().strftime("%Y-%m-%d")
+    # Dùng UTC để lấy ngày hôm nay
+    return datetime.utcnow().strftime("%Y-%m-%d")
 
 def get_user_today_spent(user_id: int) -> int:
-        hist = read_json(HISTORY_FILE)
-        today = get_today_str()
-        # Chỉ tính amount < 0 (xu tiêu), chuyển thành dương
-        return sum(
-            -h["amount"]
-            for h in hist
-            if h["user_id"] == user_id
-               and h["amount"] < 0
-               and h["timestamp"].startswith(today)
-        )
+    hist = read_json(HISTORY_FILE)
+    today = get_today_str()
+    # Chỉ tính amount < 0 (xu tiêu), chuyển thành dương
+    return sum(
+        -h["amount"]
+        for h in hist
+        if h["user_id"] == user_id
+           and h["amount"] < 0
+           and h["timestamp"].startswith(today)
+    )
 
 def get_top_spenders(target_date=None):
-        hist = read_json(HISTORY_FILE)
-        date_str = target_date if target_date else get_today_str()
-        spent_map: dict[int, int] = {}
-        for h in hist:
-            if h["timestamp"].startswith(date_str) and h["action"] != "nap" and h["amount"] < 0:
-                uid = h["user_id"]
-                spent_map[uid] = spent_map.get(uid, 0) - h["amount"]
-        top_users = sorted(spent_map.items(), key=lambda x: x[1], reverse=True)
-        return top_users[:10], spent_map
+    hist = read_json(HISTORY_FILE)
+    date_str = target_date if target_date else get_today_str()
+    spent_map: dict[int, int] = {}
+    for h in hist:
+        if h["timestamp"].startswith(date_str) and h["action"] != "nap" and h["amount"] < 0:
+            uid = h["user_id"]
+            spent_map[uid] = spent_map.get(uid, 0) - h["amount"]
+    top_users = sorted(spent_map.items(), key=lambda x: x[1], reverse=True)
+    return top_users[:10], spent_map
 
 class TopXu(commands.Cog):
-        def __init__(self, bot):
-            self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
 
-        @app_commands.command(name="top", description="📊 Xem bảng xếp hạng tiêu xu hôm nay")
-        async def top(self, interaction: discord.Interaction):
+    @app_commands.command(name="top", description="📊 Xem bảng xếp hạng tiêu xu hôm nay")
+    async def top(self, interaction: discord.Interaction):
             top10, spent_map = get_top_spenders()
             user_id = interaction.user.id
             user_spent = spent_map.get(user_id, 0)
@@ -77,7 +77,7 @@ class TopXu(commands.Cog):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
         @app_commands.command(name="nhantop", description="🎁 Nhận thưởng đua top")
-        async def nhantop(self, interaction: discord.Interaction):
+    async def nhantop(self, interaction: discord.Interaction):
             user_id = str(interaction.user.id)
             yesterday = (datetime.utcnow() - timedelta(days=1)).strftime("%Y-%m-%d")
 
@@ -107,4 +107,4 @@ class TopXu(commands.Cog):
             await interaction.response.send_message("❌ Bạn không nằm trong Top 10 hôm qua!", ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(TopXu(bot))
+    await bot.add_cog(TopXu(bot))

@@ -7,11 +7,11 @@ from datetime import datetime
 HISTORY_FILE = "data/lichsu.json"
 
 class Info(commands.Cog):
-        def __init__(self, bot):
-            self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
 
-        @app_commands.command(name="info", description="Xem thông tin cá nhân")
-        async def info(self, interaction: discord.Interaction):
+    @app_commands.command(name="info", description="Xem thông tin cá nhân")
+    async def info(self, interaction: discord.Interaction):
             uid = interaction.user.id
             bal = get_balance(uid)
             hist = read_json(HISTORY_FILE)
@@ -46,4 +46,4 @@ class Info(commands.Cog):
             await interaction.response.send_message(msg, ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(Info(bot))
+    await bot.add_cog(Info(bot))
