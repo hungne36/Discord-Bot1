@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -52,7 +51,7 @@ async def on_ready():
         print(f"✅ Synced {len(synced)} commands")
     except Exception as e:
         print(f"❌ Failed to sync commands: {e}")
-    
+
     if bot.user:
         print(f"✅ Bot đã online: {bot.user} (ID: {bot.user.id})")
     else:
@@ -68,7 +67,7 @@ async def ping(interaction: discord.Interaction):
 async def resetdaily(interaction: discord.Interaction, user: discord.User):
     if interaction.user.id != ADMIN_ID:
         return await interaction.response.send_message("❌ Bạn không có quyền!", ephemeral=True)
-    
+
     data = data_manager.read_json("data/user_data.json")
     uid = str(user.id)
     if uid in data:
@@ -152,8 +151,7 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
     win = (choice == kq)
 
     if win:
-        profit = int(amount * 0.95)
-        thaydoi = amount + profit
+        thaydoi = amount + round(amount * 0.95)
     else:
         thaydoi = -amount
 
