@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from utils.data_manager import update_balance
 
-GIVEAWAY_CHANNEL_ID = 123456789012345678  # 👈 Thay bằng ID thật của kênh #giveaway
+GIVEAWAY_CHANNEL_ID = YOUR_ACTUAL_CHANNEL_ID  # 👈 Replace with your real giveaway channel ID
 ADMIN_ID = 730436357838602301  # 👈 UID admin
 
 REWARDS = [10_000_000_000, 5_000_000_000, 1_000_000_000]
