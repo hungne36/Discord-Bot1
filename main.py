@@ -34,14 +34,14 @@ async def on_app_command_error(interaction: discord.Interaction, error):
         pass
 
 # --- Load tất cả cogs ---
-async def load_extensions():
+async def load():
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not filename.startswith("__"):
+        if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 @bot.event
 async def on_ready():
-    await load_extensions()
+    await load()
     await bot.tree.sync()
     if bot.user:
         print(f"✅ Bot đã online: {bot.user} (ID: {bot.user.id})")
