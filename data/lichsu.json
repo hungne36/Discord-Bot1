@@ -20,5 +20,12 @@
     "balance_after": 1116700001,
     "timestamp": "2025-06-28T22:37:03.275030Z",
     "username": "<@730436357838602301>"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 197000000,
+    "balance_after": 1313700001,
+    "timestamp": "2025-06-29T03:38:43.164790Z"
   }
 ]
