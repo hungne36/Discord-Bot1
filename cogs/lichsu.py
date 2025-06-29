@@ -35,4 +35,4 @@ class LichSu(commands.Cog):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(LichSu(bot))
+    await bot.add_cog(LichSu(bot))
