@@ -144,13 +144,15 @@ async def ket_thuc_phien(channel, original_message=None):
         for cua, tien in user_bets.items():
             if cua in cua_thang:
                 if cua in ["4 Đỏ", "4 Trắng"]:
-                    tong_thuong += tien * 12
+                    tong_thuong += tien + round(tien * 11)  # 11x profit
                 elif cua in ["3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ"]:
-                    tong_thuong += tien * 2.6
+                    tong_thuong += tien + round(tien * 1.6)  # 1.6x profit
                 elif cua in ["Chẵn", "Lẻ"]:
-                    tong_thuong += tien * 0.9
+                    tong_thuong += tien + round(tien * -0.1)  # -0.1x profit (house edge)
+            else:
+                tong_thuong += -tien  # Loss
 
-        lai_lo = int(tong_thuong) - tong_cuoc
+        lai_lo = int(tong_thuong)
         balances[user_id] = balances.get(user_id, 0) + int(tong_thuong)
         add_history(int(user_id), "Xóc Đĩa", lai_lo, balances[user_id], name)
         tong_cuoc_map[name] = tong_cuoc
