@@ -37,7 +37,7 @@ async def on_app_command_error(interaction: discord.Interaction, error):
 # --- Load tất cả cogs ---
 async def load():
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
+        if filename.endswith(".py") and filename != "__init__.py":
             try:
                 await bot.load_extension(f"cogs.{filename[:-3]}")
                 print(f"✅ Loaded cog: {filename[:-3]}")
