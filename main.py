@@ -12,6 +12,7 @@ from datetime import datetime
 from keep_alive import keep_alive  # Giữ bot online trên Replit
 from utils import data_manager
 from utils.data_manager import get_balance, update_balance, add_history
+from utils.cooldown import can_play
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
@@ -37,12 +38,21 @@ async def on_app_command_error(interaction: discord.Interaction, error):
 async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
-            await bot.load_extension(f"cogs.{filename[:-3]}")
+            try:
+                await bot.load_extension(f"cogs.{filename[:-3]}")
+                print(f"✅ Loaded cog: {filename[:-3]}")
+            except Exception as e:
+                print(f"❌ Failed to load cog {filename[:-3]}: {e}")
 
 @bot.event
 async def on_ready():
     await load()
-    await bot.tree.sync()
+    try:
+        synced = await bot.tree.sync()
+        print(f"✅ Synced {len(synced)} commands")
+    except Exception as e:
+        print(f"❌ Failed to sync commands: {e}")
+    
     if bot.user:
         print(f"✅ Bot đã online: {bot.user} (ID: {bot.user.id})")
     else:
@@ -71,101 +81,91 @@ async def resetdaily(interaction: discord.Interaction, user: discord.User):
 @tree.command(name="sync", description="Đồng bộ slash commands")
 @app_commands.checks.has_permissions(administrator=True)
 async def sync(interaction: discord.Interaction):
-    await bot.tree.sync()
-    await interaction.response.send_message("✅ Slash commands đã được đồng bộ!", ephemeral=True)
+    synced = await bot.tree.sync()
+    await interaction.response.send_message(f"✅ Đã đồng bộ {len(synced)} slash commands!", ephemeral=True)
 
-# --- Cooldown stub ---
-def can_play(uid):
-    return True, 10
+
 
 # --- Game: Tài Xỉu ---
-    import discord
-    import asyncio
-    import random
-    from datetime import datetime
-    from utils.data_manager import get_balance, update_balance, add_history
-    from utils.cooldown import can_play
+async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
+    uid = interaction.user.id
+    ok, wait = can_play(uid)
+    if not ok:
+        return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
 
-    # --- Game: Tài Xỉu ---
-    async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
-        uid = interaction.user.id
-        ok, wait = can_play(uid)
-        if not ok:
-            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+    bal = get_balance(uid)
+    if amount < 1000 or amount > bal:
+        return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-        bal = get_balance(uid)
-        if amount < 1000 or amount > bal:
-            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
+    # Hiệu ứng hồi hộp
+    await interaction.response.send_message("🎲 **Đang lắc số phận của bạn...**")
+    await asyncio.sleep(1)
+    await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
+    await asyncio.sleep(4)
+    await interaction.edit_original_response(content="🎲 **Quên nữa, 1 4 ra 6...** ⏳")
+    await asyncio.sleep(2)
 
-        # Hiệu ứng hồi hộp
-        await interaction.response.send_message("🎲 **Đang lắc số phận của bạn...**")
-        await asyncio.sleep(1)
-        await interaction.edit_original_response(content="🎲 **Chúc con nghiện 6 3 ra 1...** 🎯")
-        await asyncio.sleep(4)
-        await interaction.edit_original_response(content="🎲 **Quên nữa, 1 4 ra 6...** ⏳")
-        await asyncio.sleep(2)
+    dice = [random.randint(1, 6) for _ in range(3)]
+    tong = sum(dice)
+    kq = "tai" if tong >= 11 else "xiu"
+    win = (choice == kq)
 
-        dice = [random.randint(1, 6) for _ in range(3)]
-        tong = sum(dice)
-        kq = "tai" if tong >= 11 else "xiu"
-        win = (choice == kq)
+    if win:
+        profit = int(amount * 0.97)
+        thaydoi = amount + profit
+    else:
+        thaydoi = -amount
 
-        if win:
-            profit = int(amount * 0.97)
-            thaydoi = amount + profit
-        else:
-            thaydoi = -amount
+    newb = update_balance(uid, thaydoi)
+    add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
 
-        newb = update_balance(uid, thaydoi)
-        add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
+    txt = (
+        f"🎲 Kết quả: {dice} → {tong} → **{kq.upper()}**\n"
+        + ("🎉 Húp thì xin tý!\n" if win else "💸 Đưa đít đây anh bơm thêm!\n")
+        + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
+    )
+    await interaction.edit_original_response(content=txt)
 
-        txt = (
-            f"🎲 Kết quả: {dice} → {tong} → **{kq.upper()}**\n"
-            + ("🎉 Húp thì xin tý!\n" if win else "💸 Đưa đít đây anh bơm thêm!\n")
-            + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
-        )
-        await interaction.edit_original_response(content=txt)
+# --- Game: Chẵn Lẻ ---
+async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
+    uid = interaction.user.id
+    ok, wait = can_play(uid)
+    if not ok:
+        return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
 
-    # --- Game: Chẵn Lẻ ---
-    async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
-        uid = interaction.user.id
-        ok, wait = can_play(uid)
-        if not ok:
-            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+    bal = get_balance(uid)
+    if amount < 1000 or amount > bal:
+        return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
 
-        bal = get_balance(uid)
-        if amount < 1000 or amount > bal:
-            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
+    # Hiệu ứng chờ
+    await interaction.response.send_message("🕓 **Đếm ngược thôi nào...**")
+    await asyncio.sleep(5)
+    await interaction.edit_original_response(content="🕓 **Ra liền đừng có hối...** ⏰")
+    await asyncio.sleep(3)
+    await interaction.edit_original_response(content="🕓 **Ra rồi nè...** ⏳")
+    await asyncio.sleep(1)
 
-        # Hiệu ứng chờ
-        await interaction.response.send_message("🕓 **Đếm ngược thôi nào...**")
-        await asyncio.sleep(5)
-        await interaction.edit_original_response(content="🕓 **Ra liền đừng có hối...** ⏰")
-        await asyncio.sleep(3)
-        await interaction.edit_original_response(content="🕓 **Ra rồi nè...** ⏳")
-        await asyncio.sleep(1)
+    giay = datetime.utcnow().second
+    so1, so2 = divmod(giay, 10)
+    tong = so1 + so2
+    kq = "chan" if tong % 2 == 0 else "le"
+    win = (choice == kq)
 
-        giay = datetime.utcnow().second
-        so1, so2 = divmod(giay, 10)
-        tong = so1 + so2
-        kq = "chan" if tong % 2 == 0 else "le"
-        win = (choice == kq)
+    if win:
+        profit = int(amount * 0.95)
+        thaydoi = amount + profit
+    else:
+        thaydoi = -amount
 
-        if win:
-            profit = int(amount * 0.95)
-            thaydoi = amount + profit
-        else:
-            thaydoi = -amount
+    newb = update_balance(uid, thaydoi)
+    add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
 
-        newb = update_balance(uid, thaydoi)
-        add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
-
-        msg = (
-            f"🕓 Kết quả: {giay} → {so1}+{so2}={tong} → **{kq.upper()}**\n"
-            + ("🎉 Ôi bạn thắng gớm!\n" if win else "💸 Eo bạn đần vãi lợn!\n")
-            + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
-        )
-        await interaction.edit_original_response(content=msg)
+    msg = (
+        f"🕓 Kết quả: {giay} → {so1}+{so2}={tong} → **{kq.upper()}**\n"
+        + ("🎉 Ôi bạn thắng gớm!\n" if win else "💸 Eo bạn đần vãi lợn!\n")
+        + f"💰 Thay đổi: {thaydoi:+,} xu | Số dư mới: {newb:,} xu"
+    )
+    await interaction.edit_original_response(content=msg)
 
 # --- Safe main: tự restart khi crash ---
 async def safe_main():
