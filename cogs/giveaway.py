@@ -59,7 +59,10 @@ class Giveaway(commands.Cog):
                 await self._payout(channel, msg)
 
         async def _payout(self, channel, msg):
-            users = [u for u in await msg.reactions[0].users().flatten() if not u.bot]
+            users = []
+            async for u in msg.reactions[0].users():
+                if not u.bot:
+                    users.append(u)
             if not users:
                 await channel.send("❌ Không ai tham gia.")
             else:
