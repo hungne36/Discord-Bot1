@@ -8,7 +8,7 @@ import sys
 import random
 from datetime import datetime
 
-from keep_alive import keep_alive           # Giữ bot online qua Flask
+from keep_alive import keep_alive
 from utils import data_manager
 from utils.data_manager import get_balance, update_balance, add_history
 from utils.cooldown import can_play
@@ -25,7 +25,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
     # —————————————————————————
-    # Global error handler cho slash commands
+    # Global error handler cho slash command
 @tree.error
 async def on_app_command_error(interaction: discord.Interaction, error):
         print("🔴 App command error:", "".join(traceback.format_exception(type(error), error, error.__traceback__)))
@@ -50,7 +50,7 @@ async def load_extensions():
 async def on_ready():
         await load_extensions()
         try:
-            synced = await bot.tree.sync()
+            synced = await tree.sync(guild=None)  # Toàn bộ global (có thể sửa lại thành `guild=interaction.guild` nếu cần)
             print(f"✅ Synced {len(synced)} commands")
         except Exception as e:
             print(f"❌ Sync commands failed: {e}")
@@ -65,11 +65,13 @@ async def on_ready():
 async def ping(interaction: discord.Interaction):
         await interaction.response.send_message("🏓 Pong!", ephemeral=True)
 
+    # —————————————————————————
 @tree.command(name="resetdaily", description="Reset /daily cho user (Admin only)")
 @app_commands.describe(user="Người dùng cần reset")
 async def resetdaily(interaction: discord.Interaction, user: discord.User):
         if interaction.user.id != ADMIN_ID:
             return await interaction.response.send_message("❌ Không có quyền!", ephemeral=True)
+
         data = data_manager.read_json("data/user_data.json")
         uid = str(user.id)
         if uid in data:
@@ -79,11 +81,18 @@ async def resetdaily(interaction: discord.Interaction, user: discord.User):
         else:
             await interaction.response.send_message("ℹ️ Người này chưa nhận /daily.", ephemeral=True)
 
-@tree.command(name="sync", description="Đồng bộ slash commands")
-@app_commands.checks.has_permissions(administrator=True)
+    # —————————————————————————
+@tree.command(name="sync", description="Đồng bộ lệnh slash (Admin only)")
 async def sync(interaction: discord.Interaction):
-        synced = await bot.tree.sync()
-        await interaction.response.send_message(f"✅ Đã đồng bộ {len(synced)} lệnh!", ephemeral=True)
+        if not interaction.user.guild_permissions.administrator:
+            return await interaction.response.send_message("❌ Bạn không có quyền sử dụng lệnh này!", ephemeral=True)
+
+        try:
+            synced = await tree.sync(guild=interaction.guild)
+            await interaction.response.send_message(f"✅ Đã đồng bộ {len(synced)} lệnh cho server này.", ephemeral=True)
+        except Exception as e:
+            await interaction.response.send_message("❌ Lỗi khi đồng bộ lệnh!", ephemeral=True)
+            print(f"Sync error: {e}")
 
     # —————————————————————————
     # Game: Tài Xỉu
@@ -92,6 +101,7 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         ok, wait = can_play(uid)
         if not ok:
             return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+
         bal = get_balance(uid)
         if amount < 1000 or amount > bal:
             return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
@@ -99,7 +109,7 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         await interaction.response.send_message("🎲 Đang lắc cuộc đời bạn...")
         await asyncio.sleep(2)
 
-        dice = [random.randint(1,6) for _ in range(3)]
+        dice = [random.randint(1, 6) for _ in range(3)]
         total = sum(dice)
         kq = "tai" if total >= 11 else "xiu"
         win = (choice == kq)
@@ -128,6 +138,7 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
         ok, wait = can_play(uid)
         if not ok:
             return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
+
         bal = get_balance(uid)
         if amount < 1000 or amount > bal:
             return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
@@ -159,7 +170,7 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
         )
 
     # —————————————————————————
-    # Safe main: restart khi crash
+    # Safe main loop: auto restart nếu bot crash
 async def safe_main():
         while True:
             try:

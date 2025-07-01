@@ -10,7 +10,7 @@ class PhucLoi(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
-        @app_commands.command(name="phucloi", description="Nhận 25% xu tiêu hôm qua (tối đa 50T)")
+        @app_commands.command(name="phucloi", description="Nhận xu chờ nhận từ hôm qua")
         async def phucloi(self, interaction: discord.Interaction):
             uid = interaction.user.id
             today = datetime.utcnow().date()
@@ -18,28 +18,29 @@ class PhucLoi(commands.Cog):
             hist = read_json(HISTORY_FILE)
 
             spent = sum(
-                -h["amount"]
-                for h in hist
+                -h["amount"] for h in hist
                 if h["user_id"] == uid and h["amount"] < 0
-                and datetime.fromisoformat(h["timestamp"].replace("Z","+00:00")).date() == yesterday
+                and datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == yesterday
             )
 
-            reward = min(int(spent * 0.25), 50_000_000_000)
+            # 25% hoàn tối đa 50 tỷ
+            reward = min(spent * 0.25, 50_000_000_000)
+            reward = int(reward // 1)  # lấy phần nguyên
             if reward <= 0:
-                return await interaction.response.send_message("❌ Có làm thì mới có ăn!", ephemeral=True)
+                return await interaction.response.send_message("❌ Bạn không đủ điều kiện nhận phúc lợi.", ephemeral=True)
 
-            # Đã nhận hôm nay?
-            if any(
+            claimed = any(
                 h["user_id"] == uid and h["action"] == "nhan_phucloi"
-                and datetime.fromisoformat(h["timestamp"].replace("Z","+00:00")).date() == today
+                and datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
                 for h in hist
-            ):
-                return await interaction.response.send_message("❌ Mời bạn hốc!", ephemeral=True)
+            )
+            if claimed:
+                return await interaction.response.send_message("❌ Bạn đã nhận phúc lợi hôm nay rồi.", ephemeral=True)
 
             newb = update_balance(uid, reward)
             add_history(uid, "nhan_phucloi", reward, newb, interaction.user.name)
             await interaction.response.send_message(
-                f"🎁 Bạn nhận **{reward:,} xu** ({spent:,} tiêu → 25%)\n💰 Số dư mới: {newb:,} xu",
+                f"🎁 Bạn nhận **{reward:,} xu** phúc lợi!\n💰 Số dư mới: {newb:,} xu",
                 ephemeral=True
             )
 
