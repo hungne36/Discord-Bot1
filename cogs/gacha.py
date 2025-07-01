@@ -40,7 +40,7 @@ class GachaButton(discord.ui.Button):
             cost = COST_PER_SPIN * self.count
 
             if bal < cost:
-                return await interaction.response.send_message("❌ Bạn không đủ xu để quay!", ephemeral=True)
+                return await interaction.followup.send("❌ Bạn không đủ xu để quay!", ephemeral=True)
 
             newb = update_balance(interaction.user.id, -cost)
             add_history(interaction.user.id, "gacha_cost", -cost, newb)
@@ -53,7 +53,7 @@ class GachaButton(discord.ui.Button):
             weights  = [WEIGHTS[i] for i, p in enumerate(PET_LIST) if p[0] not in owned]
 
             if not available:
-                return await interaction.response.send_message(
+                return await interaction.followup.send(
                     "🎉 Bạn đã sở hữu toàn bộ Pet! Không thể quay thêm.", ephemeral=True
                 )
 
@@ -74,13 +74,13 @@ class GachaButton(discord.ui.Button):
             write_json(PETS_FILE, pets_data)
 
             lines = "\n".join(f"{e} **{n}** (+{p}%)" for n, e, p in obtained)
-            await interaction.response.edit_message(
+            await interaction.followup.send(
                 content=(
                     f"🎉 **Bạn đã quay ×{spins}!**\n{lines}\n\n"
-                    f"💰 Số dư hiện tại: **{newb:,} xu**\n"
+                    f"💰 Số dù hiện tại: **{newb:,} xu**\n"
                     f"Pet cuối cùng bật buff **+{obtained[-1][2]}%**"
                 ),
-                view=None
+                ephemeral=True
             )
 
 class GachaView(discord.ui.View):
