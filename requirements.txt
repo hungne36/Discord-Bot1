@@ -1,7 +1,2 @@
 flask
-<<<<<<< HEAD
-discord-py
 discord.py
-=======
-discord.py
->>>>>>> a3a5675d6e282f06c9c507956b1db0a3ffebcf1a
