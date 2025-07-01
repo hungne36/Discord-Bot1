@@ -8,6 +8,7 @@ from datetime import datetime
 BALANCE_FILE = "data/sodu.json"
 HISTORY_FILE = "data/lichsu.json"
 SESSION_FILE = "data/xocdia_session.json"
+PETS_FILE = "data/pets.json"
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ", "Chẵn", "Lẻ"]
 
@@ -150,6 +151,17 @@ async def ket_thuc_phien(channel, original_message=None):
                     tong_thuong += tien + round(tien * -0.1)  # -0.1x profit (house edge)
             else:
                 tong_thuong += -tien  # Loss
+
+        # Apply pet buff if player won
+        if tong_thuong > 0:  # Player won something
+            pets_data = read_json(PETS_FILE).get(user_id)
+            if pets_data and "last" in pets_data:
+                buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
+                buff = buff_pct / 100
+                base_profit = tong_thuong - (-tong_cuoc)  # Calculate actual profit
+                if base_profit > 0:
+                    extra = round(base_profit * buff)
+                    tong_thuong += extra
 
         lai_lo = int(tong_thuong)
         balances[user_id] = balances.get(user_id, 0) + int(tong_thuong)

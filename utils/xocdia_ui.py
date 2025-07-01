@@ -5,6 +5,7 @@ from utils.data_manager import read_json, write_json, add_history  # ✅ Dùng h
 from datetime import datetime
 
 BALANCE_FILE = "data/sodu.json"
+PETS_FILE = "data/pets.json"
 
 def tung_xoc_dia():
         return [random.choice(["Đỏ", "Trắng"]) for _ in range(4)]
@@ -129,8 +130,20 @@ async def process_game(interaction: Interaction, bets: dict):
             if choice in ketqua:
                 thuong += amount * payout_rates[choice]
 
+        # Apply pet buff if player wins
+        total_winnings = int(thuong)
+        if total_winnings > 0:  # Player won something
+            pets_data = read_json(PETS_FILE).get(str(user.id))
+            if pets_data and "last" in pets_data:
+                buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
+                buff = buff_pct / 100
+                base_profit = total_winnings - total_bet  # Profit before buff
+                if base_profit > 0:
+                    extra = round(base_profit * buff)
+                    total_winnings += extra
+
         sodu[user_id] -= total_bet
-        sodu[user_id] += int(thuong)
+        sodu[user_id] += total_winnings
         write_json(BALANCE_FILE, sodu)
 
         add_history(user.id, user.name, "Xóc Đĩa", total_bet, sodu[user_id])  # ✅ Ghi lịch sử chuẩn ISO UTC
@@ -140,7 +153,7 @@ async def process_game(interaction: Interaction, bets: dict):
         for choice, amt in bets.items():
             desc += f"- {choice} ({amt:,} xu)\n"
         desc += f"💸 Tổng cược: {total_bet:,} xu\n"
-        desc += f"🏆 Thắng: {int(thuong):,} xu\n"
+        desc += f"🏆 Thắng: {total_winnings:,} xu\n"
         desc += f"💰 Số dư: {sodu[user_id]:,} xu"
 
         embed = discord.Embed(title="🎲 Kết quả Xóc Đĩa", description=desc, color=0x3498db)
