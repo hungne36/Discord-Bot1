@@ -5,11 +5,9 @@ from discord import app_commands
 from utils.data_manager import read_json, write_json, get_balance, update_balance, add_history
 from datetime import datetime, timezone
 
-    # File chứa dữ liệu pets của từng user
 PETS_FILE     = "data/pets.json"
 COST_PER_SPIN = 1_000_000_000
 
-    # Định nghĩa Pet: (Tên, Emoji, Buff%)
 PET_LIST = [
         ("Tí",   "🐭",  5),
         ("Sửu",  "🐂", 10),
@@ -24,13 +22,11 @@ PET_LIST = [
         ("Tuất", "🐕", 55),
         ("Hợi",  "🐖", 60),
     ]
-    # Trọng số tương ứng (càng hiếm ở đầu thì weight thấp hơn)
+
 WEIGHTS = [1,2,3,4,5,6,5,4,3,2,1,1]
 
-    # chắc chắn có file
 os.makedirs(os.path.dirname(PETS_FILE), exist_ok=True)
 if not os.path.exists(PETS_FILE):
-        write_json = write_json  # khai báo để tạo file
         write_json(PETS_FILE, {})
 
 class GachaButton(discord.ui.Button):
@@ -42,39 +38,34 @@ class GachaButton(discord.ui.Button):
             user_id = str(interaction.user.id)
             bal = get_balance(interaction.user.id)
             cost = COST_PER_SPIN * self.count
+
             if bal < cost:
                 return await interaction.response.send_message("❌ Bạn không đủ xu để quay!", ephemeral=True)
 
-            # trừ xu
             newb = update_balance(interaction.user.id, -cost)
             add_history(interaction.user.id, "gacha_cost", -cost, newb)
 
-            # load pets đã có
             pets_data = read_json(PETS_FILE)
             owned = pets_data.get(user_id, {}).get("collected", [])
 
             obtained = []
             available = [p for p in PET_LIST if p[0] not in owned]
-            weights  = [WEIGHTS[i] for i,p in enumerate(PET_LIST) if p[0] not in owned]
+            weights  = [WEIGHTS[i] for i, p in enumerate(PET_LIST) if p[0] not in owned]
 
             if not available:
                 return await interaction.response.send_message(
                     "🎉 Bạn đã sở hữu toàn bộ Pet! Không thể quay thêm.", ephemeral=True
                 )
 
-            # spin tối đa count, nhưng không vượt quá số còn thiếu
             spins = min(self.count, len(available))
             for _ in range(spins):
                 idx = random.choices(range(len(available)), weights=weights, k=1)[0]
                 name, emoji, pct = available[idx]
                 obtained.append((name, emoji, pct))
-                # đánh dấu đã có
                 owned.append(name)
-                # sau khi lấy 1 pet, loại khỏi available
                 del available[idx]
                 del weights[idx]
 
-            # lưu lại
             pets_data[user_id] = {
                 "collected": owned,
                 "last": obtained[-1],
@@ -82,8 +73,7 @@ class GachaButton(discord.ui.Button):
             }
             write_json(PETS_FILE, pets_data)
 
-            # trả kết quả
-            lines = "\n".join(f"{e} **{n}** (+{p}%)" for n,e,p in obtained)
+            lines = "\n".join(f"{e} **{n}** (+{p}%)" for n, e, p in obtained)
             await interaction.response.edit_message(
                 content=(
                     f"🎉 **Bạn đã quay ×{spins}!**\n{lines}\n\n"
@@ -105,12 +95,11 @@ class Gacha(commands.Cog):
 
         @app_commands.command(name="gacha", description="🎲 Quay Pet để nhận buff mọi trò chơi")
         async def gacha(self, interaction: discord.Interaction):
-            """Hiện menu các nút quay"""
-            # đảm bảo file tồn tại
+            await interaction.response.defer(ephemeral=True)  # ✅ Sửa lỗi bằng defer
+
             if not os.path.exists(PETS_FILE):
                 write_json(PETS_FILE, {})
 
-            # load đã có
             pets_data = read_json(PETS_FILE)
             owned = pets_data.get(str(interaction.user.id), {}).get("collected", [])
 
@@ -120,11 +109,12 @@ class Gacha(commands.Cog):
                     f"Mỗi lượt quay mất **{COST_PER_SPIN:,} xu**\n"
                     f"Bạn đã sở hữu: {', '.join(owned) or 'chưa có pet nào'}\n\n"
                     "**Danh sách Pet & Buff:**\n" +
-                    "\n".join(f"{e} {n} – +{p}%" for n,e,p in PET_LIST if n not in owned)
+                    "\n".join(f"{e} {n} – +{p}%" for n, e, p in PET_LIST if n not in owned)
                 ),
                 color=discord.Color.purple()
             )
-            await interaction.response.send_message(embed=embed, view=GachaView(), ephemeral=True)
+
+            await interaction.followup.send(embed=embed, view=GachaView(), ephemeral=True)
 
 async def setup(bot):
         await bot.add_cog(Gacha(bot))
