@@ -75,16 +75,16 @@ class GachaButton(discord.ui.Button):
                 del weights[idx]
 
             # lưu lại
-pets_data[user_id] = {
+            pets_data[user_id] = {
                 "collected": owned,
                 "last": obtained[-1],
                 "updated_at": datetime.now(timezone.utc).isoformat()+"Z"
             }
-write_json(PETS_FILE, pets_data)
+            write_json(PETS_FILE, pets_data)
 
             # trả kết quả
-lines = "\n".join(f"{e} **{n}** (+{p}%)" for n,e,p in obtained)
-await interaction.response.edit_message(
+            lines = "\n".join(f"{e} **{n}** (+{p}%)" for n,e,p in obtained)
+            await interaction.response.edit_message(
                 content=(
                     f"🎉 **Bạn đã quay ×{spins}!**\n{lines}\n\n"
                     f"💰 Số dư hiện tại: **{newb:,} xu**\n"
