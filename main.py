@@ -10,11 +10,12 @@ from datetime import datetime
 
 from keep_alive import keep_alive
 from utils import data_manager
-from utils.data_manager import get_balance, update_balance, add_history
+from utils.data_manager import get_balance, update_balance, add_history, read_json
 from utils.cooldown import can_play
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
+PETS_FILE = "data/pets.json"
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -120,6 +121,15 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
         else:
             thaydoi = -amount
 
+        # Apply pet buff if player wins
+        pets_data = read_json(PETS_FILE).get(str(uid))
+        if pets_data and win and "last" in pets_data:
+            buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
+            buff = buff_pct / 100
+            base_profit = profit  # Original profit before buff
+            extra = round(base_profit * buff)
+            thaydoi = amount + profit + extra
+
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
 
@@ -157,6 +167,15 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
             thaydoi = amount + profit
         else:
             thaydoi = -amount
+
+        # Apply pet buff if player wins
+        pets_data = read_json(PETS_FILE).get(str(uid))
+        if pets_data and win and "last" in pets_data:
+            buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
+            buff = buff_pct / 100
+            base_profit = profit  # Original profit before buff
+            extra = round(base_profit * buff)
+            thaydoi = amount + profit + extra
 
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
