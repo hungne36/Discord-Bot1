@@ -1,11 +1,10 @@
-    # cogs/gacha.py
 import discord, random, os
 from discord.ext import commands
 from discord import app_commands
 from utils.data_manager import read_json, write_json, get_balance, update_balance, add_history
 from datetime import datetime, timezone
 
-PETS_FILE     = "data/pets.json"
+PETS_FILE = "data/pets.json"
 COST_PER_SPIN = 1_000_000_000
 
 PET_LIST = [
@@ -22,7 +21,6 @@ PET_LIST = [
         ("Tuất", "🐕", 55),
         ("Hợi",  "🐖", 60),
     ]
-
 WEIGHTS = [1,2,3,4,5,6,5,4,3,2,1,1]
 
 os.makedirs(os.path.dirname(PETS_FILE), exist_ok=True)
@@ -36,11 +34,10 @@ class GachaButton(discord.ui.Button):
 
         async def callback(self, interaction: discord.Interaction):
             await interaction.response.defer(ephemeral=True)
-            
+
             user_id = str(interaction.user.id)
             bal = get_balance(interaction.user.id)
             cost = COST_PER_SPIN * self.count
-
             if bal < cost:
                 return await interaction.followup.send("❌ Bạn không đủ xu để quay!", ephemeral=True)
 
@@ -52,12 +49,10 @@ class GachaButton(discord.ui.Button):
 
             obtained = []
             available = [p for p in PET_LIST if p[0] not in owned]
-            weights  = [WEIGHTS[i] for i, p in enumerate(PET_LIST) if p[0] not in owned]
+            weights = [WEIGHTS[i] for i, p in enumerate(PET_LIST) if p[0] not in owned]
 
             if not available:
-                return await interaction.followup.send(
-                    "🎉 Bạn đã sở hữu toàn bộ Pet! Không thể quay thêm.", ephemeral=True
-                )
+                return await interaction.followup.send("🎉 Bạn đã sở hữu toàn bộ Pet! Không thể quay thêm.", ephemeral=True)
 
             spins = min(self.count, len(available))
             for _ in range(spins):
@@ -71,7 +66,7 @@ class GachaButton(discord.ui.Button):
             pets_data[user_id] = {
                 "collected": owned,
                 "last": obtained[-1],
-                "updated_at": datetime.now(timezone.utc).isoformat()+"Z"
+                "updated_at": datetime.now(timezone.utc).isoformat() + "Z"
             }
             write_json(PETS_FILE, pets_data)
 
@@ -79,7 +74,7 @@ class GachaButton(discord.ui.Button):
             await interaction.followup.send(
                 content=(
                     f"🎉 **Bạn đã quay ×{spins}!**\n{lines}\n\n"
-                    f"💰 Số dù hiện tại: **{newb:,} xu**\n"
+                    f"💰 Số dư hiện tại: **{newb:,} xu**\n"
                     f"Pet cuối cùng bật buff **+{obtained[-1][2]}%**"
                 ),
                 ephemeral=True
@@ -88,7 +83,7 @@ class GachaButton(discord.ui.Button):
 class GachaView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
-            for c in [1,5,10,50,100,1000]:
+            for c in [1, 5, 10, 50, 100, 1000]:
                 self.add_item(GachaButton(c))
 
 class Gacha(commands.Cog):
@@ -97,8 +92,6 @@ class Gacha(commands.Cog):
 
         @app_commands.command(name="gacha", description="🎲 Quay Pet để nhận buff mọi trò chơi")
         async def gacha(self, interaction: discord.Interaction):
-            await interaction.response.defer(ephemeral=True)  # ✅ Sửa lỗi bằng defer
-
             if not os.path.exists(PETS_FILE):
                 write_json(PETS_FILE, {})
 
@@ -115,8 +108,7 @@ class Gacha(commands.Cog):
                 ),
                 color=discord.Color.purple()
             )
-
-            await interaction.followup.send(embed=embed, view=GachaView(), ephemeral=True)
+            await interaction.response.send_message(embed=embed, view=GachaView(), ephemeral=True)
 
 async def setup(bot):
         await bot.add_cog(Gacha(bot))
