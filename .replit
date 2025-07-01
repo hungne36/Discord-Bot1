@@ -21,3 +21,15 @@ externalPort = 5000
 [[ports]]
 localPort = 8080
 externalPort = 8080
+
+[workflows]
+runButton = "Run Discord Bot"
+
+[[workflows.workflow]]
+name = "Run Discord Bot"
+author = 43938313
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
