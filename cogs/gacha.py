@@ -106,6 +106,8 @@ class Gacha(commands.Cog):
         @app_commands.command(name="gacha", description="🎲 Quay Pet để nhận buff mọi trò chơi")
         async def gacha(self, interaction: discord.Interaction):
             """Hiện menu các nút quay"""
+            await interaction.response.defer(ephemeral=True)  # ✅ đánh dấu bot đang xử lý
+            
             # đảm bảo file tồn tại
             if not os.path.exists(PETS_FILE):
                 write_json(PETS_FILE, {})
@@ -124,7 +126,7 @@ class Gacha(commands.Cog):
                 ),
                 color=discord.Color.purple()
             )
-            await interaction.response.send_message(embed=embed, view=GachaView(), ephemeral=True)
+            await interaction.followup.send(embed=embed, view=GachaView(), ephemeral=True)  # ✅ gửi sau bằng followup
 
 async def setup(bot):
         await bot.add_cog(Gacha(bot))
