@@ -35,6 +35,8 @@ class GachaButton(discord.ui.Button):
             self.count = count
 
         async def callback(self, interaction: discord.Interaction):
+            await interaction.response.defer(ephemeral=True)
+            
             user_id = str(interaction.user.id)
             bal = get_balance(interaction.user.id)
             cost = COST_PER_SPIN * self.count
