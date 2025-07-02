@@ -140,11 +140,7 @@ async def process_game(interaction: Interaction, bets: dict):
                 profit = total_winnings - total_bet
                 if profit > 0:
                     bonus = round(profit * buff_pct / 100)
-                    total_winnings += bonusct / 100
-                base_profit = total_winnings - total_bet  # Profit before buff
-                if base_profit > 0:
-                    extra = round(base_profit * buff)
-                    total_winnings += extra
+                    total_winnings += bonus
 
         sodu[user_id] -= total_bet
         sodu[user_id] += total_winnings
@@ -158,6 +154,17 @@ async def process_game(interaction: Interaction, bets: dict):
             desc += f"- {choice} ({amt:,} xu)\n"
         desc += f"💸 Tổng cược: {total_bet:,} xu\n"
         desc += f"🏆 Thắng: {total_winnings:,} xu\n"
+        
+        # Show pet buff info if applicable
+        if total_winnings > 0:
+            from utils.data_manager import get_pet_buff
+            buff_pct = get_pet_buff(user.id)
+            if buff_pct > 0:
+                profit = total_winnings - total_bet
+                if profit > 0:
+                    bonus = round(profit * buff_pct / 100)
+                    desc += f"🐾 Buff Pet: +{buff_pct}% | Thưởng thêm: {bonus:,} xu\n"
+        
         desc += f"💰 Số dư: {sodu[user_id]:,} xu"
 
         embed = discord.Embed(title="🎲 Kết quả Xóc Đĩa", description=desc, color=0x3498db)
