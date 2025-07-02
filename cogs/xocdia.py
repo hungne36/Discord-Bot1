@@ -189,11 +189,13 @@ class XocDia(commands.Cog):
 
     @app_commands.command(name="xocdia", description="Bắt đầu phiên Xóc Đĩa chơi chung")
     async def xocdia(self, interaction: discord.Interaction):
+        await interaction.response.defer()  # 👈 defer để giữ interaction sống
+        
         session = {"active": True, "bets": {}, "host_id": str(interaction.user.id)}
         write_json(SESSION_FILE, session)
 
         view = XocDiaView()
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"🎮 **{interaction.user.mention}** đã mở phiên Xóc Đĩa! Chọn cửa để cược:",
             view=view
         )
