@@ -14,7 +14,7 @@ class BetModal(discord.ui.Modal):
         self.amount = discord.ui.TextInput(
             label="Số xu cược",
             placeholder="Nhập số (ví dụ: 10000)",
-            max_length=18,
+            max_length=30,
             style=discord.TextStyle.short
         )
         self.add_item(self.amount)

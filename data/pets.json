@@ -1,8 +1,24 @@
 {
-  "USER_ID": {
-    "collected": ["Tí","Sửu",…],
-    "last": ["Ngọ","🐎",35],
-    "updated_at": "2025-07-01T12:34:56.789Z"
-  },
-  …
+  "730436357838602301": {
+    "collected": [
+      "S\u1eedu",
+      "T\u1ef5",
+      "Ng\u1ecd",
+      "T\u00ed",
+      "Th\u00ecn",
+      "M\u1eb9o",
+      "D\u1ea7n",
+      "M\u00f9i",
+      "Th\u00e2n",
+      "H\u1ee3i",
+      "D\u1eadu",
+      "Tu\u1ea5t"
+    ],
+    "last": [
+      "M\u00f9i",
+      "\ud83d\udc10",
+      40
+    ],
+    "updated_at": "2025-07-02T07:54:58.159652+00:00Z"
+  }
 }

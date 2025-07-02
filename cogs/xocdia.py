@@ -142,15 +142,15 @@ async def ket_thuc_phien(channel, original_message=None):
         tong_thuong = 0
 
         for cua, tien in user_bets.items():
-            if cua in cua_thang:
-                if cua in ["4 Đỏ", "4 Trắng"]:
-                    tong_thuong += tien + round(tien * 11)  # 11x profit
-                elif cua in ["3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ"]:
-                    tong_thuong += tien + round(tien * 1.6)  # 1.6x profit
-                elif cua in ["Chẵn", "Lẻ"]:
-                    tong_thuong += tien + round(tien * -0.1)  # -0.1x profit (house edge)
-            else:
-                tong_thuong += -tien  # Loss
+                if cua in cua_thang:
+                    if cua in ["4 Đỏ", "4 Trắng"]:
+                        tong_thuong += tien + round(tien * 11)  # 11x profit
+                    elif cua in ["3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ"]:
+                        tong_thuong += tien + round(tien * 1.6)  # 1.6x profit
+                    elif cua in ["Chẵn", "Lẻ"]:
+                        tong_thuong += tien + round(tien * 0.9)  # thắng Chẵn/Lẻ = nhận 90% lãi + gốc
+                else:
+                    tong_thuong += -tien  # thua = mất toàn bộ
 
         # Apply pet buff if player won
         if tong_thuong > 0:  # Player won something
