@@ -17,11 +17,11 @@ class Top(commands.Cog):
             today = datetime.utcnow().date()
             spent = {}
             for h in hist:
-                if h["amount"] < 0:
+                if int(h["amount"]) < 0:
                     d = datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date()
                     if d == today:
                         uid = h["user_id"]
-                        spent[uid] = spent.get(uid, 0) - h["amount"]
+                        spent[uid] = spent.get(uid, 0) - int(h["amount"])
 
             if not spent:
                 return await interaction.response.send_message("📊 Chưa có ai tiêu xu hôm nay.", ephemeral=True)
