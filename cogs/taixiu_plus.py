@@ -70,11 +70,24 @@ class SumBetModal(discord.ui.Modal):
         await interaction.response.send_message(desc, ephemeral=False)
 
 class SumSelect(discord.ui.View):
-    def __init__(self):
+    def __init__(self, allow_only=None):
         super().__init__(timeout=60)
-        options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(3,19)]
+        if allow_only:
+            # Flatten ranges if provided
+            allowed_numbers = []
+            for item in allow_only:
+                if isinstance(item, range):
+                    allowed_numbers.extend(list(item))
+                else:
+                    allowed_numbers.append(item)
+            options = [discord.SelectOption(label=str(i), value=str(i)) for i in allowed_numbers]
+            placeholder_text = f"Chọn tối đa 4 số ({min(allowed_numbers)}–{max(allowed_numbers)})…"
+        else:
+            options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(3,19)]
+            placeholder_text = "Chọn tối đa 4 số (3–18)…"
+        
         self.add_item(discord.ui.Select(
-            placeholder="Chọn tối đa 4 số (3–18)…",
+            placeholder=placeholder_text,
             min_values=1, max_values=4,
             options=options,
             custom_id="sum_select"
@@ -94,6 +107,16 @@ class TaiXiuPlus(commands.Cog):
         await interaction.response.send_message(
             "🔢 Chọn tối đa 4 số để cược:", view=SumSelect(), ephemeral=True
         )
+
+async def play_taixiu_plus_tai(interaction: discord.Interaction):
+    """Mở modal hoặc View để đặt cược cửa TÀI."""
+    view = SumSelect(allow_only=[range(11,19)])  # Sum 11-18 cho Tài
+    await interaction.response.send_message("🔢 Chọn số để cược TÀI:", view=view, ephemeral=True)
+
+async def play_taixiu_plus_xiu(interaction: discord.Interaction):
+    """Mở modal hoặc View để đặt cược cửa XỈU."""
+    view = SumSelect(allow_only=[range(3,11)])  # Sum 3-10 cho Xỉu
+    await interaction.response.send_message("🔢 Chọn số để cược XỈU:", view=view, ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(TaiXiuPlus(bot))
