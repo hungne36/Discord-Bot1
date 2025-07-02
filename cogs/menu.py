@@ -6,7 +6,7 @@ from discord import app_commands
     # import đúng các class từ cogs khác
 from .taixiu_plus import SumSelect
 from .chanle      import ChanLeModal
-    from .xocdia      import XocDiaView
+from .xocdia      import XocDiaView
 
     class MenuView(discord.ui.View):
         def __init__(self):
