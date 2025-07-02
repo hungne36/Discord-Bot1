@@ -117,18 +117,15 @@ async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str
 
         if win:
             profit = round(amount * 0.97)
-            thaydoi = amount + profit
+            
+            # Áp dụng buff pet nếu thắng
+            from utils.data_manager import get_pet_buff
+            buff_pct = get_pet_buff(uid)
+            extra = round(profit * buff_pct / 100) if buff_pct > 0 else 0
+            
+            thaydoi = amount + profit + extra
         else:
             thaydoi = -amount
-
-        # Apply pet buff if player wins
-        pets_data = read_json(PETS_FILE).get(str(uid))
-        if pets_data and win and "last" in pets_data:
-            buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
-            buff = buff_pct / 100
-            base_profit = profit  # Original profit before buff
-            extra = round(base_profit * buff)
-            thaydoi = amount + profit + extra
 
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
@@ -164,18 +161,15 @@ async def play_chanle(interaction: discord.Interaction, amount: int, choice: str
 
         if win:
             profit = round(amount * 0.95)
-            thaydoi = amount + profit
+            
+            # Áp dụng buff pet nếu thắng
+            from utils.data_manager import get_pet_buff
+            buff_pct = get_pet_buff(uid)
+            extra = round(profit * buff_pct / 100) if buff_pct > 0 else 0
+            
+            thaydoi = amount + profit + extra
         else:
             thaydoi = -amount
-
-        # Apply pet buff if player wins
-        pets_data = read_json(PETS_FILE).get(str(uid))
-        if pets_data and win and "last" in pets_data:
-            buff_pct = pets_data["last"][2]  # Get buff percentage from last pet
-            buff = buff_pct / 100
-            base_profit = profit  # Original profit before buff
-            extra = round(base_profit * buff)
-            thaydoi = amount + profit + extra
 
         newb = update_balance(uid, thaydoi)
         add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
