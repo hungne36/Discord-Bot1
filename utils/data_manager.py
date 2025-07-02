@@ -67,12 +67,9 @@ def add_history(uid, action, amount, balance, username=None):
     hist.append(entry)
     write_json(HISTORY_FILE, hist)
 
-def get_pet_buff(uid):
-    pets = read_json("data/pets.json")
-    uid_str = str(uid)
-    if uid_str in pets and "last" in pets[uid_str]:
-        return pets[uid_str]["last"][2]  # phần trăm buff
-    return 0
+def get_pet_buff(uid: int) -> float:
+    data = read_json("data/pets.json")
+    return data.get(str(uid), {}).get("last", (None,None,0))[2] or 0
 
 def get_today_spent(uid):
     """Get total amount spent today by user"""
