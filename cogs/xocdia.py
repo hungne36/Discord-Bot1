@@ -59,12 +59,18 @@ class BetModal(discord.ui.Modal):
         write_json(SESSION_FILE, session)
 
         total_bet = sum(session["bets"][user_id].values())
+        
+        # Defer the interaction first
+        await interaction.response.defer(ephemeral=True)
+        
+        # Send public message to channel
         await interaction.channel.send(
             f"📥 {interaction.user.mention} đã cược **{amount:,} xu** vào **{self.choice}** lúc `{datetime.now().strftime('%H:%M:%S')}`"
         )
-        await interaction.response.send_message(
-            f"✅ Cược thành công!\n💰 Tổng đã cược: **{total_bet:,} xu**\n💼 Số dư: **{balances[user_id]:,} xu**",
-            ephemeral=True
+        
+        # Send ephemeral follow-up message
+        await interaction.followup.send(
+            f"✅ Cược thành công!\n💰 Tổng đã cược: **{total_bet:,} xu**\n💼 Số dư: **{balances[user_id]:,} xu**"
         )
 
 class CuaButton(discord.ui.Button):
