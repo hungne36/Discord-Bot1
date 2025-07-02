@@ -1,36 +1,36 @@
-# cogs/menu.py
+    # cogs/menu.py
 import discord
 from discord.ext import commands
 from discord import app_commands
-from cogs.taixiu_plus import play_taixiu_plus_tai, play_taixiu_plus_xiu
-from cogs.chanle import play_chanle
-from cogs.xocdia import start_xocdia_mp
 
-class MenuView(discord.ui.View):
+    # import đúng các class từ cogs khác
+from .taixiu_plus import SumSelect
+from .chanle      import ChanLeModal
+    from .xocdia      import XocDiaView
+
+    class MenuView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
 
-        @discord.ui.button(label="🎲 Tài Plus", style=discord.ButtonStyle.success, custom_id="menu_txp_tai")
-        async def btn_tai_plus(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await play_taixiu_plus_tai(interaction)
-
-        @discord.ui.button(label="❌ Xỉu Plus", style=discord.ButtonStyle.danger, custom_id="menu_txp_xiu")
-        async def btn_xiu_plus(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await play_taixiu_plus_xiu(interaction)
+        @discord.ui.button(label="🎲 Tài Plus", style=discord.ButtonStyle.success, custom_id="menu_taixiu_plus")
+        async def btn_txp(self, interaction: discord.Interaction, button: discord.ui.Button):
+            await interaction.response.send_message("🔢 Chọn sum (3–18)…", view=SumSelect(), ephemeral=True)
 
         @discord.ui.button(label="⚖️ Chẵn", style=discord.ButtonStyle.primary, custom_id="menu_chan")
         async def btn_chan(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await play_chanle(interaction, choice="chan")
+            # gọi modal Chẵn/Lẻ, truyền "chan"
+            await interaction.response.send_modal(ChanLeModal("chan"))
 
         @discord.ui.button(label="🔢 Lẻ", style=discord.ButtonStyle.primary, custom_id="menu_le")
         async def btn_le(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await play_chanle(interaction, choice="le")
+            await interaction.response.send_modal(ChanLeModal("le"))
 
-        @discord.ui.button(label="🎲 Xóc Đĩa MP", style=discord.ButtonStyle.secondary, custom_id="menu_xdmp")
-        async def btn_xocdia(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await start_xocdia_mp(interaction)
+        @discord.ui.button(label="🎲 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
+        async def btn_xd(self, interaction: discord.Interaction, button: discord.ui.Button):
+            # XocDiaView là View cho xóc đĩa multi-player
+            await interaction.response.send_message("🔘 Chọn cửa Xóc Đĩa…", view=XocDiaView(), ephemeral=True)
 
-class Menu(commands.Cog):
+    class Menu(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
@@ -38,5 +38,5 @@ class Menu(commands.Cog):
         async def menu(self, interaction: discord.Interaction):
             await interaction.response.send_message("🎮 Chọn trò chơi:", view=MenuView(), ephemeral=True)
 
-async def setup(bot):
+    async def setup(bot):
         await bot.add_cog(Menu(bot))
