@@ -1,58 +1,54 @@
-import discord
-from discord.ext import commands
-from discord import app_commands
-import asyncio
-import os
-import traceback
-import sys
-import random
-from datetime import datetime
+    # main.py
+    import os
+    import sys
+    import asyncio
+    import traceback
 
-from keep_alive import keep_alive
-from utils import data_manager
-from utils.data_manager import get_balance, update_balance, add_history, read_json
-from utils.cooldown import can_play
+    import discord
+    from discord.ext import commands
+    from discord import app_commands
 
-TOKEN = os.getenv("TOKEN")
-ADMIN_ID = 730436357838602301
-PETS_FILE = "data/pets.json"
+    from keep_alive import keep_alive  # Giữ bot online qua Flask
 
-intents = discord.Intents.default()
-intents.message_content = True
-intents.guilds = True
-intents.members = True
+    TOKEN = os.getenv("TOKEN")
+    ADMIN_ID = 730436357838602301  # Thay bằng ID admin của bạn
 
-bot = commands.Bot(command_prefix="!", intents=intents)
-tree = bot.tree
+    intents = discord.Intents.default()
+    intents.message_content = True
+    intents.guilds = True
+    intents.members = True
 
-    # —————————————————————————
-    # Global error handler cho slash command
-@tree.error
-async def on_app_command_error(interaction: discord.Interaction, error):
+    bot = commands.Bot(command_prefix="!", intents=intents)
+    tree = bot.tree
+
+    # —————————————————————————————————————————
+    # Global error handler cho slash commands
+    @tree.error
+    async def on_app_command_error(interaction: discord.Interaction, error):
         print("🔴 App command error:", "".join(traceback.format_exception(type(error), error, error.__traceback__)))
         try:
             await interaction.response.send_message("❌ Đã có lỗi xảy ra, thử lại sau.", ephemeral=True)
         except:
             pass
 
-    # —————————————————————————
-    # Load tất cả cogs
-async def load_extensions():
+    # —————————————————————————————————————————
+    # Load tất cả cogs trong thư mục cogs/
+    async def load_extensions():
         for filename in os.listdir("./cogs"):
-            if filename.endswith(".py") and filename != "__init__.py":
+            if filename.endswith(".py") and not filename.startswith("__"):
                 try:
                     await bot.load_extension(f"cogs.{filename[:-3]}")
                     print(f"✅ Loaded cog: {filename}")
                 except Exception as e:
-                    print(f"❌ Failed to load {filename}: {e}")
+                    print(f"❌ Failed to load cog {filename}: {e}")
 
-    # —————————————————————————
-@bot.event
-async def on_ready():
+    # —————————————————————————————————————————
+    @bot.event
+    async def on_ready():
         await load_extensions()
         try:
-            synced = await tree.sync(guild=None)  # Toàn bộ global (có thể sửa lại thành `guild=interaction.guild` nếu cần)
-            print(f"✅ Synced {len(synced)} commands")
+            synced = await tree.sync()  # sync global commands
+            print(f"✅ Synced {len(synced)} slash commands")
         except Exception as e:
             print(f"❌ Sync commands failed: {e}")
 
@@ -61,33 +57,37 @@ async def on_ready():
         else:
             print("⚠️ Bot online but bot.user is None")
 
-    # —————————————————————————
-@tree.command(name="ping", description="Kiểm tra trạng thái bot")
-async def ping(interaction: discord.Interaction):
+    # —————————————————————————————————————————
+    # /ping
+    @tree.command(name="ping", description="Kiểm tra trạng thái bot")
+    async def ping(interaction: discord.Interaction):
         await interaction.response.send_message("🏓 Pong!", ephemeral=True)
 
-    # —————————————————————————
-@tree.command(name="resetdaily", description="Reset /daily cho user (Admin only)")
-@app_commands.describe(user="Người dùng cần reset")
-async def resetdaily(interaction: discord.Interaction, user: discord.User):
+    # —————————————————————————————————————————
+    # /resetdaily (admin only)
+    @tree.command(name="resetdaily", description="Reset /daily cho user (Admin only)")
+    @app_commands.describe(user="Người dùng cần reset")
+    async def resetdaily(interaction: discord.Interaction, user: discord.User):
         if interaction.user.id != ADMIN_ID:
-            return await interaction.response.send_message("❌ Không có quyền!", ephemeral=True)
+            return await interaction.response.send_message("❌ Bạn không có quyền!", ephemeral=True)
 
-        data = data_manager.read_json("data/user_data.json")
+        from utils.data_manager import read_json, write_json
+
+        data = read_json("data/user_data.json")
         uid = str(user.id)
         if uid in data:
             del data[uid]
-            data_manager.write_json("data/user_data.json", data)
+            write_json("data/user_data.json", data)
             await interaction.response.send_message(f"✅ Đã reset /daily cho {user.mention}", ephemeral=True)
         else:
             await interaction.response.send_message("ℹ️ Người này chưa nhận /daily.", ephemeral=True)
 
-    # —————————————————————————
-@tree.command(name="sync", description="Đồng bộ lệnh slash (Admin only)")
-async def sync(interaction: discord.Interaction):
+    # —————————————————————————————————————————
+    # /sync (admin only)
+    @tree.command(name="sync", description="Đồng bộ slash commands (Admin only)")
+    async def sync(interaction: discord.Interaction):
         if not interaction.user.guild_permissions.administrator:
             return await interaction.response.send_message("❌ Bạn không có quyền sử dụng lệnh này!", ephemeral=True)
-
         try:
             synced = await tree.sync(guild=interaction.guild)
             await interaction.response.send_message(f"✅ Đã đồng bộ {len(synced)} lệnh cho server này.", ephemeral=True)
@@ -95,100 +95,14 @@ async def sync(interaction: discord.Interaction):
             await interaction.response.send_message("❌ Lỗi khi đồng bộ lệnh!", ephemeral=True)
             print(f"Sync error: {e}")
 
-    # —————————————————————————
-    # Game: Tài Xỉu
-async def play_taixiu(interaction: discord.Interaction, amount: int, choice: str):
-        uid = interaction.user.id
-        ok, wait = can_play(uid)
-        if not ok:
-            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
-
-        bal = get_balance(uid)
-        if amount < 1000 or amount > bal:
-            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
-
-        await interaction.response.send_message("🎲 Đang lắc cuộc đời bạn...")
-        await asyncio.sleep(2)
-
-        dice = [random.randint(1, 6) for _ in range(3)]
-        total = sum(dice)
-        kq = "tai" if total >= 11 else "xiu"
-        win = (choice == kq)
-
-        if win:
-            profit = round(amount * 0.97)
-            
-            # Áp dụng buff pet nếu thắng
-            from utils.data_manager import get_pet_buff
-            buff_pct = get_pet_buff(uid)
-            extra = round(profit * buff_pct / 100) if buff_pct > 0 else 0
-            
-            thaydoi = amount + profit + extra
-        else:
-            thaydoi = -amount
-
-        newb = update_balance(uid, thaydoi)
-        add_history(uid, f"taixiu_{'thắng' if win else 'thua'}", thaydoi, newb)
-
-        await interaction.edit_original_response(
-            content=(
-                f"🎲 Kết quả: {dice} → {total} → **{kq.upper()}**\n"
-                f"{'🎉 Ôi bạn đỉnh vãi ò!' if win else '💸 Ôi bạn đần vãi chưởng!'}\n"
-                f"💰 Thay đổi: {thaydoi:+,} xu | Số dư: {newb:,} xu"
-            )
-        )
-
-    # —————————————————————————
-    # Game: Chẵn Lẻ
-async def play_chanle(interaction: discord.Interaction, amount: int, choice: str):
-        uid = interaction.user.id
-        ok, wait = can_play(uid)
-        if not ok:
-            return await interaction.response.send_message(f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True)
-
-        bal = get_balance(uid)
-        if amount < 1000 or amount > bal:
-            return await interaction.response.send_message("❌ Số xu cược không hợp lệ!", ephemeral=True)
-
-        await interaction.response.send_message("⚖️ Ăn cơm hay ăn cứt do bạn chọn...")
-        await asyncio.sleep(2)
-
-        sec = datetime.utcnow().second
-        so1, so2 = divmod(sec, 10)
-        total = so1 + so2
-        kq = "chan" if total % 2 == 0 else "le"
-        win = (choice == kq)
-
-        if win:
-            profit = round(amount * 0.95)
-            
-            # Áp dụng buff pet nếu thắng
-            from utils.data_manager import get_pet_buff
-            buff_pct = get_pet_buff(uid)
-            extra = round(profit * buff_pct / 100) if buff_pct > 0 else 0
-            
-            thaydoi = amount + profit + extra
-        else:
-            thaydoi = -amount
-
-        newb = update_balance(uid, thaydoi)
-        add_history(uid, f"chanle_{'thắng' if win else 'thua'}", thaydoi, newb)
-
-        await interaction.edit_original_response(
-            content=(
-                f"🕓 Kết quả: giây={sec} → {so1}+{so2}={total} → **{kq.upper()}**\n"
-                f"{'🎉 Chúc mừng bạn có cơm ăn!' if win else '💸 Chia buồn với bạn vì còn cứt thôi nhá!'}\n"
-                f"💰 Thay đổi: {thaydoi:+,} xu | Số dư: {newb:,} xu"
-            )
-        )
-
-    # —————————————————————————
-    # Safe main loop: auto restart nếu bot crash
-async def safe_main():
+    # —————————————————————————————————————————
+    # Safe main: tự restart khi crash
+    async def safe_main():
+        keep_alive()  # Khởi chạy Flask server giữ bot online
         while True:
             try:
                 if not TOKEN:
-                    print("❌ Thiếu TOKEN")
+                    print("❌ Thiếu biến môi trường TOKEN")
                     return
                 await bot.start(TOKEN)
             except Exception:
@@ -196,6 +110,5 @@ async def safe_main():
                 traceback.print_exc()
                 await asyncio.sleep(5)
 
-if __name__ == "__main__":
-        keep_alive()
+    if __name__ == "__main__":
         asyncio.run(safe_main())
