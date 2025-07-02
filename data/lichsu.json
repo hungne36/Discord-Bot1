@@ -56,5 +56,42 @@
     "balance_after": 986895000000000,
     "timestamp": "2025-07-02T07:56:17.629155Z",
     "username": "<@730436357838602301>"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 2259998,
+    "balance_after": 1001259999,
+    "timestamp": "2025-07-02T18:54:20.397071Z",
+    "username": "<@730436357838602301>"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "nap",
+    "amount": 1000000000000000,
+    "balance_after": 1000011001259999,
+    "timestamp": "2025-07-02T18:55:32.519068Z",
+    "username": "hungnamvi"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "gacha_cost",
+    "amount": -50000000000,
+    "balance_after": 999961001259999,
+    "timestamp": "2025-07-02T18:55:41.387669Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "gacha_cost",
+    "amount": -10000000000000,
+    "balance_after": 989961001259999,
+    "timestamp": "2025-07-02T18:55:49.919618Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "gacha_cost",
+    "amount": -1000000000000,
+    "balance_after": 988961001259999,
+    "timestamp": "2025-07-02T18:55:54.610466Z"
   }
 ]
