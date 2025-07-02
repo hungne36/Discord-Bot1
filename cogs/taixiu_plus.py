@@ -72,7 +72,7 @@ class SumBetModal(discord.ui.Modal):
 class SumSelect(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=60)
-        options = [discord.SelectOption(label=str(i)) for i in range(3,19)]
+        options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(3,19)]
         self.add_item(discord.ui.Select(
             placeholder="Chọn tối đa 4 số (3–18)…",
             min_values=1, max_values=4,
@@ -80,8 +80,8 @@ class SumSelect(discord.ui.View):
             custom_id="sum_select"
         ))
 
-    @discord.ui.select()
-    async def on_select(self, select: discord.ui.Select, interaction: discord.Interaction):
+    @discord.ui.select(custom_id="sum_select")
+    async def on_select(self, interaction: discord.Interaction, select: discord.ui.Select):
         choices = list(map(int, select.values))
         await interaction.response.send_modal(SumBetModal(choices))
 
