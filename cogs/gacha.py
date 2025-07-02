@@ -5,7 +5,7 @@ from utils.data_manager import read_json, write_json, get_balance, update_balanc
 from datetime import datetime, timezone
 
 PETS_FILE = "data/pets.json"
-COST_PER_SPIN = 1_000_000_000
+COST_PER_SPIN = 10_000_000_000
 
 PET_LIST = [
         ("Tí",   "🐭",  5),
@@ -21,7 +21,9 @@ PET_LIST = [
         ("Tuất", "🐕", 55),
         ("Hợi",  "🐖", 60),
     ]
-WEIGHTS = [1,2,3,4,5,6,5,4,3,2,1,1]
+
+    # Weight từ thấp đến cao => pet càng mạnh càng hiếm
+WEIGHTS = [60, 50, 40, 35, 30, 25, 20, 15, 10, 7, 4, 2]
 
 os.makedirs(os.path.dirname(PETS_FILE), exist_ok=True)
 if not os.path.exists(PETS_FILE):
@@ -33,13 +35,11 @@ class GachaButton(discord.ui.Button):
             self.count = count
 
         async def callback(self, interaction: discord.Interaction):
-            await interaction.response.defer(ephemeral=True)
-
             user_id = str(interaction.user.id)
             bal = get_balance(interaction.user.id)
             cost = COST_PER_SPIN * self.count
             if bal < cost:
-                return await interaction.followup.send("❌ Bạn không đủ xu để quay!", ephemeral=True)
+                return await interaction.response.send_message("❌ Bạn không đủ xu để quay!", ephemeral=True)
 
             newb = update_balance(interaction.user.id, -cost)
             add_history(interaction.user.id, "gacha_cost", -cost, newb)
@@ -48,42 +48,34 @@ class GachaButton(discord.ui.Button):
             owned = pets_data.get(user_id, {}).get("collected", [])
 
             obtained = []
-            available = [p for p in PET_LIST if p[0] not in owned]
-            weights = [WEIGHTS[i] for i, p in enumerate(PET_LIST) if p[0] not in owned]
-
-            if not available:
-                return await interaction.followup.send("🎉 Bạn đã sở hữu toàn bộ Pet! Không thể quay thêm.", ephemeral=True)
-
-            spins = min(self.count, len(available))
-            for _ in range(spins):
-                idx = random.choices(range(len(available)), weights=weights, k=1)[0]
-                name, emoji, pct = available[idx]
+            for _ in range(self.count):
+                idx = random.choices(range(len(PET_LIST)), weights=WEIGHTS, k=1)[0]
+                name, emoji, pct = PET_LIST[idx]
                 obtained.append((name, emoji, pct))
-                owned.append(name)
-                del available[idx]
-                del weights[idx]
+                if name not in owned:
+                    owned.append(name)
 
             pets_data[user_id] = {
                 "collected": owned,
                 "last": obtained[-1],
-                "updated_at": datetime.now(timezone.utc).isoformat() + "Z"
+                "updated_at": datetime.now(timezone.utc).isoformat()+"Z"
             }
             write_json(PETS_FILE, pets_data)
 
-            lines = "\n".join(f"{e} **{n}** (+{p}%)" for n, e, p in obtained)
-            await interaction.followup.send(
+            lines = "\n".join(f"{e} **{n}** (+{p}%){' 🆕' if n not in owned else ''}" for n,e,p in obtained)
+            await interaction.response.edit_message(
                 content=(
-                    f"🎉 **Bạn đã quay ×{spins}!**\n{lines}\n\n"
-                    f"💰 Số dư hiện tại: **{newb:,} xu**\n"
-                    f"Pet cuối cùng bật buff **+{obtained[-1][2]}%**"
+                    f"🎉 **Bạn đã quay ×{self.count}!**\n{lines}\n\n"
+                    f"💰 Số dư: **{newb:,} xu**\n"
+                    f"Pet đang bật buff: **{obtained[-1][1]} {obtained[-1][0]} +{obtained[-1][2]}%**"
                 ),
-                ephemeral=True
+                view=None
             )
 
 class GachaView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
-            for c in [1, 5, 10, 50, 100, 1000]:
+            for c in [1,5,10,50,100,1000]:
                 self.add_item(GachaButton(c))
 
 class Gacha(commands.Cog):
@@ -94,7 +86,6 @@ class Gacha(commands.Cog):
         async def gacha(self, interaction: discord.Interaction):
             if not os.path.exists(PETS_FILE):
                 write_json(PETS_FILE, {})
-
             pets_data = read_json(PETS_FILE)
             owned = pets_data.get(str(interaction.user.id), {}).get("collected", [])
 
@@ -104,7 +95,7 @@ class Gacha(commands.Cog):
                     f"Mỗi lượt quay mất **{COST_PER_SPIN:,} xu**\n"
                     f"Bạn đã sở hữu: {', '.join(owned) or 'chưa có pet nào'}\n\n"
                     "**Danh sách Pet & Buff:**\n" +
-                    "\n".join(f"{e} {n} – +{p}%" for n, e, p in PET_LIST if n not in owned)
+                    "\n".join(f"{e} {n} – +{p}%" for n,e,p in PET_LIST)
                 ),
                 color=discord.Color.purple()
             )

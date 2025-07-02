@@ -1,43 +1,63 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.data_manager import read_json, get_balance
-from datetime import datetime
+from utils.data_manager import get_balance, get_today_spent, get_today_net, get_pending_reward
+import os
+from utils.data_manager import read_json
 
-HISTORY_FILE = "data/lichsu.json"
-
+PETS_FILE = "data/pets.json"
 class Info(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
-        @app_commands.command(name="info", description="Xem thông tin cá nhân")
+        @app_commands.command(name="info", description="📊 Xem thông tin tài khoản")
         async def info(self, interaction: discord.Interaction):
             uid = interaction.user.id
-            bal = get_balance(uid)
-            hist = read_json(HISTORY_FILE)
+            balance = get_balance(uid)
+            spent_today = get_today_spent(uid)
+            net_today = get_today_net(uid)
+            pending = get_pending_reward(uid)
 
-            today = datetime.utcnow().date()
-            spent_today = sum(
-                -h["amount"]
-                for h in hist
-                if h["user_id"] == uid
-                   and h["amount"] < 0
-                   and datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date() == today
+            # Đọc pet đang sở hữu
+            pets_data = read_json(PETS_FILE)
+            user_data = pets_data.get(str(uid), {})
+            owned_pets = user_data.get("collected", [])
+            last_pet = user_data.get("last", None)
+
+            # Tính buff
+            total_buff = 0
+            buff_lines = []
+            for name, emoji, pct in [
+                ("Tí",   "🐭",  5),
+                ("Sửu",  "🐂", 10),
+                ("Dần",  "🐯", 15),
+                ("Mẹo",  "🐇", 20),
+                ("Thìn", "🐉", 25),
+                ("Tỵ",   "🐍", 30),
+                ("Ngọ",  "🐎", 35),
+                ("Mùi",  "🐐", 40),
+                ("Thân", "🐒", 45),
+                ("Dậu",  "🐓", 50),
+                ("Tuất", "🐕", 55),
+                ("Hợi",  "🐖", 60),
+            ]:
+                if name in owned_pets:
+                    total_buff += pct
+                    buff_lines.append(f"{emoji} {name} (+{pct}%)")
+
+            embed = discord.Embed(
+                title=f"👤 Thông tin của {interaction.user.name}",
+                description=(
+                    f"💰 Số dư: **{balance:,} xu**\n"
+                    f"🔥 Xu tiêu hôm nay: **{spent_today:,} xu**\n"
+                    f"📈 Thắng/Thua hôm nay: **{net_today:+,} xu**\n"
+                    f"🎁 Xu chờ nhận: **{pending:,} xu**\n"
+                    f"🐾 Buff Pet: **+{total_buff}%**\n" +
+                    (f"> " + "\n> ".join(buff_lines) if buff_lines else "Bạn chưa sở hữu pet nào.")
+                ),
+                color=discord.Color.gold()
             )
 
-            # Tính phúc lợi chờ nhận: 50 tỷ cho mỗi 1 nghìn tỷ đã tiêu (max 50 tỷ)
-            reward_cap = min(spent_today, 1_000_000_000_000)  # tiêu tối đa 1 nghìn tỷ
-            pending = (reward_cap // 1_000_000_000_000) * 50_000_000_000
-
-            wins = sum(1 for h in hist if h["user_id"] == uid and "thắng" in h["action"])
-            losses = sum(1 for h in hist if h["user_id"] == uid and "thua" in h["action"])
-
-            embed = discord.Embed(title="👤 Thông tin của bạn", color=discord.Color.blue())
-            embed.add_field(name="💰 Số dư hiện tại", value=f"{bal:,} xu")
-            embed.add_field(name="📉 Xu đã tiêu hôm nay", value=f"{spent_today:,} xu")
-            embed.add_field(name="🎁 Xu chờ nhận", value=f"{pending:,} xu")
-            embed.add_field(name="🏆 Thắng", value=str(wins))
-            embed.add_field(name="💥 Thua", value=str(losses))
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 async def setup(bot):
