@@ -157,13 +157,10 @@ async def ket_thuc_phien(channel, original_message=None):
             from utils.data_manager import get_pet_buff
             buff_pct = get_pet_buff(int(user_id))
             if buff_pct > 0:
-                extra = round((tong_thuong - tong_cuoc) * buff_pct / 100)
-                tong_thuong += extrantage from last pet
-                buff = buff_pct / 100
-                base_profit = tong_thuong - (-tong_cuoc)  # Calculate actual profit
-                if base_profit > 0:
-                    extra = round(base_profit * buff)
-                    tong_thuong += extra
+                profit = tong_thuong - tong_cuoc  # Calculate net profit
+                if profit > 0:
+                    bonus = round(profit * buff_pct / 100)
+                    tong_thuong += bonus
 
         lai_lo = int(tong_thuong)
         balances[user_id] = balances.get(user_id, 0) + int(tong_thuong)

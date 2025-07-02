@@ -136,9 +136,11 @@ async def process_game(interaction: Interaction, bets: dict):
             from utils.data_manager import get_pet_buff
             buff_pct = get_pet_buff(user.id)
             if buff_pct > 0:
-                net_profit = total_winnings - sum(bets.values())
-                extra = round(net_profit * buff_pct / 100)
-                total_winnings += extract / 100
+                total_bet = sum(bets.values())
+                profit = total_winnings - total_bet
+                if profit > 0:
+                    bonus = round(profit * buff_pct / 100)
+                    total_winnings += bonusct / 100
                 base_profit = total_winnings - total_bet  # Profit before buff
                 if base_profit > 0:
                     extra = round(base_profit * buff)
