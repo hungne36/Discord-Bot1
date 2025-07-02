@@ -93,5 +93,42 @@
     "amount": -1000000000000,
     "balance_after": 988961001259999,
     "timestamp": "2025-07-02T18:55:54.610466Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_thua",
+    "amount": -999999,
+    "balance_after": 988961000260000,
+    "timestamp": "2025-07-02T19:01:23.821357Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_th\u1eafng",
+    "amount": 201848,
+    "balance_after": 988961000461848,
+    "timestamp": "2025-07-02T19:01:33.779151Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_thua",
+    "amount": -99999,
+    "balance_after": 988961000361849,
+    "timestamp": "2025-07-02T19:01:43.267471Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "hungnamvi",
+    "amount": "X\u00f3c \u0110\u0129a",
+    "balance_after": 10000000,
+    "timestamp": "2025-07-02T19:02:08.643382Z",
+    "username": 988961009811849
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "X\u00f3c \u0110\u0129a",
+    "amount": 194500,
+    "balance_after": 988961009906349,
+    "timestamp": "2025-07-02T19:03:00.532678Z",
+    "username": "<@730436357838602301>"
   }
 ]
