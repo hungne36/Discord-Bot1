@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import app_commands
     # gọi lại các hàm core hoặc slash-handler đã có sẵn trong cog tương ứng
 from cogs.taixiu_plus import SumSelect     # view để mở modal đặt sum
-from cogs.chanle import ChanleBetModal, ChanleView  # tương tự
+from cogs.chanle import ChanLeModal  # tương tự
 from cogs.xocdia import XocDiaView          # view multiplayer
 
 class Menu(commands.Cog):
@@ -51,12 +51,12 @@ class MenuView(discord.ui.View):
         @discord.ui.button(custom_id="menu_chan")
         async def chan_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
             # mở form cược Chẵn (chanle view)
-            await interaction.response.send_modal(ChanleBetModal("chan"))
+            await interaction.response.send_modal(ChanLeModal("chan"))
 
         @discord.ui.button(custom_id="menu_le")
         async def le_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
             # mở form cược Lẻ
-            await interaction.response.send_modal(ChanleBetModal("le"))
+            await interaction.response.send_modal(ChanLeModal("le"))
 
         @discord.ui.button(custom_id="menu_xocdia_mp")
         async def xocdia_mp_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
