@@ -97,6 +97,95 @@ async def sync(interaction: discord.Interaction):
         print(f"Sync error: {e}")
 
 # —————————————————————————————————————————
+# Game functions for menu integration
+async def play_taixiu(interaction, amount, choice):
+    """Tài xỉu game function called from menu"""
+    from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
+    from utils.cooldown import can_play
+    import random
+    import asyncio
+    
+    ok, wait = can_play(interaction.user.id)
+    if not ok:
+        return await interaction.response.send_message(f"⏳ Đợi {int(wait)}s", ephemeral=True)
+    
+    bal = get_balance(interaction.user.id)
+    if amount < 1000 or amount > bal:
+        return await interaction.response.send_message("❌ Cược không hợp lệ!", ephemeral=True)
+    
+    await interaction.response.send_message("🎲 Đang lắc xúc xắc...")
+    await asyncio.sleep(2)
+    
+    dice = [random.randint(1, 6) for _ in range(3)]
+    total = sum(dice)
+    result = "tai" if total >= 11 else "xiu"
+    win = (result == choice)
+    
+    if win:
+        profit = round(amount * 0.85)
+        buff = get_pet_buff(interaction.user.id)
+        bonus = round(profit * buff / 100)
+        delta = amount + profit + bonus
+    else:
+        delta = -amount
+    
+    newb = update_balance(interaction.user.id, delta)
+    add_history(interaction.user.id, f"taixiu_{'win' if win else 'lose'}", delta, newb)
+    
+    emoji_dice = " ".join([f"⚀⚁⚂⚃⚄⚅"[d-1] for d in dice])
+    result_text = "TÀI" if result == "tai" else "XỈU"
+    
+    txt = (
+        f"🎲 {emoji_dice} → **{total}** ({result_text})\n"
+        + (f"🎉 Thắng! +{profit:,} + pet bonus {bonus:,}\n" if win else "💸 Thua mất stake\n")
+        + f"💰 Số dư: {newb:,}"
+    )
+    await interaction.edit_original_response(content=txt)
+
+async def play_chanle(interaction, amount, choice):
+    """Chẵn lẻ game function called from menu"""
+    from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
+    from utils.cooldown import can_play
+    import random
+    import asyncio
+    
+    ok, wait = can_play(interaction.user.id)
+    if not ok:
+        return await interaction.response.send_message(f"⏳ Đợi {int(wait)}s", ephemeral=True)
+    
+    bal = get_balance(interaction.user.id)
+    if amount < 1000 or amount > bal:
+        return await interaction.response.send_message("❌ Cược không hợp lệ!", ephemeral=True)
+    
+    await interaction.response.send_message("⚖️ Đang chờ...")
+    await asyncio.sleep(2)
+    
+    s = random.choice(range(60))
+    total = (s // 10) + (s % 10)
+    kq = "chan" if total % 2 == 0 else "le"
+    win = (kq == choice)
+    
+    if win:
+        profit = round(amount * 0.85)
+        buff = get_pet_buff(interaction.user.id)
+        bonus = round(profit * buff / 100)
+        delta = amount + profit + bonus
+    else:
+        delta = -amount
+    
+    newb = update_balance(interaction.user.id, delta)
+    add_history(interaction.user.id, f"chanle_{'win' if win else 'lose'}", delta, newb)
+    
+    result_text = "CHẴN" if kq == "chan" else "LẺ"
+    
+    txt = (
+        f"🔢 Số {s:02d} → {total} ({result_text})\n"
+        + (f"🎉 Thắng! +{profit:,} + pet bonus {bonus:,}\n" if win else "💸 Thua mất stake\n")
+        + f"💰 Số dư: {newb:,}"
+    )
+    await interaction.edit_original_response(content=txt)
+
+# —————————————————————————————————————————
 # Safe main: tự restart khi crash
 async def safe_main():
     keep_alive()  # Khởi chạy Flask server giữ bot online
