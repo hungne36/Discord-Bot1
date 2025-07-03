@@ -151,5 +151,12 @@
     "amount": 12600,
     "balance_after": 13492,
     "timestamp": "2025-07-03T06:06:49.993457Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia",
+    "amount": -1000,
+    "balance_after": 11492,
+    "timestamp": "2025-07-03T06:18:29.055185Z"
   }
 ]
