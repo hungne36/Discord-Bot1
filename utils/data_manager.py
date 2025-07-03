@@ -77,10 +77,15 @@ def get_today_spent(uid):
     today = datetime.utcnow().date()
     spent = 0
     for h in hist:
-        if h["user_id"] == uid and h["amount"] < 0:
-            entry_date = datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date()
-            if entry_date == today:
-                spent += abs(h["amount"])
+        if h["user_id"] == uid:
+            try:
+                amount = int(h["amount"]) if isinstance(h["amount"], (int, str)) and str(h["amount"]).lstrip('-').isdigit() else 0
+                if amount < 0:
+                    entry_date = datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date()
+                    if entry_date == today:
+                        spent += abs(amount)
+            except (ValueError, TypeError):
+                continue
     return spent
 
 def get_today_net(uid):
@@ -90,9 +95,13 @@ def get_today_net(uid):
     net = 0
     for h in hist:
         if h["user_id"] == uid:
-            entry_date = datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date()
-            if entry_date == today:
-                net += h["amount"]
+            try:
+                amount = int(h["amount"]) if isinstance(h["amount"], (int, str)) and str(h["amount"]).lstrip('-').isdigit() else 0
+                entry_date = datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")).date()
+                if entry_date == today:
+                    net += amount
+            except (ValueError, TypeError):
+                continue
     return net
 
 def get_pending_reward(uid):
