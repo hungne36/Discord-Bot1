@@ -137,5 +137,19 @@
     "amount": 18925,
     "balance_after": 988971009925274,
     "timestamp": "2025-07-03T06:01:26.265977Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_win",
+    "amount": 1892,
+    "balance_after": 1892,
+    "timestamp": "2025-07-03T06:05:51.748871Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia",
+    "amount": 12600,
+    "balance_after": 13492,
+    "timestamp": "2025-07-03T06:06:49.993457Z"
   }
 ]
