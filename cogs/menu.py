@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from main import play_taixiu, play_chanle
-from utils.xocdia_ui import CuocView
 
 class MenuModal(discord.ui.Modal):
     def __init__(self, game_type, choice):
@@ -48,7 +47,12 @@ class Menu(commands.Cog):
             await inter.response.send_modal(MenuModal("chanle", "le"))
             
         async def xocdia_callback(inter):
-            await inter.response.send_message("🔘 Chọn cửa xóc đĩa:", view=CuocView(inter.user), ephemeral=True)
+            # Get the xocdia cog and call its command
+            xocdia_cog = self.bot.get_cog("XocDia")
+            if xocdia_cog:
+                await xocdia_cog.xocdia(inter)
+            else:
+                await inter.response.send_message("❌ Xóc đĩa không khả dụng", ephemeral=True)
 
         # Assign callbacks
         tai_btn.callback = tai_callback
