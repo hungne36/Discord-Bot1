@@ -1,0 +1,59 @@
+# cogs/chanle.py
+import random, asyncio
+import discord
+from discord.ext import commands
+from discord import app_commands
+from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
+from utils.cooldown import can_play
+from datetime import datetime
+
+class ChanLeModal(discord.ui.Modal):
+    def __init__(self, choice: str):
+        title = f"Cược {'Chẵn' if choice=='chan' else 'Lẻ'}"
+        super().__init__(title=title)
+        self.choice = choice
+        self.amount = discord.ui.TextInput(label="Số xu cược", placeholder="≥1.000", max_length=18)
+        self.add_item(self.amount)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        stake = int(self.amount.value)
+        ok, wait = can_play(interaction.user.id)
+        if not ok:
+            return await interaction.response.send_message(f"⏳ Đợi {int(wait)}s", ephemeral=True)
+        bal = get_balance(interaction.user.id)
+        if stake < 1000 or stake > bal:
+            return await interaction.response.send_message("❌ Cược không hợp lệ!", ephemeral=True)
+
+        await interaction.response.send_message("⚖️ Đang chờ...", ephemeral=True)
+        await asyncio.sleep(2)
+        s = random.randint(0,59)
+        total = (s//10)+(s%10)
+        kq = "chan" if total%2==0 else "le"
+        win = (kq == self.choice)
+
+        if win:
+            profit = round(stake * 0.85)
+            buff = get_pet_buff(interaction.user.id)
+            bonus = round(profit * buff / 100) if buff else 0
+            delta = stake + profit + bonus
+        else:
+            delta = -stake
+
+        newb = update_balance(interaction.user.id, delta)
+        add_history(interaction.user.id, f"chanle_{'win' if win else 'lose'}", delta, newb)
+
+        txt = f"🔢 Số {s:02d} → **{total}** ({'CHẴN' if kq=='chan' else 'LẺ'})\n"
+        txt += f"{'🎉 Thắng!' if win else '💸 Thua!'} Δ={delta:+,}\n💰 Dư: {newb:,}"
+        await interaction.followup.send(txt, ephemeral=False)
+
+class ChanLe(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @app_commands.command(name="chanle", description="⚖️ Cược Chẵn/Lẻ (qua menu)")
+    async def cl(self, interaction: discord.Interaction):
+        # không dùng command trực tiếp
+        await interaction.response.send_message("❌ Dùng /menu để chơi!", ephemeral=True)
+
+async def setup(bot):
+    await bot.add_cog(ChanLe(bot))
