@@ -158,5 +158,12 @@
     "amount": -1000,
     "balance_after": 11492,
     "timestamp": "2025-07-03T06:18:29.055185Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_lose",
+    "amount": -1000,
+    "balance_after": 10492,
+    "timestamp": "2025-07-03T06:22:22.550259Z"
   }
 ]
