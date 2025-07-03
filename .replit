@@ -28,7 +28,7 @@ runButton = "Run Discord Bot"
 [[workflows.workflow]]
 name = "Run Discord Bot"
 author = 43938313
-mode = "sequential"
+mode = "parallel"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
