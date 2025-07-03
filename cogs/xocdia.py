@@ -1,18 +1,18 @@
     # cogs/xocdia.py
-    import discord, random
-    from discord.ext import commands
-    from discord import app_commands
-    from utils.data_manager import read_json, write_json, add_history, get_pet_buff
-    from datetime import datetime, timezone
+import discord, random
+from discord.ext import commands
+from discord import app_commands
+from utils.data_manager import read_json, write_json, add_history, get_pet_buff
+from datetime import datetime, timezone
 
-    BALANCE_FILE = "data/sodu.json"
-    SESSION_FILE = "data/xocdia_session.json"
-    CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ", "Chẵn", "Lẻ"]
+BALANCE_FILE = "data/sodu.json"
+SESSION_FILE = "data/xocdia_session.json"
+CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Đỏ 1 Trắng", "3 Trắng 1 Đỏ", "Chẵn", "Lẻ"]
 
-    def tung_xoc_dia():
+def tung_xoc_dia():
         return [random.choice(["Đỏ","Trắng"]) for _ in range(4)]
 
-    class BetModal(discord.ui.Modal):
+class BetModal(discord.ui.Modal):
         def __init__(self, choice):
             super().__init__(title=f"Cược {choice}")
             self.choice = choice
@@ -48,11 +48,11 @@
             await interaction.channel.send(f"📥 {interaction.user.mention} cược **{amt:,} xu** cửa **{self.choice}**")
             await interaction.followup.send(f"✅ Cược OK | Tổng cược: {total:,} xu | Dư: {data[user_id]:,} xu")
 
-    class CuaButton(discord.ui.Button):
+class CuaButton(discord.ui.Button):
         def __init__(self,label): super().__init__(label=label,style=discord.ButtonStyle.primary)
         async def callback(self,i): await i.response.send_modal(BetModal(self.label))
 
-    class StartButton(discord.ui.Button):
+class StartButton(discord.ui.Button):
         def __init__(self): super().__init__(label="🔒 Bắt đầu",style=discord.ButtonStyle.danger)
         async def callback(self,i):
             session=read_json(SESSION_FILE)
@@ -60,7 +60,7 @@
                 return await i.response.send_message("❌ Chỉ host được đóng",ephemeral=True)
             await ket_thuc_phien(i.channel,self.view.msg)
 
-    class XocDiaView(discord.ui.View):
+class XocDiaView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=30)
             self.msg=None
@@ -69,7 +69,7 @@
         async def on_timeout(self):
             if self.msg: await ket_thuc_phien(self.msg.channel,self.msg)
 
-    async def ket_thuc_phien(channel,orig=None):
+async def ket_thuc_phien(channel,orig=None):
         session=read_json(SESSION_FILE)
         if not session.get("active"): return
         session["active"]=False; write_json(SESSION_FILE,session)
@@ -104,7 +104,7 @@
         await channel.send(f"🎲 KQ: {' '.join('🔴' if x=='Đỏ' else '⚪' for x in res)} ({do}Đ–{tr}T)\n"+"\n".join(out))
         write_json(SESSION_FILE,{"active":False,"bets":{},"host_id":None})
 
-    class XocDia(commands.Cog):
+class XocDia(commands.Cog):
         def __init__(self,bot): self.bot=bot
         @app_commands.command(name="xocdia",description="Xóc Đĩa chơi chung")
         async def xocdia(self,interaction):
@@ -114,5 +114,5 @@
             await interaction.followup.send(f"🎮 {interaction.user.mention} mở phiên Xóc Đĩa!",view=view)
             view.msg=await interaction.original_response()
 
-    async def setup(bot):
+async def setup(bot):
         await bot.add_cog(XocDia(bot))
