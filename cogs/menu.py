@@ -1,3 +1,4 @@
+
 # cogs/menu.py
 import discord
 from discord.ext import commands
@@ -10,24 +11,20 @@ from .xocdia import XocDiaView
 class MenuView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.add_item(discord.ui.Button(label="🔢 Tài Xỉu Plus", style=discord.ButtonStyle.success, custom_id="menu_taixiu_plus"))
-        self.add_item(discord.ui.Button(label="⚖️ Chẵn", style=discord.ButtonStyle.primary, custom_id="menu_chan"))
-        self.add_item(discord.ui.Button(label="🔢 Lẻ", style=discord.ButtonStyle.danger, custom_id="menu_le"))
-        self.add_item(discord.ui.Button(label="🥢 Xóc Đĩa (mp)", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia_mp"))
 
-    @discord.ui.button(custom_id="menu_taixiu_plus")
+    @discord.ui.button(label="🔢 Tài Xỉu Plus", style=discord.ButtonStyle.success, custom_id="menu_taixiu_plus")
     async def taixiu_plus_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message("🔢 Chọn tối đa 4 số (3–18):", view=SumSelect(), ephemeral=True)
 
-    @discord.ui.button(custom_id="menu_chan")
+    @discord.ui.button(label="⚖️ Chẵn", style=discord.ButtonStyle.primary, custom_id="menu_chan")
     async def chan_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(ChanLeModal("chan"))
 
-    @discord.ui.button(custom_id="menu_le")
+    @discord.ui.button(label="🔢 Lẻ", style=discord.ButtonStyle.danger, custom_id="menu_le")
     async def le_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(ChanLeModal("le"))
 
-    @discord.ui.button(custom_id="menu_xocdia_mp")
+    @discord.ui.button(label="🥢 Xóc Đĩa (mp)", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia_mp")
     async def xocdia_mp_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
         view = XocDiaView()
