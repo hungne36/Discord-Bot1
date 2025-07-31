@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import random
-from utils.data_manager import add_balance, add_history, get_balance, get_username, update_today_spent, get_pet_bonus_percent
+from utils.data_manager import update_balance, add_history, get_balance, get_pet_buff
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Trắng 1 Đỏ", "3 Đỏ 1 Trắng", "Chẵn", "Lẻ"]
 
@@ -56,7 +56,7 @@ class CuocModal(discord.ui.Modal, title="💰 Nhập số tiền cược"):
                 "tien": tien
             }
             update_today_spent(interaction.user.id, tien)
-            add_balance(interaction.user.id, -tien)
+            update_balance(interaction.user.id, -tien)
             await interaction.response.send_message(f"✅ Bạn đã cược `{tien:,}` xu vào **{self.cach_cua}**!", ephemeral=True)
 
 class StartButton(discord.ui.Button):
@@ -95,11 +95,12 @@ class StartButton(discord.ui.Button):
                 if win:
                     base_win = thongtin["tien"] * 2
                     total_win = int(base_win * (1 + pet_bonus / 100))
-                    add_balance(uid, total_win)
-                    add_history(uid, -thongtin["tien"], "Xóc Đĩa", True)
+                    new_balance = update_balance(uid, total_win)
+                    add_history(uid, "xocdia_win", total_win, new_balance)
                     text += f"✅ <@{uid}> thắng {thongtin['tien']:,} → nhận {total_win:,} (buff pet +{pet_bonus}%)\n"
                 else:
-                    add_history(uid, -thongtin["tien"], "Xóc Đĩa", False)
+                    balance = get_balance(uid)
+                    add_history(uid, "xocdia_lose", -thongtin["tien"], balance)
                     text += f"❌ <@{uid}> thua {thongtin['tien']:,}\n"
 
             await session["view"].msg.edit(content=text, view=None)
