@@ -6,12 +6,12 @@ import os
 from utils.data_manager import read_json, write_json
 from datetime import datetime, timezone
 
-SESSION_FILE = "data/xocdia_session.json"
+    SESSION_FILE = "data/xocdia_session.json"
 
-def get_current_utc_timestamp():
-    return datetime.now(timezone.utc).isoformat()
+    def get_current_utc_timestamp():
+        return datetime.now(timezone.utc).isoformat()
 
-def ket_thuc_phien(channel, msg):
+    def ket_thuc_phien(channel, msg):
         sess = read_json(SESSION_FILE)
         sess["active"] = False
         write_json(SESSION_FILE, sess)
@@ -75,18 +75,18 @@ def ket_thuc_phien(channel, msg):
             await ctx.send("✅ Đã reset phiên Xóc Đĩa.")
 
     async def start_xocdia_game(interaction: discord.Interaction):
-    sess = read_json(SESSION_FILE)
-    if sess.get("active"):
-        return await interaction.followup.send("❌ Hiện tại đang có một phiên Xóc Đĩa đang diễn ra!", ephemeral=True)
+        sess = read_json(SESSION_FILE)
+        if sess.get("active"):
+            return await interaction.response.send_message("❌ Hiện tại đang có một phiên Xóc Đĩa đang diễn ra!", ephemeral=True)
 
-    sess["active"] = True
-    sess["players"] = {}
-    write_json(SESSION_FILE, sess)
+        sess["active"] = True
+        sess["players"] = {}
+        write_json(SESSION_FILE, sess)
 
-    view = XocDiaView(author_id=interaction.user.id)
-    msg = await interaction.channel.send("🎮 **Phiên Xóc Đĩa bắt đầu!**\nChọn cược bên dưới 👇", view=view)
-    view.msg = msg
-    await interaction.followup.send("✅ Đã tạo phiên Xóc Đĩa!", ephemeral=True)
+        view = XocDiaView(author_id=interaction.user.id)
+        msg = await interaction.channel.send("🎮 **Phiên Xóc Đĩa bắt đầu!**\nChọn cược bên dưới 👇", view=view)
+        view.msg = msg
+        await interaction.response.send_message("✅ Đã tạo phiên Xóc Đĩa!", ephemeral=True)
 
-    async def setup(bot):
-    await bot.add_cog(XocDia(bot))
+    def setup(bot):
+        bot.add_cog(XocDia(bot))
