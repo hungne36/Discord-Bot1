@@ -26,8 +26,8 @@ from datetime import datetime, timezone
         embed.set_footer(text="Phiên đã kết thúc.")
         return msg.edit(content=None, embed=embed, view=None)
 
-    class XocDiaView(discord.ui.View):
-        def __init__(self, author_id, msg=None):
+class XocDiaView(discord.ui.View):
+    def __init__(self, author_id, msg=None):
             super().__init__(timeout=None)  # Không giới hạn thời gian
             self.author_id = author_id
             self.msg = msg
