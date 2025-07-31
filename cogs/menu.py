@@ -26,8 +26,8 @@ class MenuView(discord.ui.View):
     async def le_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(ChanLeModal("le"))
 
-    @discord.ui.button(label="🥢 Xóc Đĩa (mp)", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia_mp")
-    async def xocdia_mp_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="🥢 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
+    async def xocdia_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
         view = XocDiaView()
         await interaction.followup.send(

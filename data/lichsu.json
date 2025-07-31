@@ -179,5 +179,47 @@
     "amount": 1998,
     "balance_after": 19999911490,
     "timestamp": "2025-07-03T06:52:02.719618Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_lose",
+    "amount": -1000000,
+    "balance_after": 29998911490,
+    "timestamp": "2025-07-08T01:40:08.060451Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia",
+    "amount": -99910000,
+    "balance_after": 29799001490,
+    "timestamp": "2025-07-08T01:48:33.265194Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "taixiu_win",
+    "amount": 1970,
+    "balance_after": 1970,
+    "timestamp": "2025-07-31T22:30:02.453940Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "taixiu_win",
+    "amount": 1970,
+    "balance_after": 3940,
+    "timestamp": "2025-07-31T22:30:40.000182Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "chanle_win",
+    "amount": 1950,
+    "balance_after": 5890,
+    "timestamp": "2025-07-31T22:32:57.066339Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "chanle_win",
+    "amount": 1950,
+    "balance_after": 7840,
+    "timestamp": "2025-07-31T22:33:20.005803Z"
   }
 ]

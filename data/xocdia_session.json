@@ -1,9 +1,4 @@
 {
-  "active": true,
-  "bets": {
-    "730436357838602301": {
-      "Ch\u1eb5n": 100000
-    }
-  },
-  "host_id": "730436357838602301"
+  "active": false,
+  "players": {}
 }
