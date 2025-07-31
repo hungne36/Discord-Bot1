@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 from .taixiu import TaiXiuModal
 from .chanle import ChanLeModal
-from .xocdia import XocDiaView
+from .xocdia import start_xocdia_game
 
 class MenuView(discord.ui.View):
     def __init__(self):
@@ -29,11 +29,7 @@ class MenuView(discord.ui.View):
     @discord.ui.button(label="🥢 Xóc Đĩa", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia")
     async def xocdia_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
-        view = XocDiaView()
-        await interaction.followup.send(
-            f"🎲 {interaction.user.mention} đã mở Xóc Đĩa Multiplayer — chọn cửa:",
-            view=view
-        )
+        await start_xocdia_game(interaction)
 
 class Menu(commands.Cog):
     def __init__(self, bot):
