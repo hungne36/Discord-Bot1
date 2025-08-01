@@ -9,12 +9,15 @@ from datetime import datetime, timezone
 from main import menu_lock_time
 
     # Giao diện chính chọn game
-class MenuView(discord.ui.View):
+class MainMenuView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
             self.add_item(discord.ui.Button(label="🎲 Tài Xỉu", style=discord.ButtonStyle.primary, custom_id="taixiu_menu"))
             self.add_item(discord.ui.Button(label="⚪ Chẵn Lẻ", style=discord.ButtonStyle.primary, custom_id="chanle_menu"))
             self.add_item(discord.ui.Button(label="🪙 Xóc Đĩa", style=discord.ButtonStyle.primary, custom_id="xocdia_menu"))
+
+# Keep MenuView as an alias for backwards compatibility
+MenuView = MainMenuView
 
     # Giao diện chọn cược Tài Xỉu: không cần để test embed ở đây, sử dụng TaiXiuView từ taixiu.py
 class TaiXiuSelectView(discord.ui.View):
@@ -82,7 +85,7 @@ class Menu(commands.Cog):
 
             # Gửi giao diện chính
             await interaction.response.defer(ephemeral=True)
-            await interaction.followup.send("🎮 Chọn trò chơi", view=MenuView(), ephemeral=True)
+            await interaction.followup.send("🎯 Chọn loại trò chơi:", view=MainMenuView(), ephemeral=True)
 
 async def setup(bot):
         await bot.add_cog(Menu(bot))
