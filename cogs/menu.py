@@ -24,6 +24,13 @@ class TaiXiuSelectView(discord.ui.View):
         self.add_item(discord.ui.Button(label="⬅️ Quay lại", style=discord.ButtonStyle.gray, custom_id="back_to_main_taixiu"))
         self.add_item(EndTaiXiuButton())
 
+    @discord.ui.button(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.red, custom_id="taixiu_end")
+    async def end_game(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer(thinking=True)
+
+        embed = discord.Embed(title="✅ Kết quả", description="Đây là kết quả test", color=0x00ff00)
+        await interaction.followup.send(embed=embed)
+
     def create_sum_buttons(self):
         for i in range(3, 18):
             btn = discord.ui.Button(label=str(i), style=discord.ButtonStyle.secondary, custom_id=f"tx_{i}")
