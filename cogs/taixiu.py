@@ -33,49 +33,38 @@ class TaiXiuModal(Modal):
         try:
             amt = int(self.amount.value)
         except:
-            return await interaction.response.send_message(
-                "❌ Số không hợp lệ", ephemeral=True
-            )
+            return await interaction.response.send_message("❌ Số không hợp lệ", ephemeral=True)
+
         bal = get_balance(interaction.user.id)
         if amt < 1000 or amt > bal:
-            return await interaction.response.send_message(
-                "❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True
-            )
+            return await interaction.response.send_message("❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True)
 
-        # 3) Roll
-        await interaction.response.send_message("🎲 Đang lắc xúc xắc...")
-        await asyncio.sleep(2)
-        dice = [random.randint(1,6) for _ in range(3)]
-        total = sum(dice)
-        result = "tai" if total >= 11 else "xiu"
-        win = (result == self.choice)
+        # 3) Trừ tiền tạm thời
+        update_balance(interaction.user.id, -amt)
 
-        # 4) Tính thưởng
-        if win:
-            profit = round(amt * 0.9)
-            buff = get_pet_buff(interaction.user.id)
-            bonus = round(profit * buff / 100)
-            delta = amt + profit + bonus
-        else:
-            delta = -amt
+        # 4) Ghi vào lịch sử cược
+        import json
+        from datetime import datetime
+        with open("data/lichsu.json", "r") as f:
+            history = json.load(f)
 
-        newb = update_balance(interaction.user.id, delta)
-        add_history(
-            interaction.user.id,
-            f"taixiu_{'win' if win else 'lose'}",
-            delta, newb
+        history.append({
+            "user_id": interaction.user.id,
+            "game": "taixiu",
+            "choice": self.choice,
+            "amount": amt,
+            "resolved": False,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+
+        with open("data/lichsu.json", "w") as f:
+            json.dump(history, f, indent=4)
+
+        await interaction.response.send_message(
+            f"✅ Bạn đã đặt cược **{'Tài' if self.choice == 'tai' else 'Xỉu'}** với **{amt:,} xu**.\n"
+            f"⏳ Vui lòng chờ kết thúc trò chơi.",
+            ephemeral=True
         )
-
-        # 5) Trả kết quả
-        emoji = "".join("⚀⚁⚂⚃⚄⚅"[d-1] for d in dice)
-        tlabel = "TÀI" if result=="tai" else "XỈU"
-        text = (
-            f"🎲 {emoji} → **{total}** ({tlabel})\n"
-            + (f"🎉 Thắng! stake +{profit:,} + pet bonus {bonus:,}\n"
-               if win else "💸 Thua mất stake\n")
-            + f"💰 Số dư hiện tại: **{newb:,}** xu"
-        )
-        await interaction.edit_original_response(content=text)
 
 # ――― PLUS SUM (3–18) ―――
 PAYOUT = {
