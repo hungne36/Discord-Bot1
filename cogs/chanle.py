@@ -1,11 +1,11 @@
     # cogs/chanle.py
 import discord
-    from discord.ext import commands
-    from discord import app_commands
-    from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
-    from utils.cooldown import can_play, set_cooldown
-    import random
-    import asyncio
+from discord.ext import commands
+from discord import app_commands
+from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
+from utils.cooldown import can_play, set_cooldown
+import random
+import asyncio
 
     # Biến lưu trữ cược đang chờ
     pending_chanle = {}

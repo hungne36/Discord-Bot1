@@ -1,25 +1,25 @@
     # cogs/taixiu.py
 import discord, random, asyncio, json
-    from discord.ext import commands
-    from discord.ui import Modal, TextInput, View, Select, Button
-    from datetime import datetime
+from discord.ext import commands
+from discord.ui import Modal, TextInput, View, Select, Button
+from datetime import datetime
 
     from utils.cooldown import can_play
-    from utils.data_manager import (
-        get_balance, update_balance, add_history, get_pet_buff
-    )
+from utils.data_manager import (
+    get_balance, update_balance, add_history, get_pet_buff
+)
 
-    # ――― Tiền thưởng theo tổng ―――
-    PAYOUT = {
-        3:60, 18:60, 4:45, 17:45, 5:30, 16:30,
-        6:15, 15:15, 7:5, 14:5,
-        **{i:2.5 for i in range(8,14)}
-    }
+# ――― Tiền thưởng theo tổng ―――
+PAYOUT = {
+    3:60, 18:60, 4:45, 17:45, 5:30, 16:30,
+    6:15, 15:15, 7:5, 14:5,
+    **{i:2.5 for i in range(8,14)}
+}
 
-    def format_number(n): return f"{n:,}".replace(",", ".")
+def format_number(n): return f"{n:,}".replace(",", ".")
 
-    # ――― MODAL: Tài/Xỉu cơ bản ―――
-    class TaiXiuModal(Modal):
+# ――― MODAL: Tài/Xỉu cơ bản ―――
+class TaiXiuModal(Modal):
         def __init__(self, choice: str):
             title = f"Cược {'Tài' if choice=='tai' else 'Xỉu' if choice=='xiu' else choice}"
             super().__init__(title=title)
