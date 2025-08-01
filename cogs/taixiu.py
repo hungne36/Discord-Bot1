@@ -8,6 +8,33 @@ from utils.data_manager import (
 )
 from discord.ui import Modal, TextInput, View, Select, Button
 
+def format_number(number):
+    """Format number with commas for display"""
+    return f"{number:,}"
+
+async def ask_for_bet_amount(interaction):
+    """Simple amount validation - you may want to implement a modal for this"""
+    # For now, this is a placeholder - you'd implement a modal to ask for amount
+    # or modify the button callback to include amount selection
+    return None
+
+async def save_bet(user, game_type, choice, amount):
+    """Save bet to history - placeholder for now"""
+    # This should integrate with your existing history saving logic
+    pass
+
+# ――― NUMBER BET BUTTON ―――
+class NumberBetButton(discord.ui.Button):
+    def __init__(self, number: int):
+        super().__init__(label=str(number), style=discord.ButtonStyle.secondary, custom_id=f"tx_sum_{number}")
+
+    async def callback(self, interaction: discord.Interaction):
+        user_id = str(interaction.user.id)
+        number = int(self.custom_id.split("_")[-1])
+
+        # For now, let's use the existing modal system
+        await interaction.response.send_modal(SumBetModal([number]))
+
 # ――― CLASSIC TÀI XỈU ―――
 class TaiXiuModal(Modal):
     def __init__(self, choice: str):
@@ -141,6 +168,30 @@ class SumSelect(View):
     async def on_select(self, interaction: discord.Interaction, select: Select):
         choices = list(map(int, select.values))
         await interaction.response.send_modal(SumBetModal(choices))
+
+class IndividualNumberView(View):
+    def __init__(self):
+        super().__init__(timeout=60)
+        # Add buttons for numbers 3-18
+        for i in range(3, 19):
+            self.add_item(NumberBetButton(i))
+
+class NumberBetButton(discord.ui.Button):
+    def __init__(self, number: int):
+        # Color code buttons based on Tài/Xỉu
+        if 3 <= number <= 10:
+            style = discord.ButtonStyle.danger  # Red for Xỉu
+            label = f"{number}(Xỉu)"
+        else:
+            style = discord.ButtonStyle.success  # Green for Tài
+            label = f"{number}(Tài)"
+            
+        super().__init__(label=label, style=style, custom_id=f"tx_sum_{number}")
+
+    async def callback(self, interaction: discord.Interaction):
+        number = int(self.custom_id.split("_")[-1])
+        # Use existing SumBetModal with single number
+        await interaction.response.send_modal(SumBetModal([number]))
 
 # ――― COG ĐĂNG KÝ ―――
 class TaiXiuCog(commands.Cog):
