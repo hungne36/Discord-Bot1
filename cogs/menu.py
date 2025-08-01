@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from cogs.taixiu import TaiXiuBetModal, EndTaiXiuButton
+from cogs.taixiu import BetModal, EndTaiXiuButton
 from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
 from utils.data_manager import read_json, write_json
@@ -42,7 +42,7 @@ class TaiXiuSelectView(discord.ui.View):
 
     def make_callback(self, value):
         async def callback(interaction: discord.Interaction):
-            await interaction.response.send_modal(TaiXiuModal(f"tx_{value}"))
+            await interaction.response.send_modal(BetModal(f"tx_{value}"))
         return callback
 
 # Giao diện chọn cược Chẵn Lẻ
