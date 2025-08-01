@@ -2,6 +2,8 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from discord.ui import View, Button
+from discord import Interaction
 from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
 from utils.cooldown import can_play, set_cooldown
 import random
@@ -9,6 +11,16 @@ import asyncio
 
     # Biến lưu trữ cược đang chờ
 pending_chanle = {}
+
+class ChanLeSelectView(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(Button(label="Chẵn", style=discord.ButtonStyle.primary, custom_id="chanle_chan"))
+        self.add_item(Button(label="Lẻ", style=discord.ButtonStyle.danger, custom_id="chanle_le"))
+        self.add_item(Button(label="Kết thúc trò chơi", style=discord.ButtonStyle.secondary, custom_id="chanle_ketthuc"))
+
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        return True
 
 class ChanLeModal(discord.ui.Modal):
         def __init__(self, choice: str):
