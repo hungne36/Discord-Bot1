@@ -188,9 +188,12 @@ async def handle_taixiu_end(interaction: discord.Interaction):
                 buff = get_pet_buff(user_id)
                 bonus = round(profit * buff / 100)
                 total_win = amount + profit + bonus
-                update_balance(user_id, total_win)
+                new_balance = update_balance(user_id, total_win)
+                add_history(user_id, "taixiu_win", total_win, new_balance)
                 reward_message += f"<@{user_id}> thắng {total_win:,} xu (stake + {profit:,} + bonus {bonus:,}) ✅\n"
             else:
+                current_balance = get_balance(user_id)
+                add_history(user_id, "taixiu_lose", -amount, current_balance)
                 reward_message += f"<@{user_id}> thua {amount:,} xu ❌\n"
                 
         elif bet["game"] == "taixiu_sum":
@@ -204,9 +207,12 @@ async def handle_taixiu_end(interaction: discord.Interaction):
                 buff = get_pet_buff(user_id)
                 bonus = round(profit * buff / 100)
                 total_win = amount + profit + bonus
-                update_balance(user_id, total_win)
+                new_balance = update_balance(user_id, total_win)
+                add_history(user_id, "taixiu_sum_win", total_win, new_balance)
                 reward_message += f"<@{user_id}> thắng {total_win:,} xu (sum {total}, rate x{rate}) ✅\n"
             else:
+                current_balance = get_balance(user_id)
+                add_history(user_id, "taixiu_sum_lose", -amount, current_balance)
                 reward_message += f"<@{user_id}> thua {amount:,} xu ❌\n"
 
         bet["resolved"] = True
