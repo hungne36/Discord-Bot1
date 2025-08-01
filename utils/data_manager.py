@@ -125,3 +125,13 @@ def update_today_spent(uid, amount):
 def get_pet_bonus_percent(uid):
     """Get pet bonus percentage for user"""
     return get_pet_buff(uid)
+
+def log_history(uid, action, amount):
+    """Log game history - wrapper for add_history"""
+    balance = get_balance(uid)
+    add_history(uid, action, amount, balance)
+
+def get_pet_bonus(uid, amount):
+    """Get pet bonus amount based on user's pet buff"""
+    buff_percent = get_pet_buff(uid)
+    return int(amount * buff_percent / 100) if buff_percent > 0 else 0
