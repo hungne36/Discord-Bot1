@@ -1,247 +1,176 @@
-    # cogs/taixiu.py
-import discord, random, asyncio, json
+import discord
 from discord.ext import commands
-from discord.ui import Modal, TextInput, View, Select, Button
-from datetime import datetime
+from discord.ui import View, Button, Select, Modal, TextInput
+import random
+import json
+import asyncio
 
-from utils.cooldown import can_play
-from utils.data_manager import (
-    get_balance, update_balance, add_history, get_pet_buff
-)
+    # === CẤU HÌNH CƠ BẢN ===
+with open("data/sodu.json", "r") as f:sodu_data = json.load(f)
 
-# ――― Tiền thưởng theo tổng ―――
-PAYOUT = {
-    3:60, 18:60, 4:45, 17:45, 5:30, 16:30,
-    6:15, 15:15, 7:5, 14:5,
-    **{i:2.5 for i in range(8,14)}
-}
+with open("data/lichsu.json", "r") as f:
+        lichsu_data = json.load(f)
 
-def format_number(n): return f"{n:,}".replace(",", ".")
+user_bets = {}
 
-# ――― MODAL: Tài/Xỉu cơ bản ―――
-class TaiXiuModal(Modal):
-        def __init__(self, choice: str):
-            title = f"Cược {'Tài' if choice=='tai' else 'Xỉu' if choice=='xiu' else choice}"
-            super().__init__(title=title)
-            self.choice = choice
-            self.amount = TextInput(
-                label="Số xu cược (≥1.000)",
-                placeholder="Ví dụ: 10000",
-                max_length=18
-            )
+def save_data():
+        with open("data/sodu.json", "w") as f:
+            json.dump(sodu_data, f, indent=4)
+        with open("data/lichsu.json", "w") as f:
+            json.dump(lichsu_data, f, indent=4)
+
+    # === CÁC MODAL NHẬP TIỀN ===
+
+class BetModal(Modal):
+        def __init__(self, bet_type):
+            super().__init__(title="Nhập số tiền cược")
+            self.bet_type = bet_type
+            self.amount = TextInput(label="Nhập số tiền", placeholder="Ví dụ: 1000000", style=discord.TextStyle.short)
             self.add_item(self.amount)
 
         async def on_submit(self, interaction: discord.Interaction):
-            # 1. Cooldown
-            ok, wait = can_play(interaction.user.id)
-            if not ok:
-                return await interaction.response.send_message(
-                    f"⏳ Vui lòng chờ {int(wait)} giây", ephemeral=True
-                )
-
-            # 2. Parse & check balance
             try:
-                amt = int(self.amount.value)
+                amount = int(self.amount.value)
+                user_id = str(interaction.user.id)
+                if user_id not in sodu_data or sodu_data[user_id] < amount:
+                    await interaction.response.send_message("❌ Bạn không đủ tiền cược!", ephemeral=True)
+                    return
+                if user_id not in user_bets:
+                    user_bets[user_id] = []
+                user_bets[user_id].append({"type": self.bet_type, "amount": amount})
+                await interaction.response.send_message(f"✅ Đã cược {amount:,} vào **{self.bet_type}**", ephemeral=True)
             except:
-                return await interaction.response.send_message("❌ Số không hợp lệ", ephemeral=True)
+                await interaction.response.send_message("❌ Số tiền không hợp lệ!", ephemeral=True)
 
-            bal = get_balance(interaction.user.id)
-            if amt < 1000 or amt > bal:
-                return await interaction.response.send_message("❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True)
-
-            # 3. Trừ xu và ghi lịch sử
-            update_balance(interaction.user.id, -amt)
-            with open("data/lichsu.json", "r") as f:
-                history = json.load(f)
-
-            game_type = "taixiu_sum" if self.choice.startswith("tx_") else "taixiu"
-            choice_val = self.choice.replace("tx_", "")
-
-            entry = {
-                "user_id": interaction.user.id,
-                "game": game_type,
-                "resolved": False,
-                "amount": amt,
-                "timestamp": datetime.utcnow().isoformat()
-            }
-
-            if game_type == "taixiu_sum":
-                entry["choices"] = [int(choice_val)]
-            else:
-                entry["choice"] = choice_val
-
-            history.append(entry)
-
-            with open("data/lichsu.json", "w") as f:
-                json.dump(history, f, indent=4)
-
-            label = f"**{choice_val.upper()}**" if game_type == "taixiu" else f"**{choice_val} điểm**"
-            await interaction.response.send_message(
-                f"✅ Bạn đã đặt cược {label} với **{format_number(amt)} xu**.\n⏳ Vui lòng chờ kết thúc trò chơi.",
-                ephemeral=True
-            )
-
-    # ――― MODAL: Đặt nhiều tổng (3–18) ―――
 class SumBetModal(Modal):
-        def __init__(self, choices: list[int]):
-            super().__init__(title=f"Cược tổng: {', '.join(map(str,choices))}")
-            self.choices = choices
-            self.amount = TextInput(
-                label="Số xu cược (≥1.000)",
-                placeholder="Ví dụ: 50000",
-                max_length=18
-            )
+        def __init__(self, sums):
+            super().__init__(title="Cược các tổng")
+            self.sums = sums
+            self.amount = TextInput(label="Nhập số tiền mỗi tổng", placeholder="Ví dụ: 100000", style=discord.TextStyle.short)
             self.add_item(self.amount)
 
         async def on_submit(self, interaction: discord.Interaction):
             try:
-                stake = int(self.amount.value)
+                amount = int(self.amount.value)
+                user_id = str(interaction.user.id)
+                total_bet = amount * len(self.sums)
+                if user_id not in sodu_data or sodu_data[user_id] < total_bet:
+                    await interaction.response.send_message("❌ Bạn không đủ tiền cược!", ephemeral=True)
+                    return
+                if user_id not in user_bets:
+                    user_bets[user_id] = []
+                for s in self.sums:
+                    user_bets[user_id].append({"type": str(s), "amount": amount})
+                await interaction.response.send_message(
+                    f"✅ Đã cược {amount:,} vào các tổng {', '.join(map(str, self.sums))}", ephemeral=True)
             except:
-                return await interaction.response.send_message("❌ Số không hợp lệ", ephemeral=True)
+                await interaction.response.send_message("❌ Số tiền không hợp lệ!", ephemeral=True)
 
-            bal = get_balance(interaction.user.id)
-            if stake < 1000 or stake > bal:
-                return await interaction.response.send_message("❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True)
+    # === VIEW SELECT VÀ BUTTON ===
 
-            update_balance(interaction.user.id, -stake)
-
-            with open("data/lichsu.json", "r") as f:
-                history = json.load(f)
-
-            history.append({
-                "user_id": interaction.user.id,
-                "game": "taixiu_sum",
-                "choices": self.choices,
-                "amount": stake,
-                "resolved": False,
-                "timestamp": datetime.utcnow().isoformat()
-            })
-
-            with open("data/lichsu.json", "w") as f:
-                json.dump(history, f, indent=4)
-
-            labels = [f"[{c}]{'Tài' if c >= 11 else 'Xỉu'}" for c in self.choices]
-            await interaction.response.send_message(
-                f"✅ Bạn đã đặt cược {', '.join(labels)} với **{format_number(stake)} xu**.\n⏳ Vui lòng chờ kết thúc trò chơi.",
-                ephemeral=True
-            )
-
-    # ――― UI: Chọn tổng (Select hoặc Button) ―――
 class SumSelect(View):
         def __init__(self):
             super().__init__(timeout=60)
-            options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(3, 19)]
-            self.add_item(Select(placeholder="Chọn 4–5 tổng muốn cược", options=options, min_values=4, max_values=5))
+            self.select = Select(
+                placeholder="Chọn 4–5 tổng muốn cược",
+                options=[discord.SelectOption(label=str(i), value=str(i)) for i in range(3, 19)],
+                min_values=4,
+                max_values=5
+            )
+            self.select.callback = self.on_select
+            self.add_item(self.select)
 
-        @discord.ui.select()
-        async def on_select(self, interaction: discord.Interaction, select: Select):
-            choices = list(map(int, select.values))
+        async def on_select(self, interaction: discord.Interaction):
+            choices = list(map(int, self.select.values))
             await interaction.response.send_modal(SumBetModal(choices))
 
-class NumberBetButton(discord.ui.Button):
-        def __init__(self, number: int):
-            style = discord.ButtonStyle.success if number >= 11 else discord.ButtonStyle.danger
-            super().__init__(label=str(number), style=style, custom_id=f"tx_sum_{number}")
+class TaiXiuView(View):
+        def __init__(self):
+            super().__init__(timeout=None)
+            self.add_item(TaiXiuButton("Tài"))
+            self.add_item(TaiXiuButton("Xỉu"))
+            self.add_item(ChanLeButton("Chẵn"))
+            self.add_item(ChanLeButton("Lẻ"))
+            for i in range(3, 19):
+                self.add_item(NumberBetButton(str(i)))
+            self.add_item(SumSelect())
+            self.add_item(EndTaiXiuButton())
+
+class TaiXiuButton(Button):
+        def __init__(self, label):
+            super().__init__(label=label, style=discord.ButtonStyle.primary)
 
         async def callback(self, interaction: discord.Interaction):
-            await interaction.response.defer(thinking=True)
-            number = int(self.custom_id.split("_")[-1])
-            modal = SumBetModal([number])
-            await interaction.followup.send_modal(modal)
+            await interaction.response.send_modal(BetModal(self.label))
 
-class IndividualNumberView(View):
-        def __init__(self):
-            super().__init__(timeout=60)
-            for i in range(3, 19):
-                self.add_item(NumberBetButton(i))
+class ChanLeButton(Button):
+        def __init__(self, label):
+            super().__init__(label=label, style=discord.ButtonStyle.secondary)
 
-    # ――― Kết thúc trò chơi ―――
+        async def callback(self, interaction: discord.Interaction):
+            await interaction.response.send_modal(BetModal(self.label))
+
+class NumberBetButton(Button):
+        def __init__(self, number):
+            super().__init__(label=number, style=discord.ButtonStyle.success)
+
+        async def callback(self, interaction: discord.Interaction):
+            await interaction.response.send_modal(SumBetModal([int(self.label)]))
+
 class EndTaiXiuButton(Button):
         def __init__(self):
-            super().__init__(label="🎲 Kết thúc trò chơi", style=discord.ButtonStyle.danger)
+            super().__init__(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.danger)
 
         async def callback(self, interaction: discord.Interaction):
-            await interaction.response.defer(thinking=True)
-            await handle_taixiu_end(interaction)
+            await interaction.response.defer()
+            user_id = str(interaction.user.id)
+            bets = user_bets.get(user_id, [])
+            if not bets:
+                await interaction.followup.send("❌ Bạn chưa đặt cược!", ephemeral=True)
+                return
 
-async def handle_taixiu_end(interaction: discord.Interaction):
-        with open("data/lichsu.json", "r") as f:
-            lichsu = json.load(f)
+            dice = [random.randint(1, 6) for _ in range(3)]
+            total = sum(dice)
+            result_text = f"🎲 Kết quả: **{dice[0]} + {dice[1]} + {dice[2]} = {total}**\n"
 
-        user_id = interaction.user.id
-        user_bets = [x for x in lichsu if x["game"] in ["taixiu", "taixiu_sum"]
-                     and not x.get("resolved", False)
-                     and x["user_id"] == user_id]
+            result_type = "Tài" if total >= 11 else "Xỉu"
+            result_text += f"➡️ {result_type}, {'Chẵn' if total % 2 == 0 else 'Lẻ'}\n\n"
 
-        if not user_bets:
-            return await interaction.response.send_message("❌ Không có cược nào đang hoạt động trong Tài Xỉu.", ephemeral=True)
-
-        dice = [random.randint(1, 6) for _ in range(3)]
-        total = sum(dice)
-        result = "tai" if total >= 11 else "xiu"
-        result_text = "Tài" if total >= 11 else "Xỉu"
-
-        reward_msg = f"🎲 Kết quả: **{dice}** (Tổng: {total} → **{result_text}**)\n\n"
-
-        for bet in user_bets:
-            uid = bet["user_id"]
-            amt = bet["amount"]
-            buff = get_pet_buff(uid)
-
-            if bet["game"] == "taixiu":
-                win = bet["choice"] == result
-                if win:
-                    profit = round(amt * 0.9)
-                    bonus = round(profit * buff / 100)
-                    total_win = amt + profit + bonus
-                    new_bal = update_balance(uid, total_win)
-                    add_history(uid, "taixiu_win", total_win, new_bal)
-                    reward_msg += f"<@{uid}> thắng {format_number(total_win)} xu ✅\n"
+            win = 0
+            for bet in bets:
+                match = False
+                if bet["type"] == result_type or bet["type"] == ("Chẵn" if total % 2 == 0 else "Lẻ"):
+                    match = True
+                elif bet["type"].isdigit() and int(bet["type"]) == total:
+                    match = True
+                if match:
+                    win += bet["amount"] * 2
+                    result_text += f"✅ Thắng cược {bet['type']} (+{bet['amount']*2:,})\n"
                 else:
-                    add_history(uid, "taixiu_lose", -amt, get_balance(uid))
-                    reward_msg += f"<@{uid}> thua {format_number(amt)} xu ❌\n"
+                    result_text += f"❌ Thua cược {bet['type']} (-{bet['amount']:,})\n"
 
-            elif bet["game"] == "taixiu_sum":
-                win = total in bet["choices"]
-                if win:
-                    rate = PAYOUT[total]
-                    profit = round(amt * rate)
-                    bonus = round(profit * buff / 100)
-                    total_win = amt + profit + bonus
-                    new_bal = update_balance(uid, total_win)
-                    add_history(uid, "taixiu_sum_win", total_win, new_bal)
-                    reward_msg += f"<@{uid}> thắng {format_number(total_win)} xu (x{rate}) ✅\n"
-                else:
-                    add_history(uid, "taixiu_sum_lose", -amt, get_balance(uid))
-                    reward_msg += f"<@{uid}> thua {format_number(amt)} xu ❌\n"
+            net = win - sum(b["amount"] for b in bets)
+            sodu_data[user_id] = sodu_data.get(user_id, 0) + net
+            lichsu_data.setdefault(user_id, []).append({
+                "game": "Tài Xỉu",
+                "bets": bets,
+                "result": total,
+                "net": net
+            })
 
-            bet["resolved"] = True
+            user_bets[user_id] = []
+            save_data()
+            await interaction.followup.send(result_text)
 
-        with open("data/lichsu.json", "w") as f:
-            json.dump(lichsu, f, indent=4)
+    # === COG ===
 
-        await interaction.followup.send(embed=discord.Embed(
-            title="🎲 Trò chơi Tài Xỉu đã kết thúc!",
-            description=reward_msg,
-            color=discord.Color.green()
-        ), view=None)
-
-    # ――― EndTaiXiuView ―――
-class EndTaiXiuView(View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(EndTaiXiuButton())
-
-    # ――― COG Setup ―――
 class TaiXiuCog(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
-        @commands.Cog.listener()
-        async def on_ready(self):
-            self.bot.add_view(SumSelect())
-            self.bot.add_view(IndividualNumberView())
-            self.bot.add_view(EndTaiXiuView())
+        @commands.command()
+        async def taixiu(self, ctx):
+            await ctx.send("🎲 Tài Xỉu - chọn cược:", view=TaiXiuView())
 
 async def setup(bot):
-    await bot.add_cog(TaiXiuCog(bot))
+        await bot.add_cog(TaiXiuCog(bot))

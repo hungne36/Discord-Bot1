@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from cogs.taixiu import TaiXiuModal, EndTaiXiuButton
+from cogs.taixiu import TaiXiuBetModal, EndTaiXiuButton
 from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
 from utils.data_manager import read_json, write_json

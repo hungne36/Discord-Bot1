@@ -599,5 +599,13 @@
         "amount": 2982722,
         "timestamp": "2025-08-01T06:35:41.408396",
         "choice": "tai"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 999999,
+        "timestamp": "2025-08-01T06:40:05.154450",
+        "choice": "tai"
     }
 ]
