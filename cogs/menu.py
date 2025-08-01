@@ -65,9 +65,8 @@ class Menu(commands.Cog):
             cid = interaction.data.get("custom_id")
             if cid == "taixiu_menu":
                 # mở giao diện Tài Xỉu thực sự
-                from cogs.taixiu import TaiXiuView
                 await interaction.response.send_message(
-                    "🎲 Tài Xỉu - chọn cược:", view=TaiXiuView(), ephemeral=True
+                    "🎲 Tài Xỉu - chọn cược:", view=TaiXiuSelectView(), ephemeral=True
                 )
 
     @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
