@@ -85,9 +85,12 @@ class TaiXiuModal(Modal):
         with open("data/lichsu.json", "w") as f:
             json.dump(history, f, indent=4)
 
+        # Xác định xem cược Tài hay Xỉu
+        bet_type = "Tài" if self.choice == "tai" else "Xỉu"
+
         await interaction.response.send_message(
-            f"✅ Bạn đã đặt cược **{'Tài' if self.choice == 'tai' else 'Xỉu'}** với **{format_number(amt)} xu**.\n"
-            f"⏳ Vui lòng chờ kết thúc trò chơi.",
+            f"✅ Bạn đã đặt cược **{bet_type}** với **{format_number(amt)} xu**.\n"
+            "⏳ Vui lòng chờ kết thúc trò chơi.",
             ephemeral=True
         )
 
