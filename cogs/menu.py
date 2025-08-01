@@ -6,6 +6,7 @@ from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
 from utils.data_manager import read_json, write_json
 from datetime import datetime, timezone
+from main import menu_lock_time
 
 # Giao diện chính chọn game
 class MenuView(discord.ui.View):
@@ -53,6 +54,15 @@ class Menu(commands.Cog):
 
     @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
     async def menu(self, interaction: discord.Interaction):
+        # Check global menu lock first
+        if datetime.now() < menu_lock_time:
+            remaining = int((menu_lock_time - datetime.now()).total_seconds())
+            await interaction.response.send_message(
+                f"🚫 Vui lòng đợi **{remaining} giây** trước khi sử dụng lại /menu.", 
+                ephemeral=True
+            )
+            return
+
         cooldown_data = read_json("data/menu_cooldown.json")
         channel_id = str(interaction.channel.id)
 
