@@ -220,6 +220,12 @@ async def handle_taixiu_end(interaction: discord.Interaction):
             color=discord.Color.green()
         ))
 
+    # ――― EndTaiXiuView ―――
+class EndTaiXiuView(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(EndTaiXiuButton())
+
     # ――― COG Setup ―――
 class TaiXiuCog(commands.Cog):
         def __init__(self, bot):
@@ -229,6 +235,7 @@ class TaiXiuCog(commands.Cog):
         async def on_ready(self):
             self.bot.add_view(SumSelect())
             self.bot.add_view(IndividualNumberView())
+            self.bot.add_view(EndTaiXiuView())
 
 async def setup(bot):
     await bot.add_cog(TaiXiuCog(bot))
