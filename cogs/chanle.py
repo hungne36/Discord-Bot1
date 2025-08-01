@@ -15,9 +15,9 @@ pending_chanle = {}
 class ChanLeSelectView(View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.add_item(Button(label="Chẵn", style=discord.ButtonStyle.primary, custom_id="chanle_chan"))
-        self.add_item(Button(label="Lẻ", style=discord.ButtonStyle.danger, custom_id="chanle_le"))
-        self.add_item(Button(label="Kết thúc trò chơi", style=discord.ButtonStyle.secondary, custom_id="chanle_ketthuc"))
+        self.add_item(Button(label="Chẵn", style=discord.ButtonStyle.primary, custom_id="chan"))
+        self.add_item(Button(label="Lẻ", style=discord.ButtonStyle.primary, custom_id="le"))
+        self.add_item(Button(label="Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id="chanle_ketthuc"))
 
     async def interaction_check(self, interaction: Interaction) -> bool:
         return True
