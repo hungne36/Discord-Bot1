@@ -4,6 +4,8 @@ from discord import app_commands
 from cogs.taixiu import TaiXiuModal, EndTaiXiuButton
 from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
+from utils.data_manager import read_json, write_json
+from datetime import datetime, timezone
 
 # Giao diện chính chọn game
 class MenuView(discord.ui.View):
@@ -51,6 +53,29 @@ class Menu(commands.Cog):
 
     @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
     async def menu(self, interaction: discord.Interaction):
+        cooldown_data = read_json("data/menu_cooldown.json")
+        channel_id = str(interaction.channel.id)
+
+        now = datetime.now(timezone.utc)
+        last_time_str = cooldown_data.get(channel_id)
+
+        if last_time_str:
+            try:
+                last_time = datetime.fromisoformat(last_time_str)
+                if (now - last_time).total_seconds() < 30:
+                    remaining = int(30 - (now - last_time).total_seconds())
+                    await interaction.response.send_message(
+                        f"⚠️ Vui lòng đợi **{remaining} giây** trước khi mở lại menu.",
+                        ephemeral=True
+                    )
+                    return
+            except:
+                pass  # Ignore lỗi nếu format thời gian cũ không đúng
+
+        # Update cooldown
+        cooldown_data[channel_id] = now.isoformat()
+        write_json("data/menu_cooldown.json", cooldown_data)
+
         await interaction.response.defer(ephemeral=True)
         await interaction.followup.send("🎮 Chọn trò chơi", view=MenuView(), ephemeral=True)
 
