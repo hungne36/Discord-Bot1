@@ -1,47 +1,22 @@
-    # cogs/menu.py
 import discord
 from discord.ext import commands
 from discord import app_commands
+from cogs.taixiu import TaiXiuView
+from cogs.chanle import ChanLeSelectView
+from utils.data_manager import read_json, write_json
+from datetime import datetime, timezone
+from main import menu_lock_time
 
-from .taixiu import TaiXiuModal
-from .chanle import ChanLeModal
-from .xocdia import XocDiaView
-
-class MenuView(discord.ui.View):
+    # Giao diện chính chọn game
+class MainMenuView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
-            # Tạo 5 nút
-            self.add_item(discord.ui.Button(label="🎲 Tài", style=discord.ButtonStyle.success, custom_id="menu_tai"))
-            self.add_item(discord.ui.Button(label="❌ Xỉu", style=discord.ButtonStyle.danger,  custom_id="menu_xiu"))
-            self.add_item(discord.ui.Button(label="⚖️ Chẵn", style=discord.ButtonStyle.primary, custom_id="menu_chan"))
-            self.add_item(discord.ui.Button(label="🔢 Lẻ", style=discord.ButtonStyle.secondary, custom_id="menu_le"))
-            self.add_item(discord.ui.Button(label="🥢 Xóc Đĩa (mp)", style=discord.ButtonStyle.secondary, custom_id="menu_xocdia_mp"))
+            self.add_item(discord.ui.Button(label="🎲 Tài Xỉu", style=discord.ButtonStyle.primary, custom_id="taixiu_menu"))
+            self.add_item(discord.ui.Button(label="⚪ Chẵn Lẻ", style=discord.ButtonStyle.primary, custom_id="chanle_menu"))
+            self.add_item(discord.ui.Button(label="🪙 Xóc Đĩa", style=discord.ButtonStyle.primary, custom_id="xocdia_menu"))
 
-        @discord.ui.button(custom_id="menu_tai")
-        async def tai_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(TaiXiuModal("tai"))
-
-        @discord.ui.button(custom_id="menu_xiu")
-        async def xiu_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(TaiXiuModal("xiu"))
-
-        @discord.ui.button(custom_id="menu_chan")
-        async def chan_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(ChanLeModal("chan"))
-
-        @discord.ui.button(custom_id="menu_le")
-        async def le_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(ChanLeModal("le"))
-
-        @discord.ui.button(custom_id="menu_xocdia_mp")
-        async def xocdia_mp_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            # defer rồi followup để không ACK hai lần
-            await interaction.response.defer(ephemeral=True)
-            view = XocDiaView()
-            await interaction.followup.send(
-                f"🎲 **{interaction.user.mention}** đã mở Xóc Đĩa Multiplayer — chọn cửa:",
-                view=view
-            )
+    # Alias để giữ tương thích
+MenuView = MainMenuView
 
 class Menu(commands.Cog):
         def __init__(self, bot):
@@ -49,14 +24,40 @@ class Menu(commands.Cog):
 
         @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
         async def menu(self, interaction: discord.Interaction):
-            # 1) defer interaction
-            await interaction.response.defer(ephemeral=True)
-            # 2) gửi view bằng followup
-            await interaction.followup.send(
-                "🎮 **Chọn trò chơi**",
-                view=MenuView(),
-                ephemeral=True
-            )
+            # Kiểm tra khóa toàn cục
+            if datetime.now() < menu_lock_time:
+                remaining = int((menu_lock_time - datetime.now()).total_seconds())
+                return await interaction.response.send_message(
+                    f"🚫 Vui lòng đợi **{remaining} giây** trước khi sử dụng lại /menu.",
+                    ephemeral=True
+                )
 
+            # Kiểm tra cooldown theo kênh
+            cooldown_data = read_json("data/menu_cooldown.json")
+            channel_id = str(interaction.channel.id)
+            now = datetime.now(timezone.utc)
+            last_time_str = cooldown_data.get(channel_id)
+
+            if last_time_str:
+                try:
+                    last_time = datetime.fromisoformat(last_time_str)
+                    diff = (now - last_time).total_seconds()
+                    if diff < 30:
+                        remaining = int(30 - diff)
+                        return await interaction.response.send_message(
+                            f"⚠️ Vui lòng đợi **{remaining} giây** trước khi mở lại menu.",
+                            ephemeral=True
+                        )
+                except:
+                    pass
+
+            # Cập nhật cooldown
+            cooldown_data[channel_id] = now.isoformat()
+            write_json("data/menu_cooldown.json", cooldown_data)
+            # Gửi giao diện chính
+            await interaction.response.defer(ephemeral=True)
+            await interaction.followup.send("🎯 Chọn loại trò chơi:", view=MainMenuView(), ephemeral=True)
+
+    # Hàm setup cog
 async def setup(bot):
-        await bot.add_cog(Menu(bot))
+    await bot.add_cog(Menu(bot))

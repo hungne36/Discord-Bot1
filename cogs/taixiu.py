@@ -1,178 +1,128 @@
-    # cogs/taixiu.py
-import discord, random, asyncio
+import discord
 from discord.ext import commands
-from discord import app_commands
-from utils.cooldown import can_play
-from utils.data_manager import (
-        get_balance, update_balance, add_history, get_pet_buff
-    )
-from discord.ui import Modal, TextInput, View, Select, Button
+import random
+import asyncio
+from utils.data_manager import get_balance, update_balance, log_history, get_pet_bonus
+from datetime import datetime, timedelta
+from main import menu_lock_time
 
-    # ――― CLASSIC TÀI XỈU ―――
-class TaiXiuModal(Modal):
-        def __init__(self, choice: str):
-            title = f"Cược {'Tài' if choice=='tai' else 'Xỉu'}"
-            super().__init__(title=title)
-            self.choice = choice
-            self.amount = TextInput(
-                label="Số xu cược (≥1.000)",
-                placeholder="Ví dụ: 10000",
-                max_length=18
-            )
-            self.add_item(self.amount)
+class TaiXiuView(discord.ui.View):
+            def __init__(self):
+                super().__init__(timeout=None)
+                self.add_item(TaiXiuButton("Tài", 11, 17))
+                self.add_item(TaiXiuButton("Xỉu", 4, 10))
+                for i in range(3, 19):
+                    self.add_item(TaiXiuButton(f"{i}", i, i))
+                self.add_item(KetThucTaiXiuButton())
 
-        async def on_submit(self, interaction: discord.Interaction):
-            # 1) Cooldown
-            ok, wait = can_play(interaction.user.id)
-            if not ok:
-                return await interaction.response.send_message(
-                    f"⏳ Vui lòng chờ {int(wait)} giây", ephemeral=True
+        # Nút đặt cược
+class TaiXiuButton(discord.ui.Button):
+            def __init__(self, label, min_sum, max_sum):
+                super().__init__(label=label, style=discord.ButtonStyle.secondary, custom_id=f"taixiu_{label}")
+                self.min_sum = min_sum
+                self.max_sum = max_sum
+
+            async def callback(self, interaction: discord.Interaction):
+                await interaction.response.send_modal(TaiXiuModal(self.label, self.min_sum, self.max_sum))
+
+        # Modal nhập số tiền cược
+class TaiXiuModal(discord.ui.Modal, title="💰 Nhập số tiền cược"):
+            def __init__(self, choice, min_sum, max_sum):
+                super().__init__()
+                self.choice = choice
+                self.min_sum = min_sum
+                self.max_sum = max_sum
+
+                self.tien_cuoc = discord.ui.TextInput(
+                    label="Nhập số tiền cược",
+                    placeholder="Ví dụ: 1000000",
+                    required=True,
+                    style=discord.TextStyle.short
+                )
+                self.add_item(self.tien_cuoc)
+
+            async def on_submit(self, interaction: discord.Interaction):
+                user_id = str(interaction.user.id)
+                try:
+                    amount = int(self.tien_cuoc.value.replace(",", ""))
+                    if amount <= 0:
+                        raise ValueError
+                except:
+                    return await interaction.response.send_message("⚠️ Số tiền không hợp lệ.", ephemeral=True)
+
+                balance = get_balance(user_id)
+                if amount > balance:
+                    return await interaction.response.send_message("⚠️ Bạn không đủ xu.", ephemeral=True)
+
+                # Ghi lại dữ liệu cược vào bộ nhớ tạm
+                if not hasattr(interaction.client, "taixiu_data"):
+                    interaction.client.taixiu_data = {}
+                if user_id not in interaction.client.taixiu_data:
+                    interaction.client.taixiu_data[user_id] = []
+                interaction.client.taixiu_data[user_id].append({
+                    "choice": self.choice,
+                    "min_sum": self.min_sum,
+                    "max_sum": self.max_sum,
+                    "amount": amount
+                })
+
+                await interaction.response.send_message(
+                    f"✅ Đặt cược {self.choice} với {amount:,} xu thành công.\nHãy nhấn **Kết thúc trò chơi** khi sẵn sàng.",
+                    ephemeral=True
                 )
 
-            # 2) Parse & validate
-            try:
-                amt = int(self.amount.value)
-            except:
-                return await interaction.response.send_message(
-                    "❌ Số không hợp lệ", ephemeral=True
-                )
-            bal = get_balance(interaction.user.id)
-            if amt < 1000 or amt > bal:
-                return await interaction.response.send_message(
-                    "❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True
-                )
+        # Nút kết thúc trò chơi
+class KetThucTaiXiuButton(discord.ui.Button):
+            def __init__(self):
+                super().__init__(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id="taixiu_ketthuc")
 
-            # 3) Roll
-            await interaction.response.send_message("🎲 Đang lắc xúc xắc...")
-            await asyncio.sleep(2)
-            dice = [random.randint(1,6) for _ in range(3)]
-            total = sum(dice)
-            result = "tai" if total >= 11 else "xiu"
-            win = (result == self.choice)
+            async def callback(self, interaction: discord.Interaction):
+                client = interaction.client
+                user_id = str(interaction.user.id)
 
-            # 4) Tính thưởng
-            if win:
-                profit = round(amt * 0.97)
-                buff = get_pet_buff(interaction.user.id)
-                bonus = round(profit * buff / 100)
-                delta = amt + profit + bonus
-            else:
-                delta = -amt
+                if not hasattr(client, "taixiu_data") or user_id not in client.taixiu_data:
+                    return await interaction.response.send_message("⚠️ Bạn chưa đặt cược.", ephemeral=True)
 
-            newb = update_balance(interaction.user.id, delta)
-            add_history(
-                interaction.user.id,
-                f"taixiu_{'win' if win else 'lose'}",
-                delta, newb
-            )
+                bets = client.taixiu_data[user_id]
+                dice = [random.randint(1, 6) for _ in range(3)]
+                total = sum(dice)
+                result_text = f"🎲 Kết quả: {dice} → Tổng: **{total}**\n"
 
-            # 5) Trả kết quả
-            emoji = "".join("⚀⚁⚂⚃⚄⚅"[d-1] for d in dice)
-            tlabel = "TÀI" if result=="tai" else "XỈU"
-            text = (
-                f"🎲 {emoji} → **{total}** ({tlabel})\n"
-                + (f"🎉 Thắng! stake +{profit:,} + pet bonus {bonus:,}\n"
-                   if win else "💸 Thua mất stake\n")
-                + f"💰 Số dư hiện tại: **{newb:,}** xu"
-            )
-            await interaction.edit_original_response(content=text)
+                win_total = 0
+                lose_total = 0
+                pet_bonus_total = 0
 
-    # ――― PLUS SUM (3–18) ―――
-PAYOUT = {
-        3:60, 18:60, 4:45,17:45,5:30,16:30,
-        6:15,15:15,7:5,14:5,
-        **{i:2.5 for i in range(8,14)}
-    }
+                for bet in bets:
+                    amount = bet["amount"]
+                    if bet["min_sum"] <= total <= bet["max_sum"]:
+                        bonus = get_pet_bonus(user_id, amount)
+                        win_total += amount + bonus
+                        pet_bonus_total += bonus
+                        result_text += f"✅ Thắng cược {bet['choice']} (+{amount:,} xu, bonus {bonus:,})\n"
+                    else:
+                        lose_total += amount
+                        result_text += f"❌ Thua cược {bet['choice']} (-{amount:,} xu)\n"
 
-class SumBetModal(Modal):
-        def __init__(self, choices: list[int]):
-            super().__init__(title=f"Cược sum: {', '.join(map(str,choices))}")
-            self.choices = choices
-            self.amount = TextInput(
-                label="Số xu cược (≥1.000)",
-                placeholder="Ví dụ: 50000",
-                max_length=18
-            )
-            self.add_item(self.amount)
+                net = win_total - lose_total
+                update_balance(user_id, net)
+                log_history(user_id, "Tài Xỉu", net)
 
-        async def on_submit(self, interaction: discord.Interaction):
-            # tương tự validate
-            try:
-                stake = int(self.amount.value)
-            except:
-                return await interaction.response.send_message(
-                    "❌ Số không hợp lệ", ephemeral=True
-                )
-            bal = get_balance(interaction.user.id)
-            if stake < 1000 or stake > bal:
-                return await interaction.response.send_message(
-                    "❌ Cược phải từ 1.000 đến số dư của bạn", ephemeral=True
-                )
+                result_text += f"\n📌 Tổng lời/lỗ: {'+' if net >= 0 else ''}{net:,} xu"
+                if pet_bonus_total > 0:
+                    result_text += f"\n🐾 Pet bonus cộng thêm: {pet_bonus_total:,} xu"
 
-            # roll
-            dice = [random.randint(1,6) for _ in range(3)]
-            total = sum(dice)
-            win = total in self.choices
+                # Xoá dữ liệu
+                del client.taixiu_data[user_id]
 
-            if win:
-                rate = PAYOUT[total]
-                profit = round(stake * rate)
-                buff = get_pet_buff(interaction.user.id)
-                bonus = round(profit * buff / 100)
-                delta = stake + profit + bonus
-            else:
-                delta = -stake
-                profit = bonus = 0
+                # Khoá menu toàn server 30 giây
+                global menu_lock_time
+                menu_lock_time = datetime.now() + timedelta(seconds=30)
 
-            newb = update_balance(interaction.user.id, delta)
-            add_history(
-                interaction.user.id,
-                f"taixiu_sum_{'win' if win else 'lose'}",
-                delta, newb
-            )
-
-            text = (
-                f"🎲 `{dice}` → **{total}**\n"
-                + (f"🎉 Thắng! profit={profit:,}, pet bonus={bonus:,}\n"
-                   if win else "💸 Thua mất toàn bộ stake\n")
-                + f"💰 Số dư hiện tại: **{newb:,}** xu"
-            )
-            await interaction.response.send_message(text, ephemeral=False)
-
-class SumSelect(View):
-        def __init__(self):
-            super().__init__(timeout=60)
-            opts = [discord.SelectOption(label=str(i), value=str(i))
-                    for i in range(3,19)]
-            self.add_item(Select(
-                placeholder="Chọn tối đa 4 số (3–18)…",
-                min_values=1, max_values=4, options=opts
-            ))
-
-        @discord.ui.select()
-        async def on_select(self, interaction: discord.Interaction, select: Select):
-            choices = list(map(int, select.values))
-            await interaction.response.send_modal(SumBetModal(choices))
-
-    # ――― COG ĐĂNG KÝ ―――
-class TaiXiuCog(commands.Cog):
-        def __init__(self, bot):
-            self.bot = bot
-
-        @app_commands.command(
-            name="taixiu_sum",
-            description="🎲 Cược sum (3–18), tối đa 4 lựa chọn"
-        )
-        async def taixiu_sum(self, interaction: discord.Interaction):
-            await interaction.response.send_message(
-                "🔢 Chọn các số để cược:", view=SumSelect(), ephemeral=True
-            )
-
-        # NOTE: Classic Tài/Xỉu chỉ chạy qua menu ⇒ không cần slash command
-        @commands.Cog.listener()
-        async def on_ready(self):
-            # đăng ký persistent views nếu muốn giữ View sau restart
-            self.bot.add_view(SumSelect())
+                # Vô hiệu hoá nút
+                for child in self.view.children:
+                    if isinstance(child, discord.ui.Button):
+                        child.disabled = True
+                await interaction.response.edit_message(content=result_text, view=self.view)
 
 async def setup(bot):
-        await bot.add_cog(TaiXiuCog(bot))
+    pass  # View-only cog, no commands to register

@@ -2,8 +2,11 @@ import os, sys, asyncio, traceback
 import discord
 from discord.ext import commands
 from discord import app_commands
+from keep_alive import keep_alive
+from datetime import datetime
 
-from keep_alive import keep_alive  # giữ bot không die
+# Biến toàn cục để khóa /menu
+menu_lock_time = datetime.min
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
@@ -20,7 +23,10 @@ tree = bot.tree
 async def on_app_command_error(interaction: discord.Interaction, error):
     print("🔴 App command error:", "".join(traceback.format_exception(type(error), error, error.__traceback__)))
     try:
-        await interaction.response.send_message("❌ Đã có lỗi, thử lại sau.", ephemeral=True)
+        if not interaction.response.is_done():
+            await interaction.response.send_message("❌ Đã có lỗi, thử lại sau.", ephemeral=True)
+        else:
+            await interaction.followup.send("❌ Đã có lỗi, thử lại sau.", ephemeral=True)
     except:
         pass
 
@@ -41,7 +47,59 @@ async def on_ready():
         print(f"✅ Synced {len(synced)} commands")
     except Exception as e:
         print("❌ Sync failed:", e)
-    print(f"✅ Bot online as {bot.user} (ID: {bot.user.id})")
+
+    # Đăng ký các View persistent
+    from cogs.menu import MenuView
+    from cogs.chanle import ChanLeSelectView
+    from cogs.taixiu import TaiXiuView
+
+    bot.add_view(MenuView())
+    bot.add_view(TaiXiuView())
+    bot.add_view(ChanLeSelectView())
+
+    print(f"✅ Bot online as {bot.user}")
+
+@bot.event
+async def on_interaction(interaction: discord.Interaction):
+    try:
+        if interaction.type == discord.InteractionType.component:
+            custom_id = interaction.data.get("custom_id")
+
+            if custom_id == "taixiu_menu":
+                from cogs.taixiu import TaiXiuView
+                await interaction.response.edit_message(content="🎲 Chọn cược Tài Xỉu", view=TaiXiuView())
+
+            elif custom_id == "chanle_menu":
+                from cogs.chanle import ChanLeSelectView
+                await interaction.response.edit_message(content="⚪ Chọn cược Chẵn Lẻ", view=ChanLeSelectView())
+
+            elif custom_id == "xocdia_menu":
+                from cogs.xocdia import start_xocdia_game
+                await start_xocdia_game(interaction)
+
+            elif custom_id.startswith("tx_"):
+                from cogs.taixiu import TaiXiuModal
+                choice = "tai" if custom_id == "tx_tai" else "xiu" if custom_id == "tx_xiu" else custom_id
+                await interaction.response.send_modal(TaiXiuModal(choice))
+
+            elif custom_id in ["cl_chan", "cl_le"]:
+                from cogs.chanle import ChanLeModal
+                choice = "chan" if custom_id == "cl_chan" else "le"
+                await interaction.response.send_modal(ChanLeModal(choice))
+
+            elif custom_id.startswith("back_to_main"):
+                from cogs.menu import MenuView
+                await interaction.response.edit_message(content="🎮 Chọn trò chơi", view=MenuView())
+
+    except Exception as e:
+        print("🔴 Interaction error:", e)
+        try:
+            if not interaction.response.is_done():
+                await interaction.response.send_message("❌ Lỗi xử lý tương tác.", ephemeral=True)
+            else:
+                await interaction.followup.send("❌ Lỗi xử lý tương tác.", ephemeral=True)
+        except:
+            pass
 
 @tree.command(name="ping", description="🏓 Pong check")
 async def ping(interaction: discord.Interaction):

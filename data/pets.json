@@ -1,24 +1,27 @@
 {
   "730436357838602301": {
     "collected": [
-      "S\u1eedu",
-      "T\u1ef5",
-      "Ng\u1ecd",
-      "T\u00ed",
-      "Th\u00ecn",
       "M\u1eb9o",
-      "D\u1ea7n",
-      "M\u00f9i",
-      "Th\u00e2n",
-      "H\u1ee3i",
-      "D\u1eadu",
-      "Tu\u1ea5t"
+      "D\u1ea7n"
     ],
     "last": [
-      "T\u00ed",
-      "\ud83d\udc2d",
-      5
+      "D\u1ea7n",
+      "\ud83d\udc2f",
+      15
     ],
-    "updated_at": "2025-07-02T18:55:54.614011+00:00Z"
+    "updated_at": "2025-08-01T06:05:47.290988+00:00Z"
+  },
+  "878488497659453521": {
+    "collected": [
+      "M\u00f9i",
+      "M\u1eb9o",
+      "S\u1eedu"
+    ],
+    "last": [
+      "S\u1eedu",
+      "\ud83d\udc02",
+      10
+    ],
+    "updated_at": "2025-08-01T04:15:43.718013+00:00Z"
   }
 }

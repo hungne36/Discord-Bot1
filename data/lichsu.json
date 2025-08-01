@@ -2,182 +2,624 @@
   {
     "user_id": 730436357838602301,
     "action": "gacha_cost",
-    "amount": -50000000000,
+    "amount": -10000000000,
+    "balance_after": 15000000000,
+    "timestamp": "2025-08-01T02:51:46.537627Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "gacha_cost",
+    "amount": -10000000000,
     "balance_after": 5000000000,
-    "timestamp": "2025-07-02T07:52:00.929448Z"
+    "timestamp": "2025-08-01T02:52:16.333548Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "nap",
-    "amount": 1000000000000000,
-    "balance_after": 1000005000000000,
-    "timestamp": "2025-07-02T07:52:32.742549Z",
-    "username": "hungnamvi"
+    "action": "xocdia_lose",
+    "amount": -555555,
+    "balance_after": 4999444445,
+    "timestamp": "2025-08-01T02:52:44.078014Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -100000000000,
-    "balance_after": 999905000000000,
-    "timestamp": "2025-07-02T07:53:18.188519Z"
+    "action": "taixiu_lose",
+    "amount": -55555,
+    "balance_after": 14999388890,
+    "timestamp": "2025-08-01T02:53:38.922688Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -1000000000000,
-    "balance_after": 998905000000000,
-    "timestamp": "2025-07-02T07:54:02.517122Z"
+    "action": "taixiu_lose",
+    "amount": -1000000,
+    "balance_after": 14998388890,
+    "timestamp": "2025-08-01T02:59:09.976013Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -10000000000000,
-    "balance_after": 988905000000000,
-    "timestamp": "2025-07-02T07:54:29.669349Z"
+    "action": "taixiu_lose",
+    "amount": -100000,
+    "balance_after": 14998288890,
+    "timestamp": "2025-08-01T02:59:51.363858Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -1000000000000,
-    "balance_after": 987905000000000,
-    "timestamp": "2025-07-02T07:54:35.345816Z"
+    "action": "taixiu_lose",
+    "amount": -5555,
+    "balance_after": 14998283335,
+    "timestamp": "2025-08-01T03:00:03.732768Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -1000000000000,
-    "balance_after": 986905000000000,
-    "timestamp": "2025-07-02T07:54:58.157552Z"
+    "action": "taixiu_lose",
+    "amount": -10000,
+    "balance_after": 14998273335,
+    "timestamp": "2025-08-01T03:00:44.900720Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "X\u00f3c \u0110\u0129a",
-    "amount": 90000000000,
-    "balance_after": 986895000000000,
-    "timestamp": "2025-07-02T07:56:17.629155Z",
-    "username": "<@730436357838602301>"
+    "action": "taixiu_lose",
+    "amount": -10000,
+    "balance_after": 14998263335,
+    "timestamp": "2025-08-01T03:08:45.098291Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "X\u00f3c \u0110\u0129a",
-    "amount": 2259998,
-    "balance_after": 1001259999,
-    "timestamp": "2025-07-02T18:54:20.397071Z",
-    "username": "<@730436357838602301>"
+    "game": "taixiu",
+    "choice": "tx_8",
+    "amount": 100000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:22:57.932594"
   },
   {
     "user_id": 730436357838602301,
-    "action": "nap",
-    "amount": 1000000000000000,
-    "balance_after": 1000011001259999,
-    "timestamp": "2025-07-02T18:55:32.519068Z",
-    "username": "hungnamvi"
+    "game": "taixiu",
+    "choice": "tx_9",
+    "amount": 100000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:23:08.425288"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -50000000000,
-    "balance_after": 999961001259999,
-    "timestamp": "2025-07-02T18:55:41.387669Z"
+    "game": "taixiu",
+    "choice": "tx_15",
+    "amount": 1000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:23:15.740023"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -10000000000000,
-    "balance_after": 989961001259999,
-    "timestamp": "2025-07-02T18:55:49.919618Z"
+    "game": "taixiu",
+    "choice": "tx_3",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:23:37.943456"
   },
   {
     "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -1000000000000,
-    "balance_after": 988961001259999,
-    "timestamp": "2025-07-02T18:55:54.610466Z"
+    "game": "taixiu",
+    "choice": "tx_4",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:23:48.499690"
   },
   {
     "user_id": 730436357838602301,
-    "action": "taixiu_thua",
-    "amount": -999999,
-    "balance_after": 988961000260000,
-    "timestamp": "2025-07-02T19:01:23.821357Z"
+    "game": "taixiu",
+    "choice": "tx_5",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:23:54.599503"
   },
   {
     "user_id": 730436357838602301,
-    "action": "taixiu_th\u1eafng",
-    "amount": 201848,
-    "balance_after": 988961000461848,
-    "timestamp": "2025-07-02T19:01:33.779151Z"
+    "game": "taixiu",
+    "choice": "tx_6",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:00.579681"
   },
   {
     "user_id": 730436357838602301,
-    "action": "chanle_thua",
-    "amount": -99999,
-    "balance_after": 988961000361849,
-    "timestamp": "2025-07-02T19:01:43.267471Z"
+    "game": "taixiu",
+    "choice": "tx_7",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:07.096720"
   },
   {
     "user_id": 730436357838602301,
-    "action": "hungnamvi",
-    "amount": "X\u00f3c \u0110\u0129a",
-    "balance_after": 10000000,
-    "timestamp": "2025-07-02T19:02:08.643382Z",
-    "username": 988961009811849
+    "game": "taixiu",
+    "choice": "tx_8",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:12.813462"
   },
   {
     "user_id": 730436357838602301,
-    "action": "X\u00f3c \u0110\u0129a",
-    "amount": 194500,
-    "balance_after": 988961009906349,
-    "timestamp": "2025-07-02T19:03:00.532678Z",
-    "username": "<@730436357838602301>"
+    "game": "taixiu",
+    "choice": "tx_9",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:24.947852"
   },
   {
     "user_id": 730436357838602301,
-    "action": "taixiu_win",
-    "amount": 18925,
-    "balance_after": 988971009925274,
-    "timestamp": "2025-07-03T06:01:26.265977Z"
+    "game": "taixiu",
+    "choice": "tx_11",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:34.279468"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_9",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:24:55.503860"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_8",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:25:01.265901"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_10",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:25:06.870548"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_11",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:25:17.050058"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_12",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:25:22.328373"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:25:34.984331"
   },
   {
     "user_id": 730436357838602301,
     "action": "chanle_win",
-    "amount": 1892,
-    "balance_after": 1892,
-    "timestamp": "2025-07-03T06:05:51.748871Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "xocdia",
-    "amount": 12600,
-    "balance_after": 13492,
-    "timestamp": "2025-07-03T06:06:49.993457Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "xocdia",
-    "amount": -1000,
-    "balance_after": 11492,
-    "timestamp": "2025-07-03T06:18:29.055185Z"
+    "amount": 191999998,
+    "balance_after": 15069413333,
+    "timestamp": "2025-08-01T03:36:52.247669Z"
   },
   {
     "user_id": 730436357838602301,
     "action": "chanle_lose",
-    "amount": -1000,
-    "balance_after": 10492,
-    "timestamp": "2025-07-03T06:22:22.550259Z"
+    "amount": -99999999,
+    "balance_after": 14969413334,
+    "timestamp": "2025-08-01T03:36:58.372590Z"
   },
   {
     "user_id": 730436357838602301,
-    "action": "chanle_lose",
-    "amount": -1000,
-    "balance_after": 19999909492,
-    "timestamp": "2025-07-03T06:51:22.731862Z"
+    "game": "taixiu",
+    "choice": "tx_4",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:37:49.187382"
   },
   {
     "user_id": 730436357838602301,
-    "action": "chanle_win",
-    "amount": 1998,
-    "balance_after": 19999911490,
-    "timestamp": "2025-07-03T06:52:02.719618Z"
+    "game": "taixiu",
+    "choice": "tx_3",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:37:59.529485"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_7",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:06.309299"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_9",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:12.769480"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_11",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:21.645907"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_13",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:28.548343"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_15",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:37.782506"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_17",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:38:42.993753"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_4",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:01.241482"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_6",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:07.314059"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_8",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:13.476322"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_10",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:18.457576"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_12",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:24.092894"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_14",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T03:39:29.841455"
+  },
+  {
+    "user_id": 878488497659453521,
+    "game": "taixiu",
+    "choice": "xiu",
+    "amount": 9999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:13:45.978264"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "gacha_cost",
+    "amount": -10000000000,
+    "balance_after": 15008999999,
+    "timestamp": "2025-08-01T04:14:05.434446Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 10000000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:14:21.327365"
+  },
+  {
+    "user_id": 878488497659453521,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:15:10.741644"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "gacha_cost",
+    "amount": -10000000000,
+    "balance_after": 16609000000,
+    "timestamp": "2025-08-01T04:15:33.422177Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "action": "gacha_cost",
+    "amount": -10000000000,
+    "balance_after": 6609000000,
+    "timestamp": "2025-08-01T04:15:43.695312Z"
+  },
+  {
+    "user_id": 878488497659453521,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 6609000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:16:47.008868"
+  },
+  {
+    "user_id": 878488497659453521,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 13151910000,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:18:27.721778"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_14",
+    "amount": 99999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:24:27.355859"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_15",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:35:10.632290"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_10",
+    "amount": 10000000,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:35:30.482515"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_15",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:39:30.007082"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_15",
+    "amount": 999999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:39:31.023604"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_16",
+    "amount": 999999992,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:42:31.680548"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_16",
+    "amount": 99999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:42:51.147541"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_16",
+    "amount": 9999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:44:30.666913"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tai",
+    "amount": 99999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:44:52.800007"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_17",
+    "amount": 9999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:50:02.136086"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_17",
+    "amount": 9999999,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:54:18.173214"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "choice": "tx_17",
+    "amount": 123456789,
+    "resolved": true,
+    "timestamp": "2025-08-01T04:54:35.045651"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 999999,
+    "timestamp": "2025-08-01T06:04:02.069744",
+    "choice": "xiu"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu_sum",
+    "resolved": false,
+    "amount": 9999999,
+    "timestamp": "2025-08-01T06:04:33.766089",
+    "choices": [
+      13
+    ]
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_win",
+    "amount": 1999998,
+    "balance_after": 16495956577,
+    "timestamp": "2025-08-01T06:05:12.249225Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "gacha_cost",
+    "amount": -10000000000,
+    "balance_after": 6495956577,
+    "timestamp": "2025-08-01T06:05:47.275196Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 999999999,
+    "timestamp": "2025-08-01T06:08:01.483781",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -929937272,
+    "balance_after": 4566019306,
+    "timestamp": "2025-08-01T06:08:38.158462Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu_sum",
+    "resolved": false,
+    "amount": 9999,
+    "timestamp": "2025-08-01T06:09:06.263287",
+    "choices": [
+      17
+    ]
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 99999,
+    "timestamp": "2025-08-01T06:09:34.588032",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu_sum",
+    "resolved": false,
+    "amount": 292911,
+    "timestamp": "2025-08-01T06:09:45.881064",
+    "choices": [
+      17
+    ]
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu_sum",
+    "resolved": false,
+    "amount": 9999,
+    "timestamp": "2025-08-01T06:30:12.157504",
+    "choices": [
+      17
+    ]
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu_sum",
+    "resolved": false,
+    "amount": 9999,
+    "timestamp": "2025-08-01T06:33:18.218364",
+    "choices": [
+      17
+    ]
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 919181,
+    "timestamp": "2025-08-01T06:33:28.750806",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 9999,
+    "timestamp": "2025-08-01T06:34:41.245868",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 2982722,
+    "timestamp": "2025-08-01T06:35:41.408396",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "game": "taixiu",
+    "resolved": false,
+    "amount": 999999,
+    "timestamp": "2025-08-01T06:40:05.154450",
+    "choice": "tai"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -9999,
+    "balance_after": 4560674499,
+    "timestamp": "2025-08-01T07:40:20.834472Z"
+  },
+  {
+    "user_id": "730436357838602301",
+    "action": "T\u00e0i X\u1ec9u",
+    "amount": 1149990,
+    "balance_after": 4561824489,
+    "timestamp": "2025-08-01T07:42:54.133407Z"
   }
 ]

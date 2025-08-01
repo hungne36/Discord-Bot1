@@ -48,6 +48,10 @@ def update_balance(uid, amount):
     write_json(DATA_FILE, data)
     return data[uid]
 
+def add_balance(uid, amount):
+    """Alias for update_balance for backward compatibility"""
+    return update_balance(uid, amount)
+
 def get_user_history(uid, limit=None):
     hist = read_json(HISTORY_FILE)
     user_hist = [h for h in hist if h["user_id"] == uid]
@@ -108,3 +112,26 @@ def get_pending_reward(uid):
     """Get pending reward amount for user"""
     pending_data = read_json(PHUCLOI_FILE)
     return pending_data.get(str(uid), 0)
+
+def get_username(user):
+    """Get username from Discord user object"""
+    return user.display_name if hasattr(user, 'display_name') else str(user)
+
+def update_today_spent(uid, amount):
+    """Update today's spent amount - this is tracked via history"""
+    # This is handled automatically through add_history when balance is reduced
+    pass
+
+def get_pet_bonus_percent(uid):
+    """Get pet bonus percentage for user"""
+    return get_pet_buff(uid)
+
+def log_history(uid, action, amount):
+    """Log game history - wrapper for add_history"""
+    balance = get_balance(uid)
+    add_history(uid, action, amount, balance)
+
+def get_pet_bonus(uid, amount):
+    """Get pet bonus amount based on user's pet buff"""
+    buff_percent = get_pet_buff(uid)
+    return int(amount * buff_percent / 100) if buff_percent > 0 else 0
