@@ -159,15 +159,6 @@ class TaiXiuCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(
-        name="taixiu_sum",
-        description="🎲 Cược sum (3–18), tối đa 4 lựa chọn"
-    )
-    async def taixiu_sum(self, interaction: discord.Interaction):
-        await interaction.response.send_message(
-            "🔢 Chọn các số để cược:", view=SumSelect(), ephemeral=True
-        )
-
     # NOTE: Classic Tài/Xỉu chỉ chạy qua menu ⇒ không cần slash command
     @commands.Cog.listener()
     async def on_ready(self):

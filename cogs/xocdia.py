@@ -3,11 +3,18 @@ from discord.ext import commands
 from discord import app_commands
 import random
 from utils.data_manager import update_balance, add_history, get_balance, get_pet_buff
+
 def get_username(user):
-    return f"{user.name}#{user.discriminator}"
+        return f"{user.name}#{user.discriminator}"
 
 def update_today_spent(user_id, amount):
-    pass  # Nếu sau này có tính chi tiêu hôm nay thì bạn sẽ xử lý thêm ở đây
+        pass  # Nếu sau này có tính chi tiêu hôm nay thì bạn sẽ xử lý thêm ở đây
+
+def get_pet_bonus_percent(user_id):
+        try:
+            return get_pet_buff(user_id).get("bonus_percent", 0)
+        except:
+            return 0
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Trắng 1 Đỏ", "3 Đỏ 1 Trắng", "Chẵn", "Lẻ"]
 
@@ -74,8 +81,7 @@ class StartButton(discord.ui.Button):
                 await interaction.response.send_message("❌ Chỉ người mở phiên mới được kết thúc!", ephemeral=True)
                 return
 
-            # ✅ Thêm dòng này để tránh lỗi
-            await interaction.response.defer()
+            await interaction.response.defer()  # ✅ TRÁNH LỖI UNKNOWN INTERACTION
 
             ket_qua = random.choices(["Đỏ", "Trắng"], k=4)
             so_do = ket_qua.count("Đỏ")
@@ -108,18 +114,22 @@ class StartButton(discord.ui.Button):
                     add_history(uid, "xocdia_lose", -thongtin["tien"], balance)
                     text += f"❌ <@{uid}> thua {thongtin['tien']:,}\n"
 
-            await session["view"].msg.edit(content=text, view=None)
+            try:
+                if session["view"].msg:
+                    await session["view"].msg.edit(content=text, view=None)
+            except discord.NotFound:
+                await interaction.followup.send("❗Không thể chỉnh sửa thông báo vì tin nhắn gốc đã bị xoá.")
             del active_sessions[interaction.channel.id]
 
 class XocDiaView(discord.ui.View):
         def __init__(self):
-            super().__init__(timeout=None)  # ✅ Không timeout nữa
+            super().__init__(timeout=None)
             self.msg = None
             for c in CACH_CUA:
                 self.add_item(CuaButton(c))
             self.add_item(StartButton())
 
-        async def on_timeout(self):  # Không làm gì cả
+        async def on_timeout(self):
             pass
 
 async def start_xocdia_game(interaction: discord.Interaction):
@@ -135,15 +145,10 @@ async def start_xocdia_game(interaction: discord.Interaction):
             "cuoc": {},
             "view": view
         }
-        await interaction.response.send_message("✅ Phiên Xóc Đĩa đã bắt đầu!", ephemeral=True)
+        await interaction.followup.send("✅ Phiên Xóc Đĩa đã bắt đầu!", ephemeral=True)
 
 class XocDia(commands.Cog):
         def __init__(self, bot):
-            self.bot = bot
-
-        @app_commands.command(name="xocdia", description="Mở một phiên Xóc Đĩa cho mọi người cùng chơi")
-        async def xocdia(self, interaction: discord.Interaction):
-            await start_xocdia_game(interaction)
-
+            self.bot = bot       
 async def setup(bot):
         await bot.add_cog(XocDia(bot))

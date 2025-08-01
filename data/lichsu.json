@@ -221,5 +221,26 @@
     "amount": 1950,
     "balance_after": 7840,
     "timestamp": "2025-07-31T22:33:20.005803Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_win",
+    "amount": 2000,
+    "balance_after": 29799000490,
+    "timestamp": "2025-08-01T00:23:18.900384Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_win",
+    "amount": 19998,
+    "balance_after": 29799010489,
+    "timestamp": "2025-08-01T00:24:16.894802Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_lose",
+    "amount": -1000,
+    "balance_after": 29799009489,
+    "timestamp": "2025-08-01T00:36:50.521708Z"
   }
 ]
