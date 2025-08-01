@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from cogs.taixiu import TaiXiuModal
+from cogs.taixiu import TaiXiuModal, EndTaiXiuButton
 from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
 
@@ -19,7 +19,7 @@ class TaiXiuSelectView(discord.ui.View):
         super().__init__(timeout=None)
         self.create_sum_buttons()
         self.add_item(discord.ui.Button(label="⬅️ Quay lại", style=discord.ButtonStyle.gray, custom_id="back_to_main_taixiu"))
-        self.add_item(KetThucButton("taixiu"))
+        self.add_item(EndTaiXiuButton())
 
     def create_sum_buttons(self):
         for i in range(3, 18):
