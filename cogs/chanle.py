@@ -10,7 +10,7 @@ import asyncio
     # Biến lưu trữ cược đang chờ
 pending_chanle = {}
 
-    class ChanLeModal(discord.ui.Modal):
+class ChanLeModal(discord.ui.Modal):
         def __init__(self, choice: str):
             super().__init__(title=f"Cược {'Chẵn' if choice=='chan' else 'Lẻ'}")
             self.choice = choice
@@ -50,7 +50,7 @@ pending_chanle = {}
                 "👉 Nhấn **Kết thúc trò chơi** để xem kết quả!", ephemeral=True
             )
 
-    class ChanLeView(discord.ui.View):
+class ChanLeView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
 
@@ -110,7 +110,7 @@ pending_chanle = {}
             # Cấm chơi lại trong 30s
             set_cooldown(interaction.user.id, 30)
 
-    class ChanLe(commands.Cog):
+class ChanLe(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
@@ -118,5 +118,5 @@ pending_chanle = {}
         async def chanle_test(self, ctx):
             await ctx.send("🎮 **Chẵn Lẻ** - chọn một tùy chọn:", view=ChanLeView())
 
-    async def setup(bot):
+async def setup(bot):
     await bot.add_cog(ChanLe(bot))

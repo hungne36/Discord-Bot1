@@ -138,7 +138,7 @@ class SumSelect(View):
             choices = list(map(int, select.values))
             await interaction.response.send_modal(SumBetModal(choices))
 
-    class NumberBetButton(discord.ui.Button):
+class NumberBetButton(discord.ui.Button):
         def __init__(self, number: int):
             style = discord.ButtonStyle.success if number >= 11 else discord.ButtonStyle.danger
             super().__init__(label=str(number), style=style, custom_id=f"tx_sum_{number}")
@@ -147,7 +147,7 @@ class SumSelect(View):
             number = int(self.custom_id.split("_")[-1])
             await interaction.response.send_modal(SumBetModal([number]))
 
-    class IndividualNumberView(View):
+class IndividualNumberView(View):
         def __init__(self):
             super().__init__(timeout=60)
             for i in range(3, 19):
@@ -161,7 +161,7 @@ class EndTaiXiuButton(Button):
         async def callback(self, interaction: discord.Interaction):
             await handle_taixiu_end(interaction)
 
-    async def handle_taixiu_end(interaction: discord.Interaction):
+async def handle_taixiu_end(interaction: discord.Interaction):
         with open("data/lichsu.json", "r") as f:
             lichsu = json.load(f)
 
@@ -230,5 +230,5 @@ class TaiXiuCog(commands.Cog):
             self.bot.add_view(SumSelect())
             self.bot.add_view(IndividualNumberView())
 
-    async def setup(bot):
+async def setup(bot):
     await bot.add_cog(TaiXiuCog(bot))
