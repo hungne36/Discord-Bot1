@@ -49,7 +49,9 @@ async def on_ready():
         print("❌ Sync failed:", e)
 
     # Đăng ký các View persistent
-    from cogs.menu import MenuView, TaiXiuSelectView, ChanLeSelectView
+    from cogs.menu import MenuView
+    from cogs.chanle import ChanLeSelectView
+    from cogs.taixiu import TaiXiuView as TaiXiuSelectView
     from cogs.xocdia import KetThucButton
 
     bot.add_view(MenuView())
