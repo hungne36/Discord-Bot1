@@ -555,5 +555,15 @@
         "choices": [
             17
         ]
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu_sum",
+        "resolved": false,
+        "amount": 9999,
+        "timestamp": "2025-08-01T06:30:12.157504",
+        "choices": [
+            17
+        ]
     }
 ]
