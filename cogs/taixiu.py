@@ -10,29 +10,6 @@ from discord.ui import Modal, TextInput, View, Select, Button
 
 def format_number(n): return f"{n:,}".replace(",", ".")
 
-async def ask_for_bet_amount(interaction):
-    """Simple amount validation - you may want to implement a modal for this"""
-    # For now, this is a placeholder - you'd implement a modal to ask for amount
-    # or modify the button callback to include amount selection
-    return None
-
-async def save_bet(user, game_type, choice, amount):
-    """Save bet to history - placeholder for now"""
-    # This should integrate with your existing history saving logic
-    pass
-
-# ――― NUMBER BET BUTTON ―――
-class NumberBetButton(discord.ui.Button):
-    def __init__(self, number: int):
-        super().__init__(label=str(number), style=discord.ButtonStyle.secondary, custom_id=f"tx_sum_{number}")
-
-    async def callback(self, interaction: discord.Interaction):
-        user_id = str(interaction.user.id)
-        number = int(self.custom_id.split("_")[-1])
-
-        # For now, let's use the existing modal system
-        await interaction.response.send_modal(SumBetModal([number]))
-
 # ――― CLASSIC TÀI XỈU ―――
 class TaiXiuModal(Modal):
     def __init__(self, choice: str):
