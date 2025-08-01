@@ -565,5 +565,39 @@
         "choices": [
             17
         ]
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu_sum",
+        "resolved": false,
+        "amount": 9999,
+        "timestamp": "2025-08-01T06:33:18.218364",
+        "choices": [
+            17
+        ]
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 919181,
+        "timestamp": "2025-08-01T06:33:28.750806",
+        "choice": "tai"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 9999,
+        "timestamp": "2025-08-01T06:34:41.245868",
+        "choice": "tai"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 2982722,
+        "timestamp": "2025-08-01T06:35:41.408396",
+        "choice": "tai"
     }
 ]
