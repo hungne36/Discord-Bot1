@@ -144,8 +144,10 @@ class NumberBetButton(discord.ui.Button):
             super().__init__(label=str(number), style=style, custom_id=f"tx_sum_{number}")
 
         async def callback(self, interaction: discord.Interaction):
+            await interaction.response.defer(thinking=True)
             number = int(self.custom_id.split("_")[-1])
-            await interaction.response.send_modal(SumBetModal([number]))
+            modal = SumBetModal([number])
+            await interaction.followup.send_modal(modal)
 
 class IndividualNumberView(View):
         def __init__(self):
@@ -159,6 +161,7 @@ class EndTaiXiuButton(Button):
             super().__init__(label="🎲 Kết thúc trò chơi", style=discord.ButtonStyle.danger)
 
         async def callback(self, interaction: discord.Interaction):
+            await interaction.response.defer(thinking=True)
             await handle_taixiu_end(interaction)
 
 async def handle_taixiu_end(interaction: discord.Interaction):
@@ -217,7 +220,7 @@ async def handle_taixiu_end(interaction: discord.Interaction):
         with open("data/lichsu.json", "w") as f:
             json.dump(lichsu, f, indent=4)
 
-        await interaction.response.send_message(embed=discord.Embed(
+        await interaction.followup.send(embed=discord.Embed(
             title="🎲 Trò chơi Tài Xỉu đã kết thúc!",
             description=reward_msg,
             color=discord.Color.green()
