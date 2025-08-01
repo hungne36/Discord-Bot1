@@ -4,6 +4,9 @@ from discord.ext import commands
 from discord import app_commands
 from keep_alive import keep_alive 
 from cogs.menu import MenuView, TaiXiuSelectView
+from datetime import datetime, timedelta
+
+menu_lock_time = datetime.min  # Biến toàn cục để khóa /menu
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
