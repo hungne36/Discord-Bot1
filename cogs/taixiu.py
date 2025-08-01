@@ -86,7 +86,7 @@ class TaiXiuModal(Modal):
             json.dump(history, f, indent=4)
 
         await interaction.response.send_message(
-            f"✅ Bạn đã đặt cược **{'Tài' if self.choice == 'tai' else 'Xỉu'}** với **{amt:,} xu**.\n"
+            f"✅ Bạn đã đặt cược **{'Tài' if self.choice == 'tai' else 'Xỉu'}** với **{format_number(amt)} xu**.\n"
             f"⏳ Vui lòng chờ kết thúc trò chơi.",
             ephemeral=True
         )
@@ -142,12 +142,18 @@ class SumBetModal(Modal):
 
         # Format choices with their categories
         choice_details = []
-        for num in self.choices:
-            category = "Xỉu" if num <= 10 else "Tài"
-            choice_details.append(f"[{num}]{category}")
+        for number in self.choices:
+            # Xác định loại cược theo số
+            if 3 <= number <= 10:
+                bet_type = "Xỉu"
+            elif 11 <= number <= 18:
+                bet_type = "Tài"
+            else:
+                bet_type = "?"
+            choice_details.append(f"[{number}]{bet_type}")
         
         await interaction.response.send_message(
-            f"✅ Bạn đã đặt cược **{', '.join(choice_details)}** với **{stake:,} xu**.\n"
+            f"✅ Bạn đã đặt cược **{', '.join(choice_details)}** với **{format_number(stake)} xu**.\n"
             f"⏳ Vui lòng chờ kết thúc trò chơi.",
             ephemeral=True
         )
