@@ -54,5 +54,12 @@
     "amount": -10000,
     "balance_after": 14998273335,
     "timestamp": "2025-08-01T03:00:44.900720Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "taixiu_lose",
+    "amount": -10000,
+    "balance_after": 14998263335,
+    "timestamp": "2025-08-01T03:08:45.098291Z"
   }
 ]
