@@ -1,10 +1,10 @@
         import discord
-        from discord.ext import commands
-        import random
-        import asyncio
-        from utils.data_manager import get_balance, update_balance, log_history, get_pet_bonus
-        from datetime import datetime, timedelta
-        from main import menu_lock_time
+from discord.ext import commands
+import random
+import asyncio
+from utils.data_manager import get_balance, update_balance, log_history, get_pet_bonus
+from datetime import datetime, timedelta
+from main import menu_lock_time
 
         class TaiXiuView(discord.ui.View):
             def __init__(self):

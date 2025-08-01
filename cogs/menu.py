@@ -22,8 +22,9 @@ MenuView = MainMenuView
 class Menu(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
-@app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
-async def menu(self, interaction: discord.Interaction):
+
+        @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
+        async def menu(self, interaction: discord.Interaction):
             # Kiểm tra khóa toàn cục
             if datetime.now() < menu_lock_time:
                 remaining = int((menu_lock_time - datetime.now()).total_seconds())
@@ -51,15 +52,15 @@ async def menu(self, interaction: discord.Interaction):
                 except:
                     pass
 
-            # Cập nhật cooldow
-cooldown_data[channel_id] = now.isoformat()
-write_json("data/menu_cooldown.json", cooldown_data)
+            # Cập nhật cooldown
+            cooldown_data[channel_id] = now.isoformat()
+            write_json("data/menu_cooldown.json", cooldown_data)
             # Gửi giao diện chính
-    await interaction.response.defer(ephemeral=True)
-    await interaction.followup.send("🎯 Chọn loại trò chơi:", view=MainMenuView(), ephemeral=True)
+            await interaction.response.defer(ephemeral=True)
+            await interaction.followup.send("🎯 Chọn loại trò chơi:", view=MainMenuView(), ephemeral=True)
 
     # Listener xử lý interaction cho các nút game
-async def on_interaction(interaction: discord.Interaction):
+        async def on_interaction(interaction: discord.Interaction):
         if interaction.type == discord.InteractionType.component:
             cid = interaction.data.get("custom_id")
             if cid == "taixiu_menu":
@@ -77,5 +78,5 @@ async def on_interaction(interaction: discord.Interaction):
 
     # Hàm setup cog
 async def setup(bot):
-        await bot.add_cog(Menu(bot))
-        bot.add_listener(on_interaction)
+    await bot.add_cog(Menu(bot))
+    bot.add_listener(on_interaction)
