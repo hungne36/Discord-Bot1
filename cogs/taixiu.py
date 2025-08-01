@@ -174,7 +174,46 @@ class EndTaiXiuButton(Button):
 
 async def handle_taixiu_end(interaction: discord.Interaction):
     """Handle ending a Tài Xỉu game session"""
-    await interaction.response.send_message("🎲 Trò chơi Tài Xỉu đã kết thúc!", ephemeral=True)
+    import json
+    from utils.data_manager import add_balance
+    
+    with open("data/lichsu.json", "r") as f:
+        lichsu = json.load(f)
+
+    user_bets = [entry for entry in lichsu if entry.get("game") == "taixiu" and not entry.get("resolved", False)]
+
+    if not user_bets:
+        await interaction.response.send_message("❌ Không có cược nào đang hoạt động trong Tài Xỉu.", ephemeral=True)
+        return
+
+    dice = [random.randint(1, 6) for _ in range(3)]
+    total = sum(dice)
+    result = "Tài" if total >= 11 else "Xỉu"
+
+    reward_message = f"🎲 Kết quả: **{dice}** (Tổng: {total} → **{result}**)\n\n"
+
+    for bet in user_bets:
+        user_id = bet["user_id"]
+        choice = bet["choice"]
+        amount = bet["amount"]
+        win = (choice.lower() == result.lower())
+
+        if win:
+            add_balance(user_id, amount * 2)
+            reward_message += f"<@{user_id}> thắng {amount * 2:,} xu ✅\n"
+        else:
+            reward_message += f"<@{user_id}> thua {amount:,} xu ❌\n"
+
+        bet["resolved"] = True
+
+    with open("data/lichsu.json", "w") as f:
+        json.dump(lichsu, f, indent=4)
+
+    await interaction.response.send_message(embed=discord.Embed(
+        title="🎲 Trò chơi Tài Xỉu đã kết thúc!",
+        description=reward_message,
+        color=discord.Color.green()
+    ))
 
 async def setup(bot):
     await bot.add_cog(TaiXiuCog(bot))
