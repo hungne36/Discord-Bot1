@@ -1,65 +1,201 @@
 [
-  {
-    "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -10000000000,
-    "balance_after": 15000000000,
-    "timestamp": "2025-08-01T02:51:46.537627Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "gacha_cost",
-    "amount": -10000000000,
-    "balance_after": 5000000000,
-    "timestamp": "2025-08-01T02:52:16.333548Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "xocdia_lose",
-    "amount": -555555,
-    "balance_after": 4999444445,
-    "timestamp": "2025-08-01T02:52:44.078014Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -55555,
-    "balance_after": 14999388890,
-    "timestamp": "2025-08-01T02:53:38.922688Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -1000000,
-    "balance_after": 14998388890,
-    "timestamp": "2025-08-01T02:59:09.976013Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -100000,
-    "balance_after": 14998288890,
-    "timestamp": "2025-08-01T02:59:51.363858Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -5555,
-    "balance_after": 14998283335,
-    "timestamp": "2025-08-01T03:00:03.732768Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -10000,
-    "balance_after": 14998273335,
-    "timestamp": "2025-08-01T03:00:44.900720Z"
-  },
-  {
-    "user_id": 730436357838602301,
-    "action": "taixiu_lose",
-    "amount": -10000,
-    "balance_after": 14998263335,
-    "timestamp": "2025-08-01T03:08:45.098291Z"
-  }
+    {
+        "user_id": 730436357838602301,
+        "action": "gacha_cost",
+        "amount": -10000000000,
+        "balance_after": 15000000000,
+        "timestamp": "2025-08-01T02:51:46.537627Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "gacha_cost",
+        "amount": -10000000000,
+        "balance_after": 5000000000,
+        "timestamp": "2025-08-01T02:52:16.333548Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "xocdia_lose",
+        "amount": -555555,
+        "balance_after": 4999444445,
+        "timestamp": "2025-08-01T02:52:44.078014Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -55555,
+        "balance_after": 14999388890,
+        "timestamp": "2025-08-01T02:53:38.922688Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -1000000,
+        "balance_after": 14998388890,
+        "timestamp": "2025-08-01T02:59:09.976013Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -100000,
+        "balance_after": 14998288890,
+        "timestamp": "2025-08-01T02:59:51.363858Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -5555,
+        "balance_after": 14998283335,
+        "timestamp": "2025-08-01T03:00:03.732768Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -10000,
+        "balance_after": 14998273335,
+        "timestamp": "2025-08-01T03:00:44.900720Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "taixiu_lose",
+        "amount": -10000,
+        "balance_after": 14998263335,
+        "timestamp": "2025-08-01T03:08:45.098291Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_8",
+        "amount": 100000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:22:57.932594"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_9",
+        "amount": 100000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:23:08.425288"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_15",
+        "amount": 1000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:23:15.740023"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_3",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:23:37.943456"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_4",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:23:48.499690"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_5",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:23:54.599503"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_6",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:00.579681"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_7",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:07.096720"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_8",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:12.813462"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_9",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:24.947852"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_11",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:34.279468"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_9",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:24:55.503860"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_8",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:25:01.265901"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_10",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:25:06.870548"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_11",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:25:17.050058"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_12",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:25:22.328373"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tai",
+        "amount": 10000000,
+        "resolved": true,
+        "timestamp": "2025-08-01T03:25:34.984331"
+    }
 ]
