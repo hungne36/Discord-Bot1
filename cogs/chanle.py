@@ -100,7 +100,7 @@ class ChanLeView(discord.ui.View):
                 + f"💰 Số dư hiện tại: **{newb:,} xu**"
             )
 
-            await interaction.followup.send(txt)
+            await interaction.followup.send(txt, view=None)
 
             # Đóng các nút lại
             for item in self.children:

@@ -221,7 +221,7 @@ async def handle_taixiu_end(interaction: discord.Interaction):
             title="🎲 Trò chơi Tài Xỉu đã kết thúc!",
             description=reward_msg,
             color=discord.Color.green()
-        ))
+        ), view=None)
 
     # ――― EndTaiXiuView ―――
 class EndTaiXiuView(View):
