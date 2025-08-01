@@ -165,5 +165,16 @@ class TaiXiuCog(commands.Cog):
         # đăng ký persistent views nếu muốn giữ View sau restart
         self.bot.add_view(SumSelect())
 
+class EndTaiXiuButton(Button):
+    def __init__(self):
+        super().__init__(label="🎲 Kết thúc trò chơi", style=discord.ButtonStyle.danger)
+
+    async def callback(self, interaction: discord.Interaction):
+        await handle_taixiu_end(interaction)
+
+async def handle_taixiu_end(interaction: discord.Interaction):
+    """Handle ending a Tài Xỉu game session"""
+    await interaction.response.send_message("🎲 Trò chơi Tài Xỉu đã kết thúc!", ephemeral=True)
+
 async def setup(bot):
     await bot.add_cog(TaiXiuCog(bot))
