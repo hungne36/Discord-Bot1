@@ -1,5 +1,5 @@
     # cogs/taixiu.py
-    import discord, random, asyncio, json
+import discord, random, asyncio, json
     from discord.ext import commands
     from discord.ui import Modal, TextInput, View, Select, Button
     from datetime import datetime

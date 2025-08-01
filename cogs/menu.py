@@ -8,7 +8,7 @@ from utils.data_manager import read_json, write_json
 from datetime import datetime, timezone
 from main import menu_lock_time
 
-    # Giao diện chính chọn game
+# Giao diện chính chọn game
 class MenuView(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
