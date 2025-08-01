@@ -72,13 +72,7 @@ class BetModal(discord.ui.Modal, title="Nhập số tiền cược"):
             await interaction.response.send_message(f"✅ Bạn đã cược **{self.choice}** với **{amount:,} xu**.", ephemeral=True)
 
     # Nút kết thúc trò chơi
-class KetThucButton(discord.ui.View):
-        def __init__(self, game_type):
-            super().__init__(timeout=None)
-            self.game_type = game_type
-            self.add_item(KetThuc(game_type))
-
-class KetThuc(discord.ui.Button):
+class KetThucButton(discord.ui.Button):
         def __init__(self, game_type):
             super().__init__(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id=f"{game_type}_end")
             self.game_type = game_type
@@ -126,6 +120,8 @@ class KetThuc(discord.ui.Button):
 
             # Đóng view
             await interaction.response.edit_message(content="\n".join(msg_lines), view=None)
+
+
 
     # Setup cog
 async def setup(bot):

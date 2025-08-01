@@ -51,13 +51,11 @@ async def on_ready():
     # Đăng ký các View persistent
     from cogs.menu import MenuView
     from cogs.chanle import ChanLeSelectView
-    from cogs.taixiu import TaiXiuView as TaiXiuSelectView
-    from cogs.xocdia import KetThucButton
+    from cogs.taixiu import TaiXiuView
 
     bot.add_view(MenuView())
-    bot.add_view(TaiXiuSelectView())
+    bot.add_view(TaiXiuView())
     bot.add_view(ChanLeSelectView())
-    bot.add_view(KetThucButton("xocdia"))
 
     print(f"✅ Bot online as {bot.user}")
 
@@ -68,11 +66,11 @@ async def on_interaction(interaction: discord.Interaction):
             custom_id = interaction.data.get("custom_id")
 
             if custom_id == "taixiu_menu":
-                from cogs.menu import TaiXiuSelectView
-                await interaction.response.edit_message(content="🎲 Chọn cược Tài Xỉu", view=TaiXiuSelectView())
+                from cogs.taixiu import TaiXiuView
+                await interaction.response.edit_message(content="🎲 Chọn cược Tài Xỉu", view=TaiXiuView())
 
             elif custom_id == "chanle_menu":
-                from cogs.menu import ChanLeSelectView
+                from cogs.chanle import ChanLeSelectView
                 await interaction.response.edit_message(content="⚪ Chọn cược Chẵn Lẻ", view=ChanLeSelectView())
 
             elif custom_id == "xocdia_menu":

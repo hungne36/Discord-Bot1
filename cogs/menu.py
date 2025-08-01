@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord import app_commands
 from cogs.taixiu import TaiXiuView
 from cogs.chanle import ChanLeSelectView
-from cogs.xocdia import KetThucButton
 from utils.data_manager import read_json, write_json
 from datetime import datetime, timezone
 from main import menu_lock_time
