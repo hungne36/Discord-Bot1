@@ -69,13 +69,13 @@ class StartButton(discord.ui.Button):
             super().__init__(label="🎲 Kết thúc & Xóc", style=discord.ButtonStyle.danger)
 
         async def callback(self, interaction: discord.Interaction):
-                if interaction.user.id != session["host"]:
-                    await interaction.response.send_message("❌ Chỉ người mở phiên mới được kết thúc!", ephemeral=True)
-                    return
-
-                # ✅ Thêm dòng này để tránh lỗi
-                await interaction.response.defer()
             session = active_sessions[interaction.channel.id]
+            if interaction.user.id != session["host"]:
+                await interaction.response.send_message("❌ Chỉ người mở phiên mới được kết thúc!", ephemeral=True)
+                return
+
+            # ✅ Thêm dòng này để tránh lỗi
+            await interaction.response.defer()
 
             ket_qua = random.choices(["Đỏ", "Trắng"], k=4)
             so_do = ket_qua.count("Đỏ")
