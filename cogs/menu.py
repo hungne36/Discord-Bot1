@@ -59,6 +59,17 @@ class Menu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction: discord.Interaction):
+        if interaction.type == discord.InteractionType.component:
+            cid = interaction.data.get("custom_id")
+            if cid == "taixiu_menu":
+                # mở giao diện Tài Xỉu thực sự
+                from cogs.taixiu import TaiXiuView
+                await interaction.response.send_message(
+                    "🎲 Tài Xỉu - chọn cược:", view=TaiXiuView(), ephemeral=True
+                )
+
     @app_commands.command(name="menu", description="🎮 Mở giao diện chọn trò chơi")
     async def menu(self, interaction: discord.Interaction):
         # Check global menu lock
