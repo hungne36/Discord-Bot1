@@ -147,6 +147,17 @@ async def start_xocdia_game(interaction: discord.Interaction):
         }
         await interaction.followup.send("✅ Phiên Xóc Đĩa đã bắt đầu!", ephemeral=True)
 
+class KetThucButton(discord.ui.Button):
+    def __init__(self, game_type):
+        super().__init__(label="🛑 Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id=f"end_{game_type}")
+        self.game_type = game_type
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message(
+            f"🔚 Trò chơi **{self.game_type.upper()}** đã được kết thúc.",
+            ephemeral=True
+        )
+
 class XocDia(commands.Cog):
         def __init__(self, bot):
             self.bot = bot       

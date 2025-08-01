@@ -1,9 +1,9 @@
-import os, sys, asyncio, traceback
+import os, sys, asyncio,traceback
 import discord
 from discord.ext import commands
 from discord import app_commands
-
 from keep_alive import keep_alive 
+from cogs.menu import MenuView, TaiXiuSelectView
 
 TOKEN = os.getenv("TOKEN")
 ADMIN_ID = 730436357838602301
@@ -33,15 +33,24 @@ async def load_cogs():
             except Exception as e:
                 print(f"❌ Failed loading {fn}: {e}")
 
-@bot.event
-async def on_ready():
-    await load_cogs()
-    try:
-        synced = await tree.sync()
-        print(f"✅ Synced {len(synced)} commands")
-    except Exception as e:
-        print("❌ Sync failed:", e)
-    print(f"✅ Bot online as {bot.user} (ID: {bot.user.id})")
+        @bot.event
+        async def on_ready():
+            await load_cogs()
+            try:
+                synced = await tree.sync()
+                print(f"✅ Synced {len(synced)} commands")
+            except Exception as e:
+                print("❌ Sync failed:", e)
+
+            # ⚠️ Quan trọng: đăng ký các View persistent
+            from cogs.menu import MenuView, TaiXiuSelectView
+            from cogs.xocdia import KetThucButton
+
+            bot.add_view(MenuView())
+            bot.add_view(TaiXiuSelectView())
+            bot.add_view(KetThucButton())  # Nút kết thúc Xóc Đĩa
+
+            print(f"✅ Bot online as {bot.user}")
 
 @tree.command(name="ping", description="🏓 Pong check")
 async def ping(interaction: discord.Interaction):

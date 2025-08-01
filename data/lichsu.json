@@ -242,5 +242,47 @@
     "amount": -1000,
     "balance_after": 29799009489,
     "timestamp": "2025-08-01T00:36:50.521708Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "chanle_win",
+    "amount": 1998,
+    "balance_after": 54799011487,
+    "timestamp": "2025-08-01T01:10:48.588887Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -1000,
+    "balance_after": 54799010487,
+    "timestamp": "2025-08-01T01:11:04.896758Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -1000,
+    "balance_after": 54799009487,
+    "timestamp": "2025-08-01T01:32:32.178640Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -1000,
+    "balance_after": 54799008487,
+    "timestamp": "2025-08-01T01:32:46.167700Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -1000,
+    "balance_after": 64799007487,
+    "timestamp": "2025-08-01T01:55:37.460329Z"
+  },
+  {
+    "user_id": 730436357838602301,
+    "action": "xocdia_lose",
+    "amount": -1000,
+    "balance_after": 64799006487,
+    "timestamp": "2025-08-01T01:55:56.383051Z"
   }
 ]
