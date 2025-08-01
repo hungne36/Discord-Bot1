@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.ui import Modal, TextInput, View, Select, Button
 from datetime import datetime
 
-    from utils.cooldown import can_play
+from utils.cooldown import can_play
 from utils.data_manager import (
     get_balance, update_balance, add_history, get_pet_buff
 )
@@ -82,7 +82,7 @@ class TaiXiuModal(Modal):
             )
 
     # ――― MODAL: Đặt nhiều tổng (3–18) ―――
-    class SumBetModal(Modal):
+class SumBetModal(Modal):
         def __init__(self, choices: list[int]):
             super().__init__(title=f"Cược tổng: {', '.join(map(str,choices))}")
             self.choices = choices
@@ -127,7 +127,7 @@ class TaiXiuModal(Modal):
             )
 
     # ――― UI: Chọn tổng (Select hoặc Button) ―――
-    class SumSelect(View):
+class SumSelect(View):
         def __init__(self):
             super().__init__(timeout=60)
             options = [discord.SelectOption(label=str(i), value=str(i)) for i in range(3, 19)]
@@ -154,7 +154,7 @@ class TaiXiuModal(Modal):
                 self.add_item(NumberBetButton(i))
 
     # ――― Kết thúc trò chơi ―――
-    class EndTaiXiuButton(Button):
+class EndTaiXiuButton(Button):
         def __init__(self):
             super().__init__(label="🎲 Kết thúc trò chơi", style=discord.ButtonStyle.danger)
 
@@ -221,7 +221,7 @@ class TaiXiuModal(Modal):
         ))
 
     # ――― COG Setup ―――
-    class TaiXiuCog(commands.Cog):
+class TaiXiuCog(commands.Cog):
         def __init__(self, bot):
             self.bot = bot
 
@@ -231,4 +231,4 @@ class TaiXiuModal(Modal):
             self.bot.add_view(IndividualNumberView())
 
     async def setup(bot):
-        await bot.add_cog(TaiXiuCog(bot))
+    await bot.add_cog(TaiXiuCog(bot))

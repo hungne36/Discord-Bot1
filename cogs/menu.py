@@ -91,4 +91,4 @@ class Menu(commands.Cog):
         await interaction.followup.send("🎮 Chọn trò chơi", view=MenuView(), ephemeral=True)
 
 async def setup(bot):
-        await bot.add_cog(Menu(bot))
+    await bot.add_cog(Menu(bot))

@@ -8,7 +8,7 @@ import random
 import asyncio
 
     # Biến lưu trữ cược đang chờ
-    pending_chanle = {}
+pending_chanle = {}
 
     class ChanLeModal(discord.ui.Modal):
         def __init__(self, choice: str):
@@ -119,4 +119,4 @@ import asyncio
             await ctx.send("🎮 **Chẵn Lẻ** - chọn một tùy chọn:", view=ChanLeView())
 
     async def setup(bot):
-        await bot.add_cog(ChanLe(bot))
+    await bot.add_cog(ChanLe(bot))
