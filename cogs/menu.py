@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from cogs.taixiu import BetModal
+from cogs.taixiu import BetModal, EndTaiXiuButton
 from cogs.chanle import ChanLeModal
 from cogs.xocdia import KetThucButton
 from utils.data_manager import read_json, write_json
@@ -22,7 +22,7 @@ class TaiXiuSelectView(discord.ui.View):
         super().__init__(timeout=None)
         self.create_sum_buttons()
         self.add_item(discord.ui.Button(label="⬅️ Quay lại", style=discord.ButtonStyle.gray, custom_id="back_to_main_taixiu"))
-        
+        self.add_item(EndTaiXiuButton())
 
     @discord.ui.button(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.red, custom_id="taixiu_end")
     async def end_game(self, interaction: discord.Interaction, button: discord.ui.Button):
