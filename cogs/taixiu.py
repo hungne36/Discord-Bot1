@@ -165,7 +165,10 @@ async def handle_taixiu_end(interaction: discord.Interaction):
         with open("data/lichsu.json", "r") as f:
             lichsu = json.load(f)
 
-        user_bets = [x for x in lichsu if x["game"] in ["taixiu", "taixiu_sum"] and not x.get("resolved", False)]
+        user_id = interaction.user.id
+        user_bets = [x for x in lichsu if x["game"] in ["taixiu", "taixiu_sum"]
+                     and not x.get("resolved", False)
+                     and x["user_id"] == user_id]
 
         if not user_bets:
             return await interaction.response.send_message("❌ Không có cược nào đang hoạt động trong Tài Xỉu.", ephemeral=True)
