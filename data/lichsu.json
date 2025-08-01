@@ -408,5 +408,21 @@
         "amount": 10000000,
         "resolved": true,
         "timestamp": "2025-08-01T04:35:30.482515"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_15",
+        "amount": 999999999,
+        "resolved": false,
+        "timestamp": "2025-08-01T04:39:30.007082"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_15",
+        "amount": 999999999,
+        "resolved": false,
+        "timestamp": "2025-08-01T04:39:31.023604"
     }
 ]
