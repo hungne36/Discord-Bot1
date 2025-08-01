@@ -52,7 +52,7 @@ class TaiXiuModal(Modal):
 
         # 4) Tính thưởng
         if win:
-            profit = round(amt * 0.97)
+            profit = round(amt * 0.9)
             buff = get_pet_buff(interaction.user.id)
             bonus = round(profit * buff / 100)
             delta = amt + profit + bonus
@@ -145,8 +145,8 @@ class SumSelect(View):
         opts = [discord.SelectOption(label=str(i), value=str(i))
                 for i in range(3,19)]
         self.add_item(Select(
-            placeholder="Chọn tối đa 4 số (3–18)…",
-            min_values=1, max_values=4, options=opts
+            placeholder="Chọn tối đa 5 số (3–18)…",
+            min_values=4, max_values=5, options=opts
         ))
 
     @discord.ui.select()

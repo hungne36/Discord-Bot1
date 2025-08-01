@@ -52,7 +52,7 @@ class ChanLeModal(discord.ui.Modal):
 
             # 6. Tính thaydoi
             if win:
-                profit = round(amt * 0.95)
+                profit = round(amt * 0.8)
                 buff   = get_pet_buff(interaction.user.id)
                 bonus  = round(profit * buff / 100) if buff else 0
                 delta  = amt + profit + bonus
