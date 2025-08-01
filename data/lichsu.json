@@ -614,5 +614,12 @@
     "amount": -9999,
     "balance_after": 4560674499,
     "timestamp": "2025-08-01T07:40:20.834472Z"
+  },
+  {
+    "user_id": "730436357838602301",
+    "action": "T\u00e0i X\u1ec9u",
+    "amount": 1149990,
+    "balance_after": 4561824489,
+    "timestamp": "2025-08-01T07:42:54.133407Z"
   }
 ]
