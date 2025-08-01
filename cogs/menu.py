@@ -61,10 +61,10 @@ class Menu(commands.Cog):
 
     # Listener xử lý interaction cho các nút game
         async def on_interaction(interaction: discord.Interaction):
-        if interaction.type == discord.InteractionType.component:
+     if interaction.type == discord.InteractionType.component:
             cid = interaction.data.get("custom_id")
             if cid == "taixiu_menu":
-                await interaction.response.send_message(
+    await interaction.response.send_message(
                     "🎲 Tài Xỉu - chọn cược:", view=TaiXiuView(), ephemeral=True
                 )
             elif cid == "chanle_menu":
@@ -78,5 +78,5 @@ class Menu(commands.Cog):
 
     # Hàm setup cog
 async def setup(bot):
-    await bot.add_cog(Menu(bot))
+await bot.add_cog(Menu(bot))
     bot.add_listener(on_interaction)

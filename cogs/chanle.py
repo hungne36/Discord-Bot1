@@ -1,134 +1,132 @@
-    # cogs/chanle.py
 import discord
 from discord.ext import commands
-from discord import app_commands
-from discord.ui import View, Button
-from discord import Interaction
-from utils.data_manager import get_balance, update_balance, add_history, get_pet_buff
-from utils.cooldown import can_play, set_cooldown
+from utils.data_manager import read_json, write_json
+from datetime import datetime, timedelta
 import random
-import asyncio
+from main import menu_lock_time
+from utils.pet_bonus import get_pet_bonus_multiplier  # ← Pet bonus
 
-    # Biến lưu trữ cược đang chờ
-pending_chanle = {}
+    # Dữ liệu cược theo kênh
+chanle_bets = {}
 
-class ChanLeSelectView(View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(Button(label="Chẵn", style=discord.ButtonStyle.primary, custom_id="chan"))
-        self.add_item(Button(label="Lẻ", style=discord.ButtonStyle.primary, custom_id="le"))
-        self.add_item(Button(label="Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id="chanle_ketthuc"))
+    # Giao diện chọn cược chẵn/lẻ
+class ChanLeSelectView(discord.ui.View):
+        def __init__(self):
+            super().__init__(timeout=None)
+            self.add_item(ChanLeButton("Chẵn"))
+            self.add_item(ChanLeButton("Lẻ"))
+            self.add_item(KetThucButton("chanle"))
 
-    async def interaction_check(self, interaction: Interaction) -> bool:
-        return True
+class ChanLeButton(discord.ui.Button):
+        def __init__(self, label):
+            super().__init__(label=label, style=discord.ButtonStyle.primary, custom_id=f"chanle_{label}")
 
-class ChanLeModal(discord.ui.Modal):
-        def __init__(self, choice: str):
-            super().__init__(title=f"Cược {'Chẵn' if choice=='chan' else 'Lẻ'}")
+        async def callback(self, interaction: discord.Interaction):
+            user_id = str(interaction.user.id)
+            channel_id = str(interaction.channel.id)
+
+            await interaction.response.send_modal(BetModal(self.label, user_id, channel_id))
+
+    # Modal nhập tiền cược
+class BetModal(discord.ui.Modal, title="Nhập số tiền cược"):
+        def __init__(self, choice, user_id, channel_id):
+            super().__init__()
             self.choice = choice
-            self.add_item(discord.ui.TextInput(
-                label="Số xu cược", placeholder="Nhập ≥1.000", max_length=18
-            ))
+            self.user_id = user_id
+            self.channel_id = channel_id
+
+            self.add_item(discord.ui.TextInput(label="Nhập số tiền", placeholder="VD: 1000000", custom_id="bet_amount"))
 
         async def on_submit(self, interaction: discord.Interaction):
             try:
-                amt = int(self.children[0].value)
+                amount = int(self.children[0].value)
             except ValueError:
-                return await interaction.response.send_message(
-                    "❌ Vui lòng nhập một số hợp lệ!", ephemeral=True
-                )
+                await interaction.response.send_message("❌ Số tiền không hợp lệ.", ephemeral=True)
+                return
 
-            ok, wait = can_play(interaction.user.id)
-            if not ok:
-                return await interaction.response.send_message(
-                    f"⏳ Vui lòng đợi {int(wait)} giây nữa!", ephemeral=True
-                )
+            if amount <= 0:
+                await interaction.response.send_message("❌ Số tiền phải lớn hơn 0.", ephemeral=True)
+                return
 
-            bal = get_balance(interaction.user.id)
-            if amt < 1000 or amt > bal:
-                return await interaction.response.send_message(
-                    "❌ Số xu cược không hợp lệ!", ephemeral=True
-                )
+            # Trừ tiền
+            balances = read_json("data/sodu.json")
+            user_balance = balances.get(self.user_id, 0)
 
-            # Lưu cược vào pending
-            pending_chanle[interaction.user.id] = {
+            if user_balance < amount:
+                await interaction.response.send_message("❌ Bạn không đủ tiền.", ephemeral=True)
+                return
+
+            balances[self.user_id] = user_balance - amount
+            write_json("data/sodu.json", balances)
+
+            # Lưu cược
+            if self.channel_id not in chanle_bets:
+                chanle_bets[self.channel_id] = []
+
+            chanle_bets[self.channel_id].append({
+                "user_id": self.user_id,
                 "choice": self.choice,
-                "amount": amt,
-                "user": interaction.user
-            }
+                "amount": amount
+            })
 
-            await interaction.response.send_message(
-                f"✅ Đã đặt cược **{'Chẵn' if self.choice=='chan' else 'Lẻ'}** với **{amt:,} xu**!\n"
-                "👉 Nhấn **Kết thúc trò chơi** để xem kết quả!", ephemeral=True
-            )
+            await interaction.response.send_message(f"✅ Bạn đã cược **{self.choice}** với **{amount:,} xu**.", ephemeral=True)
 
-class ChanLeView(discord.ui.View):
-        def __init__(self):
+    # Nút kết thúc trò chơi
+class KetThucButton(discord.ui.View):
+        def __init__(self, game_type):
             super().__init__(timeout=None)
+            self.game_type = game_type
+            self.add_item(KetThuc(game_type))
 
-        @discord.ui.button(label="Chẵn", style=discord.ButtonStyle.primary, custom_id="chanle_chan")
-        async def chan_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(ChanLeModal("chan"))
+class KetThuc(discord.ui.Button):
+        def __init__(self, game_type):
+            super().__init__(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id=f"{game_type}_end")
+            self.game_type = game_type
 
-        @discord.ui.button(label="Lẻ", style=discord.ButtonStyle.success, custom_id="chanle_le")
-        async def le_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(ChanLeModal("le"))
+        async def callback(self, interaction: discord.Interaction):
+            channel_id = str(interaction.channel.id)
 
-        @discord.ui.button(label="Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id="chanle_end")
-        async def end_game(self, interaction: discord.Interaction, button: discord.ui.Button):
-            data = pending_chanle.pop(interaction.user.id, None)
-            if not data:
-                return await interaction.response.send_message("❌ Bạn chưa đặt cược!", ephemeral=True)
+            # Lấy danh sách cược
+            bets = chanle_bets.get(channel_id, [])
+            if not bets:
+                await interaction.response.send_message("⚠️ Không có ai đặt cược.", ephemeral=True)
+                return
 
-            await interaction.response.defer()
+            # Random kết quả
+            result_number = random.randint(1, 100)
+            result = "Chẵn" if result_number % 2 == 0 else "Lẻ"
 
-            await asyncio.sleep(2)
-            sec = random.randint(0, 59)
-            total = (sec // 10) + (sec % 10)
-            kq = "chan" if total % 2 == 0 else "le"
-            win = (kq == data["choice"])
-            amt = data["amount"]
+            # Load số dư
+            balances = read_json("data/sodu.json")
 
-            if win:
-                profit = round(amt * 0.8)
-                buff = get_pet_buff(interaction.user.id)
-                bonus = round(profit * buff / 100) if buff else 0
-                delta = amt + profit + bonus
-            else:
-                profit, bonus = 0, 0
-                delta = -amt
+            # Xử lý trả thưởng
+            msg_lines = [f"🎯 Kết quả: **{result_number} ({result})**"]
+            for bet in bets:
+                user_id = bet["user_id"]
+                choice = bet["choice"]
+                amount = bet["amount"]
 
-            newb = update_balance(interaction.user.id, delta)
-            add_history(
-                interaction.user.id,
-                f"chanle_{'win' if win else 'lose'}",
-                delta,
-                newb
-            )
+                if choice == result:
+                    pet_bonus = get_pet_bonus_multiplier(user_id)
+                    reward = int(amount * (1 + pet_bonus)) * 2
+                    balances[user_id] = balances.get(user_id, 0) + reward
+                    msg_lines.append(f"<@{user_id}> ✅ Thắng! +{reward:,} xu (x{1 + pet_bonus:.2f} pet)")
+                else:
+                    msg_lines.append(f"<@{user_id}> ❌ Thua cược.")
 
-            txt = (
-                f"🔢 Số {sec:02d} → **{total}** ({'CHẴN' if kq=='chan' else 'LẺ'})\n"
-                + (f"🎉 Thắng! +{profit:,} + pet bonus {bonus:,}\n" if win else "💸 Bạn thua và mất stake\n")
-                + f"💰 Số dư hiện tại: **{newb:,} xu**"
-            )
+            # Lưu lại số dư
+            write_json("data/sodu.json", balances)
 
-            await interaction.followup.send(txt, view=None)
+            # Xoá lượt cược
+            chanle_bets[channel_id] = []
 
-            # Đóng các nút lại
-            for item in self.children:
-                item.disabled = True
-            await interaction.message.edit(view=self)
+            # Khoá menu 30s
+            global menu_lock_time
+            menu_lock_time = datetime.now() + timedelta(seconds=30)
 
-            # Cấm chơi lại trong 30s
-            set_cooldown(interaction.user.id, 30)
+            # Đóng view
+            await interaction.response.edit_message(content="\n".join(msg_lines), view=None)
 
-class ChanLe(commands.Cog):
-        def __init__(self, bot):
-            self.bot = bot
-
-        @commands.command(name="chanle_testmenu")
-        async def chanle_test(self, ctx):
-            await ctx.send("🎮 **Chẵn Lẻ** - chọn một tùy chọn:", view=ChanLeView())
-
+    # Setup cog
 async def setup(bot):
-    await bot.add_cog(ChanLe(bot))
+        pass  # Không cần add_cog nếu chỉ gọi view từ nơi khác

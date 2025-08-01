@@ -1,4 +1,4 @@
-        import discord
+import discord
 from discord.ext import commands
 import random
 import asyncio
@@ -6,7 +6,7 @@ from utils.data_manager import get_balance, update_balance, log_history, get_pet
 from datetime import datetime, timedelta
 from main import menu_lock_time
 
-        class TaiXiuView(discord.ui.View):
+class TaiXiuView(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout=None)
                 self.add_item(TaiXiuButton("Tài", 11, 17))
@@ -16,7 +16,7 @@ from main import menu_lock_time
                 self.add_item(KetThucTaiXiuButton())
 
         # Nút đặt cược
-        class TaiXiuButton(discord.ui.Button):
+class TaiXiuButton(discord.ui.Button):
             def __init__(self, label, min_sum, max_sum):
                 super().__init__(label=label, style=discord.ButtonStyle.secondary, custom_id=f"taixiu_{label}")
                 self.min_sum = min_sum
@@ -26,7 +26,7 @@ from main import menu_lock_time
                 await interaction.response.send_modal(TaiXiuModal(self.label, self.min_sum, self.max_sum))
 
         # Modal nhập số tiền cược
-        class TaiXiuModal(discord.ui.Modal, title="💰 Nhập số tiền cược"):
+class TaiXiuModal(discord.ui.Modal, title="💰 Nhập số tiền cược"):
             def __init__(self, choice, min_sum, max_sum):
                 super().__init__()
                 self.choice = choice
@@ -72,7 +72,7 @@ from main import menu_lock_time
                 )
 
         # Nút kết thúc trò chơi
-        class KetThucTaiXiuButton(discord.ui.Button):
+class KetThucTaiXiuButton(discord.ui.Button):
             def __init__(self):
                 super().__init__(label="🎯 Kết thúc trò chơi", style=discord.ButtonStyle.danger, custom_id="taixiu_ketthuc")
 
