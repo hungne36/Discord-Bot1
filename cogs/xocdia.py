@@ -3,6 +3,11 @@ from discord.ext import commands
 from discord import app_commands
 import random
 from utils.data_manager import update_balance, add_history, get_balance, get_pet_buff
+def get_username(user):
+    return f"{user.name}#{user.discriminator}"
+
+def update_today_spent(user_id, amount):
+    pass  # Nếu sau này có tính chi tiêu hôm nay thì bạn sẽ xử lý thêm ở đây
 
 CACH_CUA = ["4 Đỏ", "4 Trắng", "3 Trắng 1 Đỏ", "3 Đỏ 1 Trắng", "Chẵn", "Lẻ"]
 
@@ -64,13 +69,13 @@ class StartButton(discord.ui.Button):
             super().__init__(label="🎲 Kết thúc & Xóc", style=discord.ButtonStyle.danger)
 
         async def callback(self, interaction: discord.Interaction):
-            if interaction.channel.id not in active_sessions:
-                await interaction.response.send_message("❌ Không có phiên nào đang diễn ra!", ephemeral=True)
-                return
+                if interaction.user.id != session["host"]:
+                    await interaction.response.send_message("❌ Chỉ người mở phiên mới được kết thúc!", ephemeral=True)
+                    return
+
+                # ✅ Thêm dòng này để tránh lỗi
+                await interaction.response.defer()
             session = active_sessions[interaction.channel.id]
-            if interaction.user.id != session["host"]:
-                await interaction.response.send_message("❌ Chỉ người mở phiên mới được kết thúc!", ephemeral=True)
-                return
 
             ket_qua = random.choices(["Đỏ", "Trắng"], k=4)
             so_do = ket_qua.count("Đỏ")
