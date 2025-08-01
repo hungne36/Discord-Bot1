@@ -8,9 +8,7 @@ from utils.data_manager import (
 )
 from discord.ui import Modal, TextInput, View, Select, Button
 
-def format_number(number):
-    """Format number with commas for display"""
-    return f"{number:,}"
+def format_number(n): return f"{n:,}".replace(",", ".")
 
 async def ask_for_bet_amount(interaction):
     """Simple amount validation - you may want to implement a modal for this"""

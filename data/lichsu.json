@@ -414,7 +414,7 @@
         "game": "taixiu",
         "choice": "tx_15",
         "amount": 999999999,
-        "resolved": false,
+        "resolved": true,
         "timestamp": "2025-08-01T04:39:30.007082"
     },
     {
@@ -422,7 +422,23 @@
         "game": "taixiu",
         "choice": "tx_15",
         "amount": 999999999,
-        "resolved": false,
+        "resolved": true,
         "timestamp": "2025-08-01T04:39:31.023604"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_16",
+        "amount": 999999992,
+        "resolved": true,
+        "timestamp": "2025-08-01T04:42:31.680548"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "choice": "tx_16",
+        "amount": 99999999,
+        "resolved": false,
+        "timestamp": "2025-08-01T04:42:51.147541"
     }
 ]
