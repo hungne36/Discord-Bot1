@@ -123,3 +123,6 @@ class KetThucTaiXiuButton(discord.ui.Button):
                     if isinstance(child, discord.ui.Button):
                         child.disabled = True
                 await interaction.response.edit_message(content=result_text, view=self.view)
+
+async def setup(bot):
+    pass  # View-only cog, no commands to register
