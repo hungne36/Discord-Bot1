@@ -480,5 +480,80 @@
         "amount": 123456789,
         "resolved": true,
         "timestamp": "2025-08-01T04:54:35.045651"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 999999,
+        "timestamp": "2025-08-01T06:04:02.069744",
+        "choice": "xiu"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu_sum",
+        "resolved": false,
+        "amount": 9999999,
+        "timestamp": "2025-08-01T06:04:33.766089",
+        "choices": [
+            13
+        ]
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "xocdia_win",
+        "amount": 1999998,
+        "balance_after": 16495956577,
+        "timestamp": "2025-08-01T06:05:12.249225Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "gacha_cost",
+        "amount": -10000000000,
+        "balance_after": 6495956577,
+        "timestamp": "2025-08-01T06:05:47.275196Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 999999999,
+        "timestamp": "2025-08-01T06:08:01.483781",
+        "choice": "tai"
+    },
+    {
+        "user_id": 730436357838602301,
+        "action": "xocdia_lose",
+        "amount": -929937272,
+        "balance_after": 4566019306,
+        "timestamp": "2025-08-01T06:08:38.158462Z"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu_sum",
+        "resolved": false,
+        "amount": 9999,
+        "timestamp": "2025-08-01T06:09:06.263287",
+        "choices": [
+            17
+        ]
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu",
+        "resolved": false,
+        "amount": 99999,
+        "timestamp": "2025-08-01T06:09:34.588032",
+        "choice": "tai"
+    },
+    {
+        "user_id": 730436357838602301,
+        "game": "taixiu_sum",
+        "resolved": false,
+        "amount": 292911,
+        "timestamp": "2025-08-01T06:09:45.881064",
+        "choices": [
+            17
+        ]
     }
 ]
