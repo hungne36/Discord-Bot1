@@ -143,21 +143,18 @@ class SumBetModal(Modal):
         with open("data/lichsu.json", "w") as f:
             json.dump(history, f, indent=4)
 
-        # Format choices with their categories
+        # Trong SumBetModal.on_submit, sau phần lưu:
         choice_details = []
         for number in self.choices:
-            # Xác định loại cược theo số
             if 3 <= number <= 10:
-                bet_type = "Xỉu"
-            elif 11 <= number <= 18:
-                bet_type = "Tài"
+                t = "Xỉu"
             else:
-                bet_type = "?"
-            choice_details.append(f"[{number}]{bet_type}")
-        
+                t = "Tài"
+            choice_details.append(f"[{number}]{t}")
+
         await interaction.response.send_message(
             f"✅ Bạn đã đặt cược **{', '.join(choice_details)}** với **{format_number(stake)} xu**.\n"
-            f"⏳ Vui lòng chờ kết thúc trò chơi.",
+            "⏳ Vui lòng chờ kết thúc trò chơi.",
             ephemeral=True
         )
 
